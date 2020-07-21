@@ -8,7 +8,7 @@
  * @license   https://opensource.org/licenses/MIT MIT
  */
 
-namespace danog\Loop\Test;
+namespace danog\Loop\Test\Interfaces;
 
 use danog\Loop\ResumableLoopInterface;
 
