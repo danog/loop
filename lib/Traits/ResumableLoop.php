@@ -63,7 +63,7 @@ trait ResumableLoop
             }
             $this->resumeTimer = AmpLoop::delay((int) ($time * 1000), \Closure::fromCallable([$this, 'resumeInternal']));
         }
-        $this->resume = new Deferred();
+        
         $pause = $this->pause;
         $this->pause = new Deferred();
         if ($pause) {
@@ -72,6 +72,8 @@ trait ResumableLoop
              */
             AmpLoop::defer([$pause, 'resolve']);
         }
+
+        $this->resume = new Deferred();
         return $this->resume->promise();
     }
     /**
@@ -81,11 +83,12 @@ trait ResumableLoop
      */
     public function resume(): Promise
     {
-        $this->resumeInternal();
         if (!$this->pause) {
             $this->pause = new Deferred;
         }
-        return $this->pause->promise();
+        $promise = $this->pause->promise();
+        $this->resumeInternal();
+        return $promise;
     }
     /**
      * Defer resuming the loop.

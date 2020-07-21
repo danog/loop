@@ -10,6 +10,7 @@
 namespace danog\Loop\Test;
 
 use Amp\PHPUnit\AsyncTestCase;
+use Amp\Promise;
 use danog\Loop\Impl\Loop;
 use danog\Loop\Impl\ResumableLoop;
 use danog\Loop\Impl\ResumableSignalLoop;
@@ -33,26 +34,166 @@ class LoopTest extends AsyncTestCase
      */
     public function testLoop(BasicInterface $loop): \Generator
     {
-        $this->assertEquals("$loop", self::LOOP_NAME);
-
+        $this->assertPreStart($loop);
         $this->assertTrue($loop->start());
-        $this->assertFalse($loop->start());
-
-        $this->assertTrue($loop->inited());
-
-        $this->assertFalse($loop->ran());
-        $this->assertTrue($loop->isRunning());
-
-        $this->assertEquals($loop->startCounter(), 1);
-        $this->assertEquals($loop->endCounter(), 0);
+        $this->assertAfterStart($loop);
 
         yield delay(110);
 
+        $this->assertFinal($loop);
+    }
+    /**
+     * Test pausing loop.
+     *
+     * @param ResumableInterface $loop Loop
+     *
+     * @return \Generator
+     *
+     * @dataProvider provideResumable
+     */
+    public function testResumable(ResumableInterface $loop): \Generator
+    {
+        $paused = $loop->resume(); // Returned promise will resolve on next pause
+
+        $this->assertPreStart($loop);
+        $this->assertTrue($loop->start());
+        $this->assertAfterStart($loop);
+
+        yield delay(10);
+        $this->assertTrue(self::isResolved($paused));
+        yield delay(100);
+
+        $this->assertFinal($loop);
+    }
+    /**
+     * Test pausing loop with negative value.
+     *
+     * @param ResumableInterface $loop Loop
+     *
+     * @return \Generator
+     *
+     * @dataProvider provideResumable
+     */
+    public function testResumableNegative(ResumableInterface $loop)
+    {
+        $paused = $loop->resume(); // Will resolve on next pause
+        $loop->setInterval(-1); // Will not pause, and finish right away!
+
+        $this->assertPreStart($loop);
+        $this->assertTrue($loop->start());
+        
+        yield delay(1);
+        $this->assertFalse(self::isResolved($paused)); // Did not pause
+
+        // Invert the order as the afterTest assertions will begin the test anew
+        $this->assertFinal($loop); 
+        $this->assertAfterStart($loop, false);
+
+    }
+    /**
+     * Test pausing loop forever, or for 10 seconds, prematurely resuming it.
+     *
+     * @param ResumableInterface $loop Loop
+     *
+     * @return \Generator
+     *
+     * @dataProvider provideResumableInterval
+     */
+    public function testResumableForeverPremature(ResumableInterface $loop, ?int $interval): \Generator
+    {
+        $paused = $loop->resume(); // Will resolve on next pause
+        $loop->setInterval($interval);
+
+        $this->assertPreStart($loop);
+        $this->assertTrue($loop->start());
+        $this->assertAfterStart($loop);
+
+        yield delay(1);
+        $this->assertTrue(self::isResolved($paused)); // Did pause
+        
+        $paused = $loop->resume();
+        $this->assertFinal($loop);
+
+        yield delay(1);
+        $this->assertFalse(self::isResolved($paused)); // Did not pause agai
+    }
+
+    /**
+     * Check if promise has been resolved afterwards.
+     *
+     * @param Promise $promise Promise
+     *
+     * @return boolean
+     */
+    public static function isResolved(Promise $promise): bool
+    {
+        $resolved = false;
+        $promise->onResolve(static function ($e, $res) use (&$resolved) {
+            if ($e) {
+                throw $e;
+            }
+            $resolved = true;
+        });
+        return $resolved;
+    }
+    /**
+     * Execute pre-start assertions.
+     *
+     * @param BasicInterface $loop Loop
+     *
+     * @return void
+     */
+    public function assertPreStart(BasicInterface $loop)
+    {
+        $this->assertEquals(self::LOOP_NAME, "$loop");
+
+        $this->assertFalse($loop->isRunning());
+        $this->assertFalse($loop->ran());
+
+        $this->assertFalse($loop->inited());
+
+        $this->assertEquals(0, $loop->startCounter());
+        $this->assertEquals(0, $loop->endCounter());
+    }
+    /**
+     * Execute after-start assertions.
+     *
+     * @param BasicInterface $loop    Loop
+     * @param bool           $running Whether we should expect the loop to be running
+     *
+     * @return void
+     */
+    public function assertAfterStart(BasicInterface $loop, bool $running = true)
+    {
+        $this->assertTrue($loop->inited());
+
+        if ($running) {
+            $this->assertFalse($loop->ran());
+        }
+        $this->assertEquals($running, $loop->isRunning(), $running);
+
+        $this->assertEquals(1, $loop->startCounter());
+        $this->assertEquals($running ? 0 : 1, $loop->endCounter());
+        
+        $this->assertEquals($running, !$loop->start());
+
+    }
+    /**
+     * Execute final assertions.
+     *
+     * @param BasicInterface $loop Loop
+     *
+     * @return void
+     */
+    public function assertFinal(BasicInterface $loop)
+    {
         $this->assertTrue($loop->ran());
         $this->assertFalse($loop->isRunning());
 
-        $this->assertEquals($loop->startCounter(), 1);
-        $this->assertEquals($loop->endCounter(), 1);
+        $this->assertTrue($loop->inited());
+
+        $this->assertEquals(1, $loop->startCounter());
+        $this->assertEquals(1, $loop->endCounter());
     }
     /**
      * Provide loop implementations.
@@ -73,15 +214,37 @@ class LoopTest extends AsyncTestCase
             }],
             [new class() extends ResumableSignalLoop implements BasicInterface {
                 use Basic;
-            }],
-
-
-            [new class() extends ResumableLoop implements BasicInterface {
+            }]
+        ];
+    }
+    /**
+     * Provide resumable loop implementations.
+     *
+     * @return array
+     */
+    public function provideResumable(): array
+    {
+        return [
+            [new class() extends ResumableLoop implements ResumableInterface {
                 use BasicResumable;
             }],
-            [new class() extends ResumableSignalLoop implements BasicInterface {
+            [new class() extends ResumableSignalLoop implements ResumableInterface {
                 use BasicResumable;
             }],
         ];
+    }
+    /**
+     * Provide resumable loop implementations and interval
+     *
+     * @return \Generator
+     */
+    public function provideResumableInterval(): \Generator
+    {
+        foreach ($this->provideResumable() as $params) {
+            foreach ([10, null] as $interval) {
+                $params[1] = $interval;
+                yield $params;
+            }
+        }
     }
 }
