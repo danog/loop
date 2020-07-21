@@ -81,41 +81,50 @@ class LoopTest extends AsyncTestCase
 
         $this->assertPreStart($loop);
         $this->assertTrue($loop->start());
-        
+
         yield delay(1);
         $this->assertFalse(self::isResolved($paused)); // Did not pause
 
         // Invert the order as the afterTest assertions will begin the test anew
-        $this->assertFinal($loop); 
+        $this->assertFinal($loop);
         $this->assertAfterStart($loop, false);
-
     }
     /**
      * Test pausing loop forever, or for 10 seconds, prematurely resuming it.
      *
-     * @param ResumableInterface $loop Loop
+     * @param ResumableInterface $loop     Loop
+     * @param ?int               $interval Interval
+     * @param bool               $deferred Deferred
      *
      * @return \Generator
      *
      * @dataProvider provideResumableInterval
      */
-    public function testResumableForeverPremature(ResumableInterface $loop, ?int $interval): \Generator
+    public function testResumableForeverPremature(ResumableInterface $loop, ?int $interval, bool $deferred): \Generator
     {
-        $paused = $loop->resume(); // Will resolve on next pause
+        $paused = $deferred ? $loop->resumeDefer() : $loop->resume(); // Will resolve on next pause
+        if ($deferred) {
+            yield delay(1); // Avoid resuming after starting
+        }
         $loop->setInterval($interval);
 
         $this->assertPreStart($loop);
         $this->assertTrue($loop->start());
         $this->assertAfterStart($loop);
 
+
         yield delay(1);
         $this->assertTrue(self::isResolved($paused)); // Did pause
-        
-        $paused = $loop->resume();
+
+        $paused = $deferred ? $loop->resumeDefer() : $loop->resume();
+        if ($deferred) {
+            $this->assertAfterStart($loop);
+            yield delay(1);
+        }
         $this->assertFinal($loop);
 
         yield delay(1);
-        $this->assertFalse(self::isResolved($paused)); // Did not pause agai
+        $this->assertFalse(self::isResolved($paused)); // Did not pause again
     }
 
     /**
@@ -174,9 +183,8 @@ class LoopTest extends AsyncTestCase
 
         $this->assertEquals(1, $loop->startCounter());
         $this->assertEquals($running ? 0 : 1, $loop->endCounter());
-        
-        $this->assertEquals($running, !$loop->start());
 
+        $this->assertEquals($running, !$loop->start());
     }
     /**
      * Execute final assertions.
@@ -234,16 +242,19 @@ class LoopTest extends AsyncTestCase
         ];
     }
     /**
-     * Provide resumable loop implementations and interval
+     * Provide resumable loop implementations and interval.
      *
      * @return \Generator
      */
     public function provideResumableInterval(): \Generator
     {
-        foreach ($this->provideResumable() as $params) {
+        foreach ([true, false] as $deferred) {
             foreach ([10, null] as $interval) {
-                $params[1] = $interval;
-                yield $params;
+                foreach ($this->provideResumable() as $params) {
+                    $params[] = $interval;
+                    $params[] = $deferred;
+                    yield $params;
+                }
             }
         }
     }
