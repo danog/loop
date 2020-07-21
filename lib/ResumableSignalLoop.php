@@ -7,10 +7,10 @@
  * @license   https://opensource.org/licenses/MIT MIT
  */
 
-namespace danog\Loop\Impl;
+namespace danog\Loop;
 
-use danog\Loop\ResumableLoopInterface;
-use danog\Loop\SignalLoopInterface;
+use danog\Loop\Interfaces\ResumableLoopInterface;
+use danog\Loop\Interfaces\SignalLoopInterface;
 use danog\Loop\Traits\ResumableLoop;
 use danog\Loop\Traits\SignalLoop;
 

@@ -8,7 +8,7 @@
  * @license   https://opensource.org/licenses/MIT MIT
  */
 
-namespace danog\Loop;
+namespace danog\Loop\Interfaces;
 
 use Amp\Promise;
 
@@ -31,9 +31,9 @@ interface SignalLoopInterface extends LoopInterface
      * Resolve the promise or return|throw the signal.
      *
      * @param Promise|\Generator $promise The original promise or generator
-     * 
+     *
      * @return Promise
-     * 
+     *
      * @template T
      *
      * @psalm-param Promise<T>|\Generator<mixed,Promise|array<array-key,

@@ -9,7 +9,7 @@
 
 namespace danog\Loop\Generic;
 
-use danog\Loop\Impl\ResumableSignalLoop;
+use danog\Loop\ResumableSignalLoop;
 
 /**
  * Periodic loop.

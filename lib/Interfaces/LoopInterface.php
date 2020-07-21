@@ -8,9 +8,7 @@
  * @license   https://opensource.org/licenses/MIT MIT
  */
 
-namespace danog\Loop;
-
-use Amp\Promise;
+namespace danog\Loop\Interfaces;
 
 /**
  * Loop interface.
@@ -21,7 +19,7 @@ interface LoopInterface
 {
     /**
      * Start the loop.
-     * 
+     *
      * Returns false if the loop is already running.
      *
      * @return bool

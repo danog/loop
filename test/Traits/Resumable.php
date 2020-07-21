@@ -11,7 +11,7 @@ namespace danog\Loop\Test\Traits;
 
 use Generator;
 
-trait BasicResumable
+trait Resumable
 {
     use Basic;
     /**
@@ -19,7 +19,7 @@ trait BasicResumable
      *
      * @var int|float|null
      */
-    private $interval = 0.1;
+    protected $interval = 0.1;
     /**
      * Set sleep interval.
      *

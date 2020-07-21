@@ -10,14 +10,14 @@
 
 namespace danog\Loop\Test\Interfaces;
 
-use danog\Loop\ResumableLoopInterface;
+use danog\Loop\Interfaces\ResumableLoopInterface;
 
 /**
  * Resumable loop test interface.
  *
  * @author Daniil Gentili <daniil@daniil.it>
  */
-interface ResumableInterface extends BasicInterface, ResumableLoopInterface
+interface ResumableInterface extends BasicInterface
 {
     /**
      * Set sleep interval.

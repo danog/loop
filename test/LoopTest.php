@@ -9,10 +9,10 @@
 
 namespace danog\Loop\Test;
 
-use danog\Loop\Impl\Loop;
-use danog\Loop\Impl\ResumableLoop;
-use danog\Loop\Impl\ResumableSignalLoop;
-use danog\Loop\Impl\SignalLoop;
+use danog\Loop\Loop;
+use danog\Loop\ResumableLoop;
+use danog\Loop\ResumableSignalLoop;
+use danog\Loop\SignalLoop;
 use danog\Loop\Test\Interfaces\BasicInterface;
 use danog\Loop\Test\Traits\Basic;
 use danog\Loop\Test\Traits\BasicException;
@@ -58,7 +58,7 @@ class LoopTest extends Fixtures
         $this->assertFalse($loop->isRunning());
 
         $this->assertTrue($loop->inited());
-        
+
         $this->assertEquals(1, $loop->startCounter());
         $this->assertEquals(1, $loop->endCounter());
     }

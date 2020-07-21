@@ -7,9 +7,9 @@
  * @license   https://opensource.org/licenses/MIT MIT
  */
 
-namespace danog\Loop\Impl;
+namespace danog\Loop;
 
-use danog\Loop\LoopInterface;
+use danog\Loop\Interfaces\LoopInterface;
 use danog\Loop\Traits\Loop as TraitsLoop;
 
 /**

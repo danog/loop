@@ -7,9 +7,9 @@
  * @license   https://opensource.org/licenses/MIT MIT
  */
 
-namespace danog\Loop\Impl;
+namespace danog\Loop;
 
-use danog\Loop\ResumableLoopInterface;
+use danog\Loop\Interfaces\ResumableLoopInterface;
 use danog\Loop\Traits\ResumableLoop as TraitsResumableLoop;
 
 /**

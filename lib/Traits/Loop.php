@@ -30,7 +30,7 @@ trait Loop
     private $started = false;
     /**
      * Start the loop.
-     * 
+     *
      * Returns false if the loop is already running.
      *
      * @return bool

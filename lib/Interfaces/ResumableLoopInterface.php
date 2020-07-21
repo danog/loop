@@ -8,7 +8,7 @@
  * @license   https://opensource.org/licenses/MIT MIT
  */
 
-namespace danog\Loop;
+namespace danog\Loop\Interfaces;
 
 use Amp\Promise;
 

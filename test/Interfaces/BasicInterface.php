@@ -10,7 +10,7 @@
 
 namespace danog\Loop\Test\Interfaces;
 
-use danog\Loop\LoopInterface;
+use danog\Loop\Interfaces\LoopInterface;
 
 /**
  * Basic loop test interface.

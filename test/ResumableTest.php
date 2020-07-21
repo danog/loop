@@ -9,12 +9,11 @@
 
 namespace danog\Loop\Test;
 
-use Amp\Promise;
-use danog\Loop\Impl\Loop;
-use danog\Loop\Impl\ResumableLoop;
-use danog\Loop\Impl\ResumableSignalLoop;
+use danog\Loop\Interfaces\ResumableLoopInterface;
+use danog\Loop\ResumableLoop;
+use danog\Loop\ResumableSignalLoop;
 use danog\Loop\Test\Interfaces\ResumableInterface;
-use danog\Loop\Test\Traits\BasicResumable;
+use danog\Loop\Test\Traits\Resumable;
 
 use function Amp\delay;
 
@@ -113,11 +112,11 @@ class ResumableTest extends Fixtures
     public function provideResumable(): array
     {
         return [
-            [new class() extends ResumableLoop implements ResumableInterface {
-                use BasicResumable;
+            [new class() extends ResumableLoop implements ResumableInterface, ResumableLoopInterface {
+                use Resumable;
             }],
-            [new class() extends ResumableSignalLoop implements ResumableInterface {
-                use BasicResumable;
+            [new class() extends ResumableSignalLoop implements ResumableInterface, ResumableLoopInterface {
+                use Resumable;
             }],
         ];
     }

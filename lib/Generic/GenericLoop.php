@@ -11,7 +11,7 @@
 namespace danog\Loop\Generic;
 
 use Amp\Promise;
-use danog\Loop\Impl\ResumableSignalLoop;
+use danog\Loop\ResumableSignalLoop;
 
 /**
  * Generic loop, runs single callable.
