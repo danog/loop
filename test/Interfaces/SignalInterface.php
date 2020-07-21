@@ -10,7 +10,6 @@
 
 namespace danog\Loop\Test\Interfaces;
 
-use danog\Loop\Interfaces\ResumableLoopInterface;
 use danog\Loop\Interfaces\SignalLoopInterface;
 
 /**
@@ -21,13 +20,13 @@ use danog\Loop\Interfaces\SignalLoopInterface;
 interface SignalInterface extends ResumableInterface, SignalLoopInterface
 {
     /**
-     * Get signaled payload
+     * Get signaled payload.
      *
      * @return mixed
      */
     public function getPayload();
     /**
-     * Get signaled exception
+     * Get signaled exception.
      *
      * @return ?\Throwable
      */

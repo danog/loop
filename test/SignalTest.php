@@ -43,7 +43,7 @@ class SignalTest extends Fixtures
         $loop->signal(false);
         $this->assertFalse($loop->getPayload());
         $this->assertAfterStart($loop);
-        
+
         $loop->signal(null);
         $this->assertNull($loop->getPayload());
         $this->assertAfterStart($loop);
@@ -52,7 +52,8 @@ class SignalTest extends Fixtures
         $this->assertEquals("test", $loop->getPayload());
         $this->assertAfterStart($loop);
 
-        $loop->signal($obj = new class {});
+        $loop->signal($obj = new class {
+        });
         $this->assertEquals($obj, $loop->getPayload());
         $this->assertAfterStart($loop);
 
@@ -60,7 +61,7 @@ class SignalTest extends Fixtures
         $loop->signal(true); // Move along loop to apply new interval
         yield delay(110);
         $this->assertNull($loop->getPayload()); // Result of sleep
-        
+
         $loop->signal($e = new \RuntimeException('Test'));
         $this->assertEquals($e, $loop->getException());
         $this->assertFinal($loop);

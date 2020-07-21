@@ -10,8 +10,6 @@
 
 namespace danog\Loop\Test\Interfaces;
 
-use danog\Loop\Interfaces\ResumableLoopInterface;
-
 /**
  * Resumable loop test interface.
  *
