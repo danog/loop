@@ -9,6 +9,7 @@
 
 namespace danog\Loop\Generic;
 
+use Amp\Promise;
 use danog\Loop\ResumableSignalLoop;
 
 /**
@@ -68,7 +69,13 @@ class PeriodicLoop extends ResumableSignalLoop
             if ($result) {
                 return;
             }
-            yield $callback();
+            /** @psalm-suppress MixedAssignment */
+            $result = $callback();
+            if ($result instanceof \Generator) {
+                yield from $result;
+            } elseif ($result instanceof Promise) {
+                yield $result;
+            }
         }
     }
     /**
