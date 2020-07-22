@@ -24,5 +24,5 @@ interface ResumableInterface extends BasicInterface
      *
      * @return void
      */
-    public function setInterval($interval): void;
+    public function setInterval(?int $interval): void;
 }

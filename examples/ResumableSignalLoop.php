@@ -3,18 +3,12 @@
 require 'vendor/autoload.php';
 
 use Amp\Loop;
-use danog\Loop\SignalLoop;
+use danog\Loop\ResumableSignalLoop;
 
 use function Amp\delay;
 
-class SigLoop extends SignalLoop
+class ResSigLoop extends ResumableSignalLoop
 {
-    /**
-     * Callable.
-     *
-     * @var callable
-     */
-    private $callable;
     /**
      * Loop name.
      *
@@ -24,12 +18,10 @@ class SigLoop extends SignalLoop
     /**
      * Constructor.
      *
-     * @param callable $callable Callable
      * @param string   $name     Loop name
      */
-    public function __construct(callable $callable, string $name)
+    public function __construct(string $name)
     {
-        $this->callable = $callable;
         $this->name = $name;
     }
     /**
@@ -39,11 +31,14 @@ class SigLoop extends SignalLoop
      */
     public function loop(): \Generator
     {
-        $callable = $this->callable;
-
         $number = 0;
-        while ('stop' !== $number = yield $this->waitSignal($callable($number))) {
+        while (true) {
+            if (yield $this->waitSignal($this->pause(1))) {
+                echo "Got exit signal in $this!".PHP_EOL;
+                return;
+            }
             echo "$this: $number".PHP_EOL;
+            $number++;
         }
     }
     /**
@@ -58,20 +53,23 @@ class SigLoop extends SignalLoop
 }
 
 Loop::run(function () {
-    $function = function (int $number): \Generator {
-        yield delay(1000);
-        return $number + 1;
-    };
-    /** @var SigLoop[] */
+    /** @var ResSigLoop[] */
     $loops = [];
     for ($x = 0; $x < 10; $x++) {
-        $loop = new SigLoop($function, "Loop number $x");
+        $loop = new ResSigLoop("Loop number $x");
         $loop->start();
         yield delay(100);
         $loops []= $loop;
     }
     yield delay(5000);
+    echo "Resuming prematurely all loops!".PHP_EOL;
     foreach ($loops as $loop) {
-        $loop->signal('stop');
+        $loop->resume();
+    }
+    echo "OK done, waiting 5 more seconds!".PHP_EOL;
+    yield delay(5000);
+    echo "Closing all loops!".PHP_EOL;
+    foreach ($loops as $loop) {
+        $loop->signal(true);
     }
 });

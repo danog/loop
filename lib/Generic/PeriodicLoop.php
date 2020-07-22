@@ -39,17 +39,17 @@ class PeriodicLoop extends ResumableSignalLoop
     /**
      * Loop interval.
      *
-     * @var float|int
+     * @var ?int
      */
     private $interval;
     /**
      * Constructor.
      *
-     * @param callable  $callback Callback to call
-     * @param string    $name     Loop name
-     * @param int|float $interval Loop interval
+     * @param callable $callback Callback to call
+     * @param string   $name     Loop name
+     * @param ?int     $interval Loop interval
      */
-    public function __construct(callable $callback, string $name, $interval)
+    public function __construct(callable $callback, string $name, ?int $interval)
     {
         $this->callback = $callback;
         $this->name = $name;

@@ -47,11 +47,11 @@ trait ResumableLoop
     /**
      * Pause the loop.
      *
-     * @param int|float|null $time For how long to pause the loop, if null will pause forever (until resume is called from outside of the loop)
+     * @param ?int $time For how long to pause the loop, if null will pause forever (until resume is called from outside of the loop)
      *
      * @return Promise Resolved when the loop is resumed
      */
-    public function pause($time = null): Promise
+    public function pause(?int $time = null): Promise
     {
         if (!\is_null($time)) {
             if ($time <= 0) {
@@ -61,7 +61,7 @@ trait ResumableLoop
                 AmpLoop::cancel($this->resumeTimer);
                 $this->resumeTimer = null;
             }
-            $this->resumeTimer = AmpLoop::delay((int) ($time * 1000), \Closure::fromCallable([$this, 'resumeInternal']));
+            $this->resumeTimer = AmpLoop::delay($time, \Closure::fromCallable([$this, 'resumeInternal']));
         }
 
         $pause = $this->pause;

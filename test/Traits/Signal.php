@@ -58,7 +58,7 @@ trait Signal
         $this->inited = true;
         try {
             while (true) {
-                $this->payload = yield $this->waitSignal($this instanceof ResumableLoopInterface ? $this->pause($this->interval) : delay((int) ($this->interval * 1000)));
+                $this->payload = yield $this->waitSignal($this instanceof ResumableLoopInterface ? $this->pause($this->interval) : delay($this->interval));
             }
         } catch (\Throwable $e) {
             $this->exception = $e;

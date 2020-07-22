@@ -28,7 +28,7 @@ use danog\Loop\ResumableSignalLoop;
  *
  * The loop can be stopped from the outside by signaling `true`.
  *
- * @template T as int|float|null
+ * @template T as int|null
  * @template TGenerator as \Generator<mixed,Promise|array<array-key,Promise>,mixed,Promise<T>|T>
  * @template TPromise as Promise<T>
  *

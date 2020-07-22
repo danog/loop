@@ -108,6 +108,8 @@ class ResumableTest extends Fixtures
      * Provide resumable loop implementations.
      *
      * @return array
+     * 
+     * @psalm-return array<int, array<int, ResumableInterface>>
      */
     public function provideResumable(): array
     {
@@ -128,7 +130,7 @@ class ResumableTest extends Fixtures
     public function provideResumableInterval(): \Generator
     {
         foreach ([true, false] as $deferred) {
-            foreach ([10, null] as $interval) {
+            foreach ([10000, null] as $interval) {
                 foreach ($this->provideResumable() as $params) {
                     $params[] = $interval;
                     $params[] = $deferred;

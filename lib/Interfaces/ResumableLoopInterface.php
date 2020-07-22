@@ -22,11 +22,11 @@ interface ResumableLoopInterface extends LoopInterface
     /**
      * Pause the loop.
      *
-     * @param int|float|null $time For how long to pause the loop, if null will pause forever (until resume is called from outside of the loop)
+     * @param ?int $time Milliseconds for how long to pause the loop, if null will pause forever (until resume is called from outside of the loop)
      *
      * @return Promise Resolved when the loop is resumed
      */
-    public function pause($time = null): Promise;
+    public function pause(?int $time = null): Promise;
     /**
      * Resume the loop.
      *

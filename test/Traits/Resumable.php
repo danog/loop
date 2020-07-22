@@ -17,9 +17,9 @@ trait Resumable
     /**
      * Set interval.
      *
-     * @var int|float|null
+     * @var ?int
      */
-    protected $interval = 0.1;
+    protected $interval = 100;
     /**
      * Set sleep interval.
      *
@@ -27,7 +27,7 @@ trait Resumable
      *
      * @return void
      */
-    public function setInterval($interval): void
+    public function setInterval(?int $interval): void
     {
         $this->interval = $interval;
     }
