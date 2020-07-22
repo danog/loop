@@ -47,6 +47,30 @@ class MyLoop extends Loop
             echo "$this: $number".PHP_EOL;
         }
     }
+
+    // Optionally, we can also define logging methods
+    /**
+     * Started loop.
+     *
+     * @return void
+     */
+    protected function startedLoop(): void
+    {
+        parent::startedLoop();
+        echo "Started loop $this!".PHP_EOL;
+    }
+    /**
+     * Exited loop.
+     *
+     * @return void
+     */
+    protected function exitedLoop(): void
+    {
+        parent::exitedLoop();
+        echo "Exited loop $this!".PHP_EOL;
+    }
+    // End of logging methods
+
     /**
      * Get loop name.
      *

@@ -35,7 +35,7 @@ class PeriodicLoop extends ResumableSignalLoop
      *
      * @var string
      */
-    private string $name;
+    private $name;
     /**
      * Loop interval.
      *
