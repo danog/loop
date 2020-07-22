@@ -1,6 +1,6 @@
 # IPC
 
-[![Build Status](https://img.shields.io/travis/danog/loop/master.svg?style=flat-square)](https://travis-ci.org/danog/ipc)
+[![Build Status](https://img.shields.io/travis/danog/loop/master.svg?style=flat-square)](https://travis-ci.com/danog/loop)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
 
 `danog/loop` provides a very useful set of async loop APIs based on [AMPHP](https://amphp.org), for executing operations periodically or on demand, in background loops a-la threads.

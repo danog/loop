@@ -108,7 +108,7 @@ class ResumableTest extends Fixtures
      * Provide resumable loop implementations.
      *
      * @return array
-     * 
+     *
      * @psalm-return array<int, array<int, ResumableInterface>>
      */
     public function provideResumable(): array
