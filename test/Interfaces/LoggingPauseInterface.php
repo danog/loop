@@ -17,18 +17,18 @@ use danog\Loop\Interfaces\LoopInterface;
  *
  * @author Daniil Gentili <daniil@daniil.it>
  */
-interface BasicInterface extends LoopInterface, LoggingInterface
+interface LoggingPauseInterface extends LoopInterface, LoggingInterface
 {
     /**
-     * Check whether the loop inited.
+     * Get number of times loop was paused.
      *
-     * @return boolean
+     * @return integer
      */
-    public function inited(): bool;
+    public function getPauseCount(): int;
     /**
-     * Check whether the loop ran.
+     * Get last pause.
      *
-     * @return boolean
+     * @return integer
      */
-    public function ran(): bool;
+    public function getLastPause(): int;
 }

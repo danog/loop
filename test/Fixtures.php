@@ -26,7 +26,7 @@ abstract class Fixtures extends AsyncTestCase
      *
      * @return boolean
      */
-    public static function isResolved(Promise $promise): bool
+    protected static function isResolved(Promise $promise): bool
     {
         $resolved = false;
         $promise->onResolve(static function ($e, $res) use (&$resolved) {
@@ -44,7 +44,7 @@ abstract class Fixtures extends AsyncTestCase
      *
      * @return void
      */
-    public function assertPreStart(BasicInterface $loop)
+    protected function assertPreStart(BasicInterface $loop)
     {
         $this->assertEquals(self::LOOP_NAME, "$loop");
 
@@ -64,7 +64,7 @@ abstract class Fixtures extends AsyncTestCase
      *
      * @return void
      */
-    public function assertAfterStart(BasicInterface $loop, bool $running = true)
+    protected function assertAfterStart(BasicInterface $loop, bool $running = true)
     {
         $this->assertTrue($loop->inited());
 
@@ -85,7 +85,7 @@ abstract class Fixtures extends AsyncTestCase
      *
      * @return void
      */
-    public function assertFinal(BasicInterface $loop)
+    protected function assertFinal(BasicInterface $loop)
     {
         $this->assertTrue($loop->ran());
         $this->assertFalse($loop->isRunning());

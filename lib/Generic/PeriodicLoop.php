@@ -20,6 +20,12 @@ use danog\Loop\ResumableSignalLoop;
  * The loop can be stopped from the outside or
  * from the inside by signaling or returning `true`.
  *
+ * @template T as bool
+ * @template TGenerator as \Generator<mixed,Promise|array<array-key,Promise>,mixed,Promise<T>|T>
+ * @template TPromise as Promise<T>
+ *
+ * @template TCallable as T|TPromise|TGenerator
+ *
  * @author Daniil Gentili <daniil@daniil.it>
  */
 class PeriodicLoop extends ResumableSignalLoop
@@ -28,6 +34,8 @@ class PeriodicLoop extends ResumableSignalLoop
      * Callback.
      *
      * @var callable
+     *
+     * @psalm-var callable():TCallable
      */
     private $callback;
     /**
@@ -48,6 +56,8 @@ class PeriodicLoop extends ResumableSignalLoop
      * @param callable $callback Callback to call
      * @param string   $name     Loop name
      * @param ?int     $interval Loop interval
+     *
+     * @psalm-param callable():TCallable $callback Callable to run
      */
     public function __construct(callable $callback, string $name, ?int $interval)
     {
@@ -65,16 +75,21 @@ class PeriodicLoop extends ResumableSignalLoop
         $callback = $this->callback;
         while (true) {
             /** @psalm-suppress MixedAssignment */
-            $result = yield $this->waitSignal($this->pause($this->interval));
-            if ($result) {
+            $result = $callback();
+            if ($result instanceof \Generator) {
+                /** @psalm-var TGenerator */
+                $result = yield from $result;
+            } elseif ($result instanceof Promise) {
+                /** @psalm-var TPromise */
+                $result = yield $result;
+            }
+            if ($result === true) {
                 return;
             }
             /** @psalm-suppress MixedAssignment */
-            $result = $callback();
-            if ($result instanceof \Generator) {
-                yield from $result;
-            } elseif ($result instanceof Promise) {
-                yield $result;
+            $result = yield $this->waitSignal($this->pause($this->interval));
+            if ($result === true) {
+                return;
             }
         }
     }

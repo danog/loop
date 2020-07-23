@@ -49,6 +49,17 @@ trait Signal
         return $this->exception;
     }
     /**
+     * Test waiting signal on interval.
+     *
+     * @param integer $interval Interval
+     *
+     * @return \Generator
+     */
+    private function testGenerator(int $interval): \Generator
+    {
+        yield delay($interval);
+    }
+    /**
      * Loop implementation.
      *
      * @return Generator
@@ -58,7 +69,7 @@ trait Signal
         $this->inited = true;
         try {
             while (true) {
-                $this->payload = yield $this->waitSignal($this instanceof ResumableLoopInterface ? $this->pause($this->interval) : delay($this->interval));
+                $this->payload = yield $this->waitSignal($this instanceof ResumableLoopInterface ? $this->pause($this->interval) : $this->testGenerator($this->interval));
             }
         } catch (\Throwable $e) {
             $this->exception = $e;

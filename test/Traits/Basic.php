@@ -16,18 +16,7 @@ use function Amp\delay;
 
 trait Basic
 {
-    /**
-     * Check whether the loop started.
-     *
-     * @var int
-     */
-    private $startCounter = 0;
-    /**
-     * Check whether the loop ended.
-     *
-     * @var int
-     */
-    private $endCounter = 0;
+    use Logging;
     /**
      * Check whether the loop inited.
      *
@@ -77,45 +66,5 @@ trait Basic
     public function __toString(): string
     {
         return LoopTest::LOOP_NAME;
-    }
-
-    /**
-     * Signal that loop started.
-     *
-     * @return void
-     */
-    protected function startedLoop(): void
-    {
-        $this->startCounter++;
-        parent::startedLoop();
-    }
-    /**
-     * Signal that loop ended.
-     *
-     * @return void
-     */
-    protected function exitedLoop(): void
-    {
-        $this->endCounter++;
-        parent::exitedLoop();
-    }
-
-    /**
-     * Get start counter.
-     *
-     * @return integer
-     */
-    public function startCounter(): int
-    {
-        return $this->startCounter;
-    }
-    /**
-     * Get end counter.
-     *
-     * @return integer
-     */
-    public function endCounter(): int
-    {
-        return $this->endCounter;
     }
 }

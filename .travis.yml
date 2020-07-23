@@ -22,9 +22,6 @@ before_install:
 
 install:
   - composer update -n --prefer-dist
-  - mkdir -p coverage/cov coverage/bin
-  - wget https://phar.phpunit.de/phpcov.phar -O coverage/bin/phpcov
-  - chmod +x coverage/bin/phpcov
 
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml
@@ -32,10 +29,9 @@ script:
   - vendor/bin/psalm
 
 after_script:
-  - curl -OL https://github.com/php-coveralls/php-coveralls/releases/download/v1.0.0/coveralls.phar
-  - chmod +x coveralls.phar
-  - phpdbg -qrr coverage/bin/phpcov merge --clover build/logs/clover.xml coverage/cov
-  - ./coveralls.phar
+  - curl -OL https://github.com/php-coveralls/php-coveralls/releases/download/v2.2.0/php-coveralls.phar
+  - chmod +x php-coveralls.phar
+  - ./php-coveralls.phar -v
 
 cache:
   directories:

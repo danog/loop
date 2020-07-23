@@ -17,7 +17,7 @@ use danog\Loop\Interfaces\SignalLoopInterface;
  *
  * @author Daniil Gentili <daniil@daniil.it>
  */
-interface SignalInterface extends ResumableInterface, SignalLoopInterface
+interface SignalInterface extends BasicInterface, IntervalInterface, SignalLoopInterface
 {
     /**
      * Get signaled payload.
