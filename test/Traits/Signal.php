@@ -16,7 +16,6 @@ use function Amp\delay;
 
 trait Signal
 {
-    use Basic;
     use Resumable;
     /**
      * Signaled payload.
