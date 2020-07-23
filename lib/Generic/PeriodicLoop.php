@@ -74,7 +74,6 @@ class PeriodicLoop extends ResumableSignalLoop
     {
         $callback = $this->callback;
         while (true) {
-            /** @psalm-suppress MixedAssignment */
             $result = $callback();
             if ($result instanceof \Generator) {
                 /** @psalm-var TGenerator */
@@ -86,7 +85,7 @@ class PeriodicLoop extends ResumableSignalLoop
             if ($result === true) {
                 return;
             }
-            /** @psalm-suppress MixedAssignment */
+            /** @var ?bool */
             $result = yield $this->waitSignal($this->pause($this->interval));
             if ($result === true) {
                 return;

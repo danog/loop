@@ -86,19 +86,18 @@ class GenericLoop extends ResumableSignalLoop
     {
         $callable = $this->callable;
         while (true) {
-            /** @psalm-var TCallable */
+            /** @psalm-var ?int|TGenerator|TPromise */
             $timeout = $callable();
             if ($timeout instanceof \Generator) {
-                /** @psalm-var TGenerator */
+                /** @psalm-var ?int */
                 $timeout = yield from $timeout;
             } elseif ($timeout instanceof Promise) {
-                /** @psalm-var TPromise */
+                /** @psalm-var ?int */
                 $timeout = yield $timeout;
             }
             if ($timeout === self::PAUSE) {
                 $this->reportPause(0);
             } elseif ($timeout > 0) {
-                /** @psalm-suppress MixedArgument */
                 $this->reportPause($timeout);
             }
             /** @psalm-suppress MixedArgument */
