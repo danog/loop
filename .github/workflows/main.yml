@@ -47,11 +47,3 @@ jobs:
           vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml
           vendor/bin/php-cs-fixer --diff --dry-run -v fix
           vendor/bin/psalm
-
-      - name: Collect code coverage
-        if: success() && matrix.php-versions == '7.4' && matrix.os == 'ubuntu-latest'
-        env:
-          COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
-        run: |
-          composer global require twinh/php-coveralls
-          php-coveralls --verbose
