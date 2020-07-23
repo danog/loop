@@ -112,7 +112,7 @@ class GenericLoop extends ResumableSignalLoop
      * @param integer $timeout Pause duration, 0 = forever
      *
      * @return void
-     * 
+     *
      * @codeCoverageIgnore
      */
     protected function reportPause(int $timeout): void
