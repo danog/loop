@@ -20,7 +20,7 @@ jobs:
           php-version: ${{ matrix.php-versions }}
           extensions: mbstring, intl, sockets
           coverage: pcov
-          tools: phpunit, composer-require-checker, composer-unused
+          tools: phpunit
 
       - name: Check environment
         run: |
@@ -45,8 +45,6 @@ jobs:
         env:
           PHP_CS_FIXER_IGNORE_ENV: 1
         run: |
-          composer-require-checker
-          composer-unused
           phpunit --coverage-text --coverage-clover build/logs/clover.xml
           vendor/bin/php-cs-fixer --diff --dry-run -v fix
           vendor/bin/psalm
