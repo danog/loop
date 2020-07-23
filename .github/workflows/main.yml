@@ -19,8 +19,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: mbstring, intl, sockets
-          coverage: pcov
-          tools: phpunit
+          coverage: xdebug
 
       - name: Check environment
         run: |
@@ -35,8 +34,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ steps.composercache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
+          key: ${{ runner.os }}-composer-${{ matrix.php-versions }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-${{ matrix.php-versions }}-
 
       - name: Install dependencies
         run: composer install --prefer-dist
@@ -45,7 +44,7 @@ jobs:
         env:
           PHP_CS_FIXER_IGNORE_ENV: 1
         run: |
-          phpunit --coverage-text --coverage-clover build/logs/clover.xml
+          vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml
           vendor/bin/php-cs-fixer --diff --dry-run -v fix
           vendor/bin/psalm
 
