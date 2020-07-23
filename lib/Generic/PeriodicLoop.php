@@ -83,12 +83,12 @@ class PeriodicLoop extends ResumableSignalLoop
                 $result = yield $result;
             }
             if ($result === true) {
-                return;
+                break;
             }
             /** @var ?bool */
             $result = yield $this->waitSignal($this->pause($this->interval));
             if ($result === true) {
-                return;
+                break;
             }
         }
     }

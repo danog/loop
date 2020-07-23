@@ -102,7 +102,7 @@ class GenericLoop extends ResumableSignalLoop
             }
             /** @psalm-suppress MixedArgument */
             if ($timeout === self::STOP || yield $this->waitSignal($this->pause($timeout))) {
-                return;
+                break;
             }
         }
     }
@@ -112,6 +112,8 @@ class GenericLoop extends ResumableSignalLoop
      * @param integer $timeout Pause duration, 0 = forever
      *
      * @return void
+     * 
+     * @codeCoverageIgnore
      */
     protected function reportPause(int $timeout): void
     {

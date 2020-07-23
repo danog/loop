@@ -18,7 +18,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          extensions: mbstring, intl
+          extensions: mbstring, intl, sockets
           coverage: xdebug
 
       - name: Check environment
