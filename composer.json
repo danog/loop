@@ -24,8 +24,7 @@
         "phpunit/phpunit": "^7 | ^8 | ^9",
         "amphp/phpunit-util": "^1.3",
         "amphp/php-cs-fixer-config": "dev-master",
-        "vimeo/psalm": "dev-master",
-        "cedx/coveralls": "^13.2"
+        "vimeo/psalm": "dev-master"
     },
     "autoload": {
         "psr-4": {
