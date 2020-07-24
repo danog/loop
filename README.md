@@ -15,20 +15,19 @@ composer require danog/loop
 ## API
 
 * Basic
- * [GenericLoop](#GenericLoop)
- * [PeriodicLoop](#PeriodicLoop)
+  * [GenericLoop](#GenericLoop)
+  * [PeriodicLoop](#PeriodicLoop)
 * Advanced
- * [Loop](#Loop)
- * [ResumableLoop](#ResumableLoop)
- * [SignalLoop](#SignalLoop)
- * [ResumableSignalLoop](#ResumableSignalLoop)
+  * [Loop](#Loop)
+  * [ResumableLoop](#ResumableLoop)
+  * [SignalLoop](#SignalLoop)
+  * [ResumableSignalLoop](#ResumableSignalLoop)
 
 All loop APIs are defined by a set of [interfaces](https://github.com/danog/loop/tree/master/lib/Interfaces): however, to use them, you would usually have to extend only one of the [abstract class implementations](https://github.com/danog/loop/tree/master/lib).  
 
 ### Loop
 
-[Interface](https://github.com/danog/loop/blob/master/lib/Interfaces/LoopInterface.php)  
-[Full example](https://github.com/danog/loop/blob/master/examples/2.%20Advanced/Loop.php)
+[Interface](https://github.com/danog/loop/blob/master/lib/Interfaces/LoopInterface.php) - [Example](https://github.com/danog/loop/blob/master/examples/2.%20Advanced/Loop.php)
 
 A basic loop, capable of running in background (asynchronously) the code contained in the `loop` function.  
 
@@ -82,8 +81,7 @@ You can use directly `$this` as loop name when logging, thanks to the custom [__
 
 ### ResumableLoop
 
-[Interface](https://github.com/danog/loop/blob/master/lib/Interfaces/ResumableLoopInterface.php)  
-[Full example](https://github.com/danog/loop/blob/master/examples/2.%20Advanced/ResumableLoop.php)
+[Interface](https://github.com/danog/loop/blob/master/lib/Interfaces/ResumableLoopInterface.php) - [Example](https://github.com/danog/loop/blob/master/examples/2.%20Advanced/ResumableLoop.php)
 
 A way more useful loop that exposes APIs to pause and resume the execution of the loop, both from outside of the loop, and in a cron-like manner from inside of the loop.  
 
@@ -111,8 +109,7 @@ Returns a promise that is resolved when the loop is paused again.
 
 ### SignalLoop
 
-[Interface](https://github.com/danog/loop/blob/master/lib/Interfaces/SignalLoopInterface.php)  
-[Full example](https://github.com/danog/loop/blob/master/examples/2.%20Advanced/SignalLoop.php)
+[Interface](https://github.com/danog/loop/blob/master/lib/Interfaces/SignalLoopInterface.php) - [Example](https://github.com/danog/loop/blob/master/examples/2.%20Advanced/SignalLoop.php)
 
 Yet another loop interface that exposes APIs to send signals to the loop, useful to force the termination of a loop from the outside, or to send data into it.  
 
@@ -140,8 +137,7 @@ Resolve the provided promise or return|throw passed signal.
 
 ### ResumableSignalLoop
 
-[Interface](https://github.com/danog/loop/blob/master/lib/Interfaces/ResumableSignalLoopInterface.php)  
-[Full example](https://github.com/danog/loop/blob/master/examples/2.%20Advanced/ResumableSignalLoop.php)
+[Interface](https://github.com/danog/loop/blob/master/lib/Interfaces/ResumableSignalLoopInterface.php) - [Example](https://github.com/danog/loop/blob/master/examples/2.%20Advanced/ResumableSignalLoop.php)
 
 This is what you would usually use to build a full async loop.  
 All loop interfaces and loop implementations are combined into one class you can extend.  
@@ -158,8 +154,7 @@ The class is actually composited using traits to feature all methods from [Signa
 
 ### GenericLoop
 
-[Class](https://github.com/danog/loop/blob/master/lib/Generic/GenericLoop.php)  
-[Full example](https://github.com/danog/loop/blob/master/examples/1.%20Basic/GenericLoop.php)
+[Class](https://github.com/danog/loop/blob/master/lib/Generic/GenericLoop.php) - [Example](https://github.com/danog/loop/blob/master/examples/1.%20Basic/GenericLoop.php)
 
 If you want a simpler way to use the `ResumableSignalLoop`, you can use the GenericLoop.  
 The constructor accepts three parameters:
@@ -187,7 +182,7 @@ class GenericLoop extends ResumableSignalLoop
      * @param callable $callable Callable to run
      * @param string   $name     Loop name
      */
-    public function __construct(callable $callable, string $name)
+    public function __construct(callable $callable, string $name);
     /**
      * Report pause, can be overriden for logging.
      *
@@ -196,8 +191,6 @@ class GenericLoop extends ResumableSignalLoop
      * @return void
      */
     protected function reportPause(int $timeout): void;
-    {
-    }
     /**
      * Get loop name, provided to constructor.
      *
@@ -218,8 +211,7 @@ If the callable does not return anything, the loop will behave is if `GenericLoo
 
 ### PeriodicLoop
 
-[Class](https://github.com/danog/loop/blob/master/lib/Generic/PeriodicLoop.php)  
-[Full example](https://github.com/danog/loop/blob/master/examples/1.%20Basic/PeriodicLoop.php)
+[Class](https://github.com/danog/loop/blob/master/lib/Generic/PeriodicLoop.php) - [Example](https://github.com/danog/loop/blob/master/examples/1.%20Basic/PeriodicLoop.php)
 
 If you simply want to execute an action every N seconds, [PeriodicLoop](https://github.com/danog/MadelineProto/blob/master/src/danog/MadelineProto/Loop/Generic/PeriodicLoop.php) is the way to go.  
 ```php
@@ -236,13 +228,13 @@ class PeriodicLoop extends ResumableSignalLoop
      * @param string   $name     Loop name
      * @param ?int     $interval Loop interval
      */
-    public function __construct(callable $callback, string $name, ?int $interval)
+    public function __construct(callable $callback, string $name, ?int $interval);
     /**
      * Get name of the loop, passed to the constructor.
      *
      * @return string
      */
-    public function __toString(): string
+    public function __toString(): string;
 }
 ```
 
