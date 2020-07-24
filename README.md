@@ -238,5 +238,5 @@ class PeriodicLoop extends ResumableSignalLoop
 ```
 
 `PeriodicLoop` runs a callback at a periodic interval.  
-The callback will be bound to the `GenericLoop` instance: this means that you will be able to use `$this` as if the callback were actually the `loop` function (you can get the loop name by , use the pause/waitSignal methods & so on).  
+The callback will be bound to the `PeriodicLoop` instance: this means that you will be able to use `$this` as if the callback were actually the `loop` function (you can get the loop name by casting `$this` to a string, use the pause/waitSignal methods & so on).  
 The loop can be stopped from the outside or from the inside by signaling or returning `true`. 
