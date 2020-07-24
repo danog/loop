@@ -33,7 +33,7 @@ class MyLoop extends ResumableLoop
     {
         $number = 0;
         while (true) {
-            yield $this->pause(1);
+            yield $this->pause(1000);
             echo "$this: $number".PHP_EOL;
             $number++;
         }

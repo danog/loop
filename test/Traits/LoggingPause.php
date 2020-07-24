@@ -54,6 +54,7 @@ trait LoggingPause
      */
     protected function reportPause(int $timeout): void
     {
+        parent::reportPause($timeout);
         $this->pauseCount++;
         $this->lastPause= $timeout;
     }

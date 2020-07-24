@@ -53,6 +53,8 @@ class PeriodicLoop extends ResumableSignalLoop
     /**
      * Constructor.
      *
+     * If possible, the callable will be bound to the current instance of the loop.
+     *
      * @param callable $callback Callback to call
      * @param string   $name     Loop name
      * @param ?int     $interval Loop interval
@@ -61,6 +63,13 @@ class PeriodicLoop extends ResumableSignalLoop
      */
     public function __construct(callable $callback, string $name, ?int $interval)
     {
+        if ($callback instanceof \Closure) {
+            try {
+                $callback = $callback->bindTo($this);
+            } catch (\Throwable $e) {
+                // Might cause an error for wrapped object methods
+            }
+        }
         $this->callback = $callback;
         $this->name = $name;
         $this->interval = $interval;
@@ -93,7 +102,7 @@ class PeriodicLoop extends ResumableSignalLoop
         }
     }
     /**
-     * Get name of the loop.
+     * Get name of the loop, passed to the constructor.
      *
      * @return string
      */

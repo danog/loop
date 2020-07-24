@@ -24,7 +24,7 @@ use Closure;
 trait ResumableLoop
 {
     use Loop {
-        exitedLoop as parentExitedLoop;
+        exitedLoop as private parentExitedLoop;
     }
     /**
      * Resume deferred.

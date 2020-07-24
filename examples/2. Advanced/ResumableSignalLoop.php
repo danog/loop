@@ -33,7 +33,7 @@ class ResSigLoop extends ResumableSignalLoop
     {
         $number = 0;
         while (true) {
-            if (yield $this->waitSignal($this->pause(1))) {
+            if (yield $this->waitSignal($this->pause(1000))) {
                 echo "Got exit signal in $this!".PHP_EOL;
                 return;
             }

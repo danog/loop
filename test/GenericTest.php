@@ -35,11 +35,32 @@ class GenericTest extends AsyncTestCase
     {
         $runCount = 0;
         $pauseTime = GenericLoop::PAUSE;
-        $callable = function () use (&$runCount, &$pauseTime) {
+        $callable = function () use (&$runCount, &$pauseTime, &$zis) {
+            $zis = $this;
             $runCount++;
             return $pauseTime;
         };
-        yield from $this->fixtureAssertions($callable, $runCount, $pauseTime, $stopSig);
+        yield from $this->fixtureAssertions($callable, $runCount, $pauseTime, $stopSig, $zis, true);
+        $obj = new class() {
+            public $pauseTime = GenericLoop::PAUSE;
+            public $runCount = 0;
+            public function run()
+            {
+                $this->runCount++;
+                return $this->pauseTime;
+            }
+        };
+        yield from $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->pauseTime, $stopSig, $zisNew, false);
+        $obj = new class() {
+            public $pauseTime = GenericLoop::PAUSE;
+            public $runCount = 0;
+            public function run()
+            {
+                $this->runCount++;
+                return $this->pauseTime;
+            }
+        };
+        yield from $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->pauseTime, $stopSig, $zisNew, false);
     }
     /**
      * Test generator loop.
@@ -54,12 +75,35 @@ class GenericTest extends AsyncTestCase
     {
         $runCount = 0;
         $pauseTime = GenericLoop::PAUSE;
-        $callable = function () use (&$runCount, &$pauseTime): \Generator {
+        $callable = function () use (&$runCount, &$pauseTime, &$zis): \Generator {
+            $zis = $this;
             yield delay(1);
             $runCount++;
             return $pauseTime;
         };
-        yield from $this->fixtureAssertions($callable, $runCount, $pauseTime, $stopSig);
+        yield from $this->fixtureAssertions($callable, $runCount, $pauseTime, $stopSig, $zis, true);
+        $obj = new class() {
+            public $pauseTime = GenericLoop::PAUSE;
+            public $runCount = 0;
+            public function run(): \Generator
+            {
+                yield delay(1);
+                $this->runCount++;
+                return $this->pauseTime;
+            }
+        };
+        yield from $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->pauseTime, $stopSig, $zisNew, false);
+        $obj = new class() {
+            public $pauseTime = GenericLoop::PAUSE;
+            public $runCount = 0;
+            public function run(): \Generator
+            {
+                yield delay(1);
+                $this->runCount++;
+                return $this->pauseTime;
+            }
+        };
+        yield from $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->pauseTime, $stopSig, $zisNew, false);
     }
     /**
      * Test promise loop.
@@ -74,11 +118,32 @@ class GenericTest extends AsyncTestCase
     {
         $runCount = 0;
         $pauseTime = GenericLoop::PAUSE;
-        $callable = function () use (&$runCount, &$pauseTime): Promise {
+        $callable = function () use (&$runCount, &$pauseTime, &$zis): Promise {
+            $zis = $this;
             $runCount++;
             return new Success($pauseTime);
         };
-        yield from $this->fixtureAssertions($callable, $runCount, $pauseTime, $stopSig);
+        yield from $this->fixtureAssertions($callable, $runCount, $pauseTime, $stopSig, $zis, true);
+        $obj = new class() {
+            public $pauseTime = GenericLoop::PAUSE;
+            public $runCount = 0;
+            public function run(): Promise
+            {
+                $this->runCount++;
+                return new Success($this->pauseTime);
+            }
+        };
+        yield from $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->pauseTime, $stopSig, $zisNew, false);
+        $obj = new class() {
+            public $pauseTime = GenericLoop::PAUSE;
+            public $runCount = 0;
+            public function run(): Promise
+            {
+                $this->runCount++;
+                return new Success($this->pauseTime);
+            }
+        };
+        yield from $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->pauseTime, $stopSig, $zisNew, false);
     }
     /**
      * Fixture assertions for started loop.
@@ -96,14 +161,16 @@ class GenericTest extends AsyncTestCase
     /**
      * Run fixture assertions.
      *
-     * @param \Closure $closure   Closure
+     * @param callable $closure   Closure
      * @param integer  $runCount  Run count
      * @param ?integer $pauseTime Pause time
      * @param bool     $stopSig   Whether to stop with signal
+     * @param bool     $zis       Reference to closure's this
+     * @param bool     $checkZis  Whether to check zis
      *
      * @return \Generator
      */
-    private function fixtureAssertions(\Closure $closure, int &$runCount, ?int &$pauseTime, bool $stopSig = false): \Generator
+    private function fixtureAssertions(callable $closure, int &$runCount, ?int &$pauseTime, bool $stopSig, &$zis, bool $checkZis): \Generator
     {
         $loop = new class($closure, Fixtures::LOOP_NAME) extends GenericLoop implements LoggingPauseInterface {
             use LoggingPause;
@@ -119,6 +186,11 @@ class GenericTest extends AsyncTestCase
 
         $loop->start();
         yield delay(2);
+        if ($checkZis) {
+            $this->assertEquals($loop, $zis);
+        } else {
+            $this->assertNull($zis);
+        }
         $this->fixtureStarted($loop);
 
         $this->assertEquals(1, $runCount);

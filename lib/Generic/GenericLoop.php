@@ -67,6 +67,8 @@ class GenericLoop extends ResumableSignalLoop
     /**
      * Constructor.
      *
+     * If possible, the callable will be bound to the current instance of the loop.
+     *
      * @param callable $callable Callable to run
      * @param string   $name     Loop name
      *
@@ -74,6 +76,13 @@ class GenericLoop extends ResumableSignalLoop
      */
     public function __construct(callable $callable, string $name)
     {
+        if ($callable instanceof \Closure) {
+            try {
+                $callable = $callable->bindTo($this);
+            } catch (\Throwable $e) {
+                // Might cause an error for wrapped object methods
+            }
+        }
         $this->callable = $callable;
         $this->name = $name;
     }
@@ -112,14 +121,12 @@ class GenericLoop extends ResumableSignalLoop
      * @param integer $timeout Pause duration, 0 = forever
      *
      * @return void
-     *
-     * @codeCoverageIgnore
      */
     protected function reportPause(int $timeout): void
     {
     }
     /**
-     * Get loop name.
+     * Get loop name, provided to constructor.
      *
      * @return string
      */
