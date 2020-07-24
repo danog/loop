@@ -3,8 +3,8 @@
 ![Build status](https://github.com/danog/loop/workflows/build/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
 
-`danog/loop` provides a very useful set of async loop APIs based on [AMPHP](https://amphp.org), for executing operations periodically or on demand, in background loops a-la threads.
-It's a more flexible and powerful alternative to [AMPHP](https://amphp.org)'s [repeat](https://amphp.org/amp/event-loop/api#repeat) function, allowing dynamically changeable repeat periods, resumes and signaling.  
+`danog/loop` provides a set of powerful async loop APIs for executing operations periodically or on demand, in background loops a-la threads.  
+A more flexible and powerful alternative to [AMPHP](https://amphp.org)'s [repeat](https://amphp.org/amp/event-loop/api#repeat) function, allowing dynamically changeable repeat periods, resumes and signaling.  
 
 ## Installation
 
