@@ -118,7 +118,7 @@ namespace danog\Loop;
 
 abstract class SignalLoop extends Loop
 {
-    public function signal($what): voi  d;
+    public function signal($what): void;
     public function waitSignal($promise): Promise;
 }
 
@@ -140,7 +140,7 @@ Resolve the provided promise or return|throw passed signal.
 [Interface](https://github.com/danog/loop/blob/master/lib/Interfaces/ResumableSignalLoopInterface.php) - [Example](https://github.com/danog/loop/blob/master/examples/2.%20Advanced/ResumableSignalLoop.php)
 
 This is what you would usually use to build a full async loop.  
-All loop interfaces and loop implementations are combined into one class you can extend.  
+All loop interfaces and loop implementations are combined into a single class you can extend.  
 
 ```php
 namespace danog\Loop;
@@ -157,7 +157,6 @@ The class is actually composited using traits to feature all methods from [Signa
 [Class](https://github.com/danog/loop/blob/master/lib/Generic/GenericLoop.php) - [Example](https://github.com/danog/loop/blob/master/examples/1.%20Basic/GenericLoop.php)
 
 If you want a simpler way to use the `ResumableSignalLoop`, you can use the GenericLoop.  
-The constructor accepts three parameters:
 ```php
 namespace danog\Loop\Generic;
 class GenericLoop extends ResumableSignalLoop
