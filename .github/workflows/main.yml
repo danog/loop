@@ -51,7 +51,7 @@ jobs:
       - name: Upload coverage to Codecov
         env: 
           OS: ${{ matrix.os }}
-          PHP: ${{ matrix.php_versions }}
+          PHP: ${{ matrix.php-versions }}
         uses: codecov/codecov-action@v1
         with:
            file: build/logs/clover.xml
