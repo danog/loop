@@ -1,4 +1,4 @@
-# IPC
+# Loop
 
 ![Build status](https://github.com/danog/loop/workflows/build/badge.svg)
 [![codecov](https://codecov.io/gh/danog/loop/branch/master/graph/badge.svg)](https://codecov.io/gh/danog/loop)
