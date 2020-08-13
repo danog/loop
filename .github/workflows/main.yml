@@ -46,7 +46,7 @@ jobs:
         run: |
           vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml
           vendor/bin/php-cs-fixer --diff --dry-run -v fix
-          vendor/bin/psalm
+          vendor/bin/psalm --shepherd
 
       - name: Upload coverage to Codecov
         env: 
