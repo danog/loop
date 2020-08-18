@@ -17,13 +17,13 @@ composer require danog/loop
 ## API
 
 * Basic
-  * [GenericLoop](#GenericLoop)
-  * [PeriodicLoop](#PeriodicLoop)
+  * [GenericLoop](#genericloop)
+  * [PeriodicLoop](#periodicloop)
 * Advanced
-  * [Loop](#Loop)
-  * [ResumableLoop](#ResumableLoop)
-  * [SignalLoop](#SignalLoop)
-  * [ResumableSignalLoop](#ResumableSignalLoop)
+  * [Loop](#loop)
+  * [ResumableLoop](#resumableloop)
+  * [SignalLoop](#signalloop)
+  * [ResumableSignalLoop](#resumablesignalloop)
 
 All loop APIs are defined by a set of [interfaces](https://github.com/danog/loop/tree/master/lib/Interfaces): however, to use them, you would usually have to extend only one of the [abstract class implementations](https://github.com/danog/loop/tree/master/lib).  
 
@@ -57,7 +57,7 @@ The `loop` [async coroutine](https://amphp.org/amp/coroutines/) will be run only
 #### __toString()
 
 This method should return the loop's name.  
-It's useful for implementing the [log methods](#startedLoop).  
+It's useful for implementing the [log methods](#startedloop).  
 
 #### start()
 
@@ -72,13 +72,13 @@ You can use the `isRunning` method to check if the loop is already running.
 
 Optionally, you can override this method to detect and log when the loop is started.  
 Make sure to always call the parent `startedLoop()` method to avoid issues.  
-You can use directly `$this` as loop name when logging, thanks to the custom [__toString](#__toString) method.  
+You can use directly `$this` as loop name when logging, thanks to the custom [__toString](#__tostring) method.  
 
 #### exitedLoop()
 
 Optionally, you can override this method to detect and log when the loop is ended.  
 Make sure to always call the parent `exitedLoop()` method to avoid issues.  
-You can use directly `$this` as loop name when logging, thanks to the custom [__toString](#__toString) method.  
+You can use directly `$this` as loop name when logging, thanks to the custom [__toString](#__tostring) method.  
 
 
 ### ResumableLoop
@@ -152,7 +152,7 @@ abstract class ResumableSignalLoop extends SignalLoop, ResumableSignalLoop
 }
 ```
 
-The class is actually composited using traits to feature all methods from [SignalLoop](#SignalLoop) and [ResumableSignalLoop](#ResumableSignalLoop).  
+The class is actually composited using traits to feature all methods from [SignalLoop](#signalloop) and [ResumableSignalLoop](#resumablesignalloop).  
 
 ### GenericLoop
 
