@@ -63,6 +63,7 @@ trait SignalLoop
     public function waitSignal($promise): Promise
     {
         if ($promise instanceof \Generator) {
+            /** @psalm-suppress MixedArgumentTypeCoercion */
             $promise = new Coroutine($promise);
         }
         $this->signalDeferred = new Deferred();

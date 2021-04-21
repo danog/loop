@@ -67,6 +67,7 @@ trait ResumableLoop
                 AmpLoop::cancel($this->resumeTimer);
                 $this->resumeTimer = null;
             }
+            /** @psalm-suppress MixedArgumentTypeCoercion */
             $this->resumeTimer = AmpLoop::delay($time, \Closure::fromCallable([$this, 'resumeInternal']));
         }
 
@@ -103,6 +104,7 @@ trait ResumableLoop
      */
     public function resumeDefer(): Promise
     {
+        /** @psalm-suppress MixedArgumentTypeCoercion */
         AmpLoop::defer(Closure::fromCallable([$this, 'resumeInternal']));
         if (!$this->pause) {
             $this->pause = new Deferred;
@@ -111,7 +113,7 @@ trait ResumableLoop
     }
     /**
      * Defer resuming the loop to next tick.
-     * 
+     *
      * Multiple consecutive calls will yield only one resume.
      *
      * @return Promise Resolved when the loop is paused again

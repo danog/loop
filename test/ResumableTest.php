@@ -105,7 +105,7 @@ class ResumableTest extends Fixtures
     }
 
     /**
-     * Test pausing loop and then resuming it with deferOnce
+     * Test pausing loop and then resuming it with deferOnce.
      *
      * @param ResumableInterface $loop     Loop
      *
