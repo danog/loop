@@ -105,6 +105,42 @@ class ResumableTest extends Fixtures
     }
 
     /**
+     * Test pausing loop and then resuming it with deferOnce
+     *
+     * @param ResumableInterface $loop     Loop
+     *
+     * @return \Generator
+     *
+     * @dataProvider provideResumable
+     */
+    public function testResumableDeferOnce(ResumableInterface $loop): \Generator
+    {
+        $paused1 = $loop->resumeDeferOnce(); // Will resolve on next pause
+        $paused2 = $loop->resumeDeferOnce(); // Will resolve on next pause
+        yield delay(1); // Avoid resuming after starting
+        $loop->setInterval(10000);
+
+        $this->assertPreStart($loop);
+        $this->assertTrue($loop->start());
+        $this->assertAfterStart($loop);
+
+
+        yield delay(1);
+        $this->assertTrue(self::isResolved($paused1)); // Did pause
+        $this->assertTrue(self::isResolved($paused2)); // Did pause
+
+        $paused1 = $loop->resumeDeferOnce();
+        $paused2 = $loop->resumeDeferOnce();
+        $this->assertAfterStart($loop);
+        yield delay(1);
+        $this->assertFinal($loop);
+
+        yield delay(1);
+        $this->assertFalse(self::isResolved($paused1)); // Did not pause again
+        $this->assertFalse(self::isResolved($paused2)); // Did not pause again
+    }
+
+    /**
      * Provide resumable loop implementations.
      *
      * @return array

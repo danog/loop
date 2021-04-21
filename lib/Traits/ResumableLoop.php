@@ -45,6 +45,12 @@ trait ResumableLoop
      */
     private $resumeTimer;
     /**
+     * Resume deferred ID.
+     *
+     * @var ?string
+     */
+    private $resumeDeferred;
+    /**
      * Pause the loop.
      *
      * @param ?int $time For how long to pause the loop, if null will pause forever (until resume is called from outside of the loop)
@@ -98,6 +104,26 @@ trait ResumableLoop
     public function resumeDefer(): Promise
     {
         AmpLoop::defer(Closure::fromCallable([$this, 'resumeInternal']));
+        if (!$this->pause) {
+            $this->pause = new Deferred;
+        }
+        return $this->pause->promise();
+    }
+    /**
+     * Defer resuming the loop to next tick.
+     * 
+     * Multiple consecutive calls will yield only one resume.
+     *
+     * @return Promise Resolved when the loop is paused again
+     */
+    public function resumeDeferOnce(): Promise
+    {
+        if (!$this->resumeDeferred) {
+            $this->resumeDeferred = AmpLoop::defer(function () {
+                $this->resumeDeferred = null;
+                $this->resumeInternal();
+            });
+        }
         if (!$this->pause) {
             $this->pause = new Deferred;
         }

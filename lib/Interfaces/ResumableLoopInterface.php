@@ -39,4 +39,12 @@ interface ResumableLoopInterface extends LoopInterface
      * @return Promise Resolved when the loop is paused again
      */
     public function resumeDefer(): Promise;
+    /**
+     * Defer resuming the loop to next tick.
+     * 
+     * Multiple consecutive calls will yield only one resume.
+     *
+     * @return Promise Resolved when the loop is paused again
+     */
+    public function resumeDeferOnce(): Promise;
 }
