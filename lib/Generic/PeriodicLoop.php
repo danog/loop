@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Periodic loop.
  *
@@ -11,6 +11,8 @@ namespace danog\Loop\Generic;
 
 use Amp\Promise;
 use danog\Loop\ResumableSignalLoop;
+
+use function Amp\async;
 
 /**
  * Periodic loop.
@@ -77,25 +79,24 @@ class PeriodicLoop extends ResumableSignalLoop
     /**
      * Loop implementation.
      *
-     * @return \Generator
      */
-    public function loop(): \Generator
+    public function loop(): void
     {
         $callback = $this->callback;
         while (true) {
             $result = $callback();
             if ($result instanceof \Generator) {
                 /** @psalm-var TGenerator */
-                $result = yield from $result;
+                $result = $result;
             } elseif ($result instanceof Promise) {
                 /** @psalm-var TPromise */
-                $result = yield $result;
+                $result = $result;
             }
             if ($result === true) {
                 break;
             }
             /** @var ?bool */
-            $result = yield $this->waitSignal($this->pause($this->interval));
+            $result = $this->waitSignal(async(fn () => $this->pause($this->interval)));
             if ($result === true) {
                 break;
             }
@@ -104,7 +105,6 @@ class PeriodicLoop extends ResumableSignalLoop
     /**
      * Get name of the loop, passed to the constructor.
      *
-     * @return string
      */
     public function __toString(): string
     {

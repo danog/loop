@@ -11,10 +11,11 @@
 namespace danog\Loop\Traits;
 
 use Amp\Deferred;
-use Amp\Loop as AmpLoop;
-use Amp\Promise;
+use Amp\DeferredFuture;
+use Amp\Future;
 use Amp\Success;
 use Closure;
+use Revolt\EventLoop;
 
 /**
  * Resumable loop helper trait.
@@ -29,107 +30,101 @@ trait ResumableLoop
     /**
      * Resume deferred.
      *
-     * @var ?Deferred
+     * @var ?DeferredFuture<null>
      */
-    private $resume;
+    private ?DeferredFuture $resume = null;
     /**
      * Pause deferred.
      *
-     * @var ?Deferred
+     * @var ?DeferredFuture<null>
      */
-    private $pause;
+    private ?DeferredFuture $pause = null;
     /**
      * Resume timer ID.
-     *
-     * @var ?string
      */
-    private $resumeTimer;
+    private ?string $resumeTimer = null;
     /**
      * Resume deferred ID.
-     *
-     * @var ?string
      */
-    private $resumeDeferred;
+    private ?string $resumeDeferred = null;
     /**
      * Pause the loop.
      *
      * @param ?int $time For how long to pause the loop, if null will pause forever (until resume is called from outside of the loop)
-     *
-     * @return Promise Resolved when the loop is resumed
      */
-    public function pause(?int $time = null): Promise
+    public function pause(?int $time = null): void
     {
         if (!\is_null($time)) {
             if ($time <= 0) {
-                return new Success(0);
+                return;
             }
             if ($this->resumeTimer) {
-                AmpLoop::cancel($this->resumeTimer);
+                EventLoop::cancel($this->resumeTimer);
                 $this->resumeTimer = null;
             }
             /** @psalm-suppress MixedArgumentTypeCoercion */
-            $this->resumeTimer = AmpLoop::delay($time, \Closure::fromCallable([$this, 'resumeInternal']));
+            $this->resumeTimer = EventLoop::delay($time, $this->resumeInternal(...));
         }
 
         $pause = $this->pause;
-        $this->pause = new Deferred();
+        $this->pause = new DeferredFuture();
         if ($pause) {
+            $pause = $pause->getFuture();
             /**
              * @psalm-suppress InvalidArgument
              */
-            AmpLoop::defer([$pause, 'resolve']);
+            EventLoop::defer($pause->complete(...));
         }
 
-        $this->resume = new Deferred();
-        return $this->resume->promise();
+        $this->resume = new DeferredFuture();
+        return $this->resume->getFuture();
     }
     /**
      * Resume the loop.
      *
-     * @return Promise Resolved when the loop is paused again
+     * @return Future<null> Resolved when the loop is paused again
      */
-    public function resume(): Promise
+    public function resume(): Future
     {
         if (!$this->pause) {
-            $this->pause = new Deferred;
+            $this->pause = new DeferredFuture;
         }
-        $promise = $this->pause->promise();
+        $promise = $this->pause->getFuture();
         $this->resumeInternal();
         return $promise;
     }
     /**
      * Defer resuming the loop to next tick.
      *
-     * @return Promise Resolved when the loop is paused again
+     * @return Future<null> Resolved when the loop is paused again
      */
-    public function resumeDefer(): Promise
+    public function resumeDefer(): Future
     {
-        /** @psalm-suppress MixedArgumentTypeCoercion */
-        AmpLoop::defer(Closure::fromCallable([$this, 'resumeInternal']));
+        EventLoop::defer($this->resumeInternal(...));
         if (!$this->pause) {
-            $this->pause = new Deferred;
+            $this->pause = new DeferredFuture;
         }
-        return $this->pause->promise();
+        return $this->pause->getFuture();
     }
     /**
      * Defer resuming the loop to next tick.
      *
      * Multiple consecutive calls will yield only one resume.
      *
-     * @return Promise Resolved when the loop is paused again
+     * @return Future<null> Resolved when the loop is paused again
      */
-    public function resumeDeferOnce(): Promise
+    public function resumeDeferOnce(): Future
     {
         if (!$this->resumeDeferred) {
-            $this->resumeDeferred = AmpLoop::defer(function () {
+            $this->resumeDeferred = EventLoop::defer(function () {
                 $this->resumeDeferred = null;
                 $this->resumeInternal();
             });
         }
         if (!$this->pause) {
-            $this->pause = new Deferred;
+            $this->pause = new DeferredFuture;
         }
-        return $this->pause->promise();
+        return $this->pause->getFuture();
     }
     /**
      * Internal resume function.
@@ -140,7 +135,7 @@ trait ResumableLoop
     {
         if ($this->resumeTimer) {
             $storedWatcherId = $this->resumeTimer;
-            AmpLoop::cancel($storedWatcherId);
+            EventLoop::cancel($storedWatcherId);
             $this->resumeTimer = null;
         }
         if ($this->resume) {
@@ -159,7 +154,7 @@ trait ResumableLoop
     {
         $this->parentExitedLoop();
         if ($this->resumeTimer) {
-            AmpLoop::cancel($this->resumeTimer);
+            EventLoop::cancel($this->resumeTimer);
             $this->resumeTimer = null;
         }
     }

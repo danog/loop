@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Loop helper trait.
@@ -10,9 +10,11 @@
 
 namespace danog\Loop\Traits;
 
-use Amp\Coroutine;
 use Amp\Deferred;
-use Amp\Promise;
+use Amp\DeferredFuture;
+use Amp\Future;
+
+use function Amp\Future\awaitFirst;
 
 /**
  * Signal loop helper trait.
@@ -24,59 +26,39 @@ trait SignalLoop
     /**
      * Signal deferred.
      *
-     * @var ?Deferred
+     * @var ?DeferredFuture
      */
-    private $signalDeferred;
+    private ?DeferredFuture $signalDeferred;
     /**
      * Send signal to loop.
      *
      * @param mixed|\Throwable $what Data to signal
-     *
-     * @return void
      */
-    public function signal($what): void
+    public function signal(mixed $what): void
     {
         if ($this->signalDeferred) {
             $deferred = $this->signalDeferred;
             $this->signalDeferred = null;
             if ($what instanceof \Throwable) {
-                $deferred->fail($what);
+                $deferred->error($what);
             } else {
-                $deferred->resolve($what);
+                $deferred->complete($what);
             }
         }
     }
     /**
-     * Resolve the promise or return|throw the signal.
-     *
-     * @param Promise|\Generator $promise The original promise or generator
-     *
-     * @return Promise
-     *
      * @template T
      *
-     * @psalm-param Promise<T>|\Generator<mixed,Promise|array<array-key,
-     *     Promise>,mixed,Promise<T>|T> $promise The original promise or generator
+     * @param Future<T> $future
      *
-     * @psalm-return Promise<T|mixed>
+     * @return T|mixed
      */
-    public function waitSignal($promise): Promise
+    public function waitSignal(?Future $future = null): mixed
     {
-        if ($promise instanceof \Generator) {
-            /** @psalm-suppress MixedArgumentTypeCoercion */
-            $promise = new Coroutine($promise);
+        $this->signalDeferred = new DeferredFuture();
+        if ($future) {
+            return awaitFirst([$future, $this->signalDeferred->getFuture()]);
         }
-        $this->signalDeferred = new Deferred();
-        $combinedPromise = $this->signalDeferred->promise();
-        $promise->onResolve(
-            function () use ($promise) {
-                if ($this->signalDeferred !== null) {
-                    $deferred = $this->signalDeferred;
-                    $this->signalDeferred = null;
-                    $deferred->resolve($promise);
-                }
-            }
-        );
-        return $combinedPromise;
+        return $this->signalDeferred->getFuture()->await();
     }
 }

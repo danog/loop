@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Generic loop.
@@ -12,6 +12,8 @@ namespace danog\Loop\Generic;
 
 use Amp\Promise;
 use danog\Loop\ResumableSignalLoop;
+
+use function Amp\async;
 
 /**
  * Generic loop, runs single callable.
@@ -88,10 +90,8 @@ class GenericLoop extends ResumableSignalLoop
     }
     /**
      * Loop implementation.
-     *
-     * @return \Generator
      */
-    public function loop(): \Generator
+    public function loop(): void
     {
         $callable = $this->callable;
         while (true) {
@@ -99,10 +99,10 @@ class GenericLoop extends ResumableSignalLoop
             $timeout = $callable();
             if ($timeout instanceof \Generator) {
                 /** @psalm-var ?int */
-                $timeout = yield from $timeout;
+                $timeout = $timeout;
             } elseif ($timeout instanceof Promise) {
                 /** @psalm-var ?int */
-                $timeout = yield $timeout;
+                $timeout = $timeout;
             }
             if ($timeout === self::PAUSE) {
                 $this->reportPause(0);
@@ -110,7 +110,7 @@ class GenericLoop extends ResumableSignalLoop
                 $this->reportPause($timeout);
             }
             /** @psalm-suppress MixedArgument */
-            if ($timeout === self::STOP || yield $this->waitSignal($this->pause($timeout))) {
+            if ($timeout === self::STOP || $this->waitSignal(async(fn () => $this->pause($timeout)))) {
                 break;
             }
         }
@@ -120,7 +120,6 @@ class GenericLoop extends ResumableSignalLoop
      *
      * @param integer $timeout Pause duration, 0 = forever
      *
-     * @return void
      */
     protected function reportPause(int $timeout): void
     {
@@ -128,7 +127,6 @@ class GenericLoop extends ResumableSignalLoop
     /**
      * Get loop name, provided to constructor.
      *
-     * @return string
      */
     public function __toString(): string
     {

@@ -11,6 +11,7 @@ namespace danog\Loop\Traits;
 
 use Amp\Promise;
 
+use function Amp\async;
 use function Amp\asyncCall;
 
 /**
@@ -40,10 +41,10 @@ trait Loop
         if ($this->started) {
             return false;
         }
-        asyncCall(function (): \Generator {
+        async(function (): void {
             $this->startedLoop();
             try {
-                yield from $this->loop();
+                $this->loop();
             } finally {
                 $this->exitedLoop();
             }
