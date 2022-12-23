@@ -55,7 +55,7 @@ trait Basic
     public function loop(): Generator
     {
         $this->inited = true;
-        yield delay(100);
+        delay(100);
         $this->ran = true;
     }
     /**

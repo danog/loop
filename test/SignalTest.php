@@ -28,7 +28,7 @@ class SignalTest extends Fixtures
      *
      * @dataProvider provideSignal
      */
-    public function testSignal(SignalInterface $loop): \Generator
+    public function testSignal(SignalInterface $loop)
     {
         $loop->setInterval(500); // Wait 0.5 seconds before returning null
 
@@ -59,7 +59,7 @@ class SignalTest extends Fixtures
 
         $loop->setInterval(100); // Wait 0.1 seconds before returning null
         $loop->signal(true); // Move along loop to apply new interval
-        yield delay(110);
+        delay(110);
         $this->assertNull($loop->getPayload()); // Result of sleep
 
         $loop->signal($e = new \RuntimeException('Test'));

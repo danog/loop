@@ -31,7 +31,7 @@ class PeriodicTest extends AsyncTestCase
      *
      * @dataProvider provideTrueFalse
      */
-    public function testGeneric(bool $stopSig): \Generator
+    public function testGeneric(bool $stopSig)
     {
         $runCount = 0;
         $retValue = false;
@@ -40,7 +40,7 @@ class PeriodicTest extends AsyncTestCase
             $runCount++;
             return $retValue;
         };
-        yield from $this->fixtureAssertions($callable, $runCount, $retValue, $stopSig, $zis, true);
+        $this->fixtureAssertions($callable, $runCount, $retValue, $stopSig, $zis, true);
         $obj = new class() {
             public $retValue = false;
             public $runCount = 0;
@@ -50,7 +50,7 @@ class PeriodicTest extends AsyncTestCase
                 return $this->retValue;
             }
         };
-        yield from $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
+        $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
         $obj = new class() {
             public $retValue = false;
             public $runCount = 0;
@@ -60,7 +60,7 @@ class PeriodicTest extends AsyncTestCase
                 return $this->retValue;
             }
         };
-        yield from $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
+        $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
     }
     /**
      * Test generator loop.
@@ -71,39 +71,39 @@ class PeriodicTest extends AsyncTestCase
      *
      * @dataProvider provideTrueFalse
      */
-    public function testGenerator(bool $stopSig): \Generator
+    public function testGenerator(bool $stopSig)
     {
         $runCount = 0;
         $retValue = false;
-        $callable = function () use (&$runCount, &$retValue, &$zis): \Generator {
+        $callable = function () use (&$runCount, &$retValue, &$zis) {
             $zis = $this;
-            yield delay(1);
+            delay(1);
             $runCount++;
             return $retValue;
         };
-        yield from $this->fixtureAssertions($callable, $runCount, $retValue, $stopSig, $zis, true);
+        $this->fixtureAssertions($callable, $runCount, $retValue, $stopSig, $zis, true);
         $obj = new class() {
             public $retValue = false;
             public $runCount = 0;
-            public function run(): \Generator
+            public function run()
             {
-                yield delay(1);
+                delay(1);
                 $this->runCount++;
                 return $this->retValue;
             }
         };
-        yield from $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
+        $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
         $obj = new class() {
             public $retValue = false;
             public $runCount = 0;
-            public function run(): \Generator
+            public function run()
             {
-                yield delay(1);
+                delay(1);
                 $this->runCount++;
                 return $this->retValue;
             }
         };
-        yield from $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
+        $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
     }
     /**
      * Test promise loop.
@@ -114,7 +114,7 @@ class PeriodicTest extends AsyncTestCase
      *
      * @dataProvider provideTrueFalse
      */
-    public function testPromise(bool $stopSig): \Generator
+    public function testPromise(bool $stopSig)
     {
         $runCount = 0;
         $retValue = false;
@@ -123,7 +123,7 @@ class PeriodicTest extends AsyncTestCase
             $runCount++;
             return new Success($retValue);
         };
-        yield from $this->fixtureAssertions($callable, $runCount, $retValue, $stopSig, $zis, true);
+        $this->fixtureAssertions($callable, $runCount, $retValue, $stopSig, $zis, true);
         $obj = new class() {
             public $retValue = false;
             public $runCount = 0;
@@ -133,7 +133,7 @@ class PeriodicTest extends AsyncTestCase
                 return new Success($this->retValue);
             }
         };
-        yield from $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
+        $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
         $obj = new class() {
             public $retValue = false;
             public $runCount = 0;
@@ -143,7 +143,7 @@ class PeriodicTest extends AsyncTestCase
                 return new Success($this->retValue);
             }
         };
-        yield from $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
+        $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
     }
     /**
      * Fixture assertions for started loop.
@@ -170,7 +170,7 @@ class PeriodicTest extends AsyncTestCase
      *
      * @return \Generator
      */
-    private function fixtureAssertions(callable $closure, int &$runCount, bool &$retValue, bool $stopSig, &$zis, bool $checkZis): \Generator
+    private function fixtureAssertions(callable $closure, int &$runCount, bool &$retValue, bool $stopSig, &$zis, bool $checkZis)
     {
         $loop = new class($closure, Fixtures::LOOP_NAME, 100) extends PeriodicLoop implements LoggingInterface {
             use Logging;
@@ -184,7 +184,7 @@ class PeriodicTest extends AsyncTestCase
         $this->assertEquals(0, $runCount);
 
         $loop->start();
-        yield delay(2);
+        delay(2);
         if ($checkZis) {
             $this->assertEquals($loop, $zis);
         } else {
@@ -194,18 +194,18 @@ class PeriodicTest extends AsyncTestCase
 
         $this->assertEquals(1, $runCount);
 
-        yield delay(48);
+        delay(48);
         $this->fixtureStarted($loop);
 
         $this->assertEquals(1, $runCount);
 
-        yield delay(60);
+        delay(60);
         $this->fixtureStarted($loop);
 
         $this->assertEquals(2, $runCount);
 
         $loop->resume();
-        yield delay(1);
+        delay(1);
 
         $this->assertEquals(3, $runCount);
 
@@ -215,7 +215,7 @@ class PeriodicTest extends AsyncTestCase
             $retValue = true;
             $loop->resume();
         }
-        yield delay(1);
+        delay(1);
         $this->assertEquals($stopSig ? 3 : 4, $runCount);
 
         $this->assertFalse($loop->isRunning());

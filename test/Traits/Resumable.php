@@ -39,7 +39,7 @@ trait Resumable
     public function loop(): Generator
     {
         $this->inited = true;
-        yield $this->pause($this->interval);
+        $this->pause($this->interval);
         $this->ran = true;
     }
 }

@@ -30,7 +30,7 @@ interface LoopInterface
      *
      * @return \Generator
      */
-    public function loop(): \Generator;
+    public function loop();
     /**
      * Get name of the loop.
      *

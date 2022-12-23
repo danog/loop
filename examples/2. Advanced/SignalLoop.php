@@ -29,11 +29,11 @@ class SigLoop extends SignalLoop
      *
      * @return \Generator
      */
-    public function loop(): \Generator
+    public function loop()
     {
         $number = 0;
         while (true) {
-            if (yield $this->waitSignal(delay(1000))) {
+            if ($this->waitSignal(delay(1000))) {
                 echo "Got exit signal in $this!".PHP_EOL;
                 return;
             }
@@ -52,18 +52,17 @@ class SigLoop extends SignalLoop
     }
 }
 
-Loop::run(function () {
     /** @var SigLoop[] */
     $loops = [];
     for ($x = 0; $x < 10; $x++) {
         $loop = new SigLoop("Loop number $x");
         $loop->start();
-        yield delay(100);
+        delay(100);
         $loops []= $loop;
     }
-    yield delay(5000);
+    delay(5000);
     echo "Closing all loops!".PHP_EOL;
     foreach ($loops as $loop) {
         $loop->signal(true);
     }
-});
+

@@ -42,7 +42,7 @@ interface ResumableLoopInterface extends LoopInterface
     /**
      * Defer resuming the loop to next tick.
      *
-     * Multiple consecutive calls will yield only one resume.
+     * Multiple consecutive calls will only one resume.
      *
      * @return Promise Resolved when the loop is paused again
      */

@@ -30,13 +30,13 @@ class LoopTest extends Fixtures
      *
      * @dataProvider provideBasic
      */
-    public function testLoop(BasicInterface $loop): \Generator
+    public function testLoop(BasicInterface $loop)
     {
         $this->assertPreStart($loop);
         $this->assertTrue($loop->start());
         $this->assertAfterStart($loop);
 
-        yield delay(110);
+        delay(110);
 
         $this->assertFinal($loop);
     }

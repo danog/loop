@@ -29,11 +29,11 @@ class ResSigLoop extends ResumableSignalLoop
      *
      * @return \Generator
      */
-    public function loop(): \Generator
+    public function loop()
     {
         $number = 0;
         while (true) {
-            if (yield $this->waitSignal($this->pause(1000))) {
+            if ($this->waitSignal($this->pause(1000))) {
                 echo "Got exit signal in $this!".PHP_EOL;
                 return;
             }
@@ -52,24 +52,22 @@ class ResSigLoop extends ResumableSignalLoop
     }
 }
 
-Loop::run(function () {
     /** @var ResSigLoop[] */
     $loops = [];
     for ($x = 0; $x < 10; $x++) {
         $loop = new ResSigLoop("Loop number $x");
         $loop->start();
-        yield delay(100);
+        delay(100);
         $loops []= $loop;
     }
-    yield delay(5000);
+    delay(5000);
     echo "Resuming prematurely all loops!".PHP_EOL;
     foreach ($loops as $loop) {
         $loop->resume();
     }
     echo "OK done, waiting 5 more seconds!".PHP_EOL;
-    yield delay(5000);
+    delay(5000);
     echo "Closing all loops!".PHP_EOL;
     foreach ($loops as $loop) {
         $loop->signal(true);
     }
-});

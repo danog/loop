@@ -39,7 +39,7 @@ namespace danog\Loop;
 
 abstract class Loop
 {
-    abstract public function loop(): \Generator;
+    abstract public function loop();
     abstract public function __toString(): string;
     
     public function start(): bool;

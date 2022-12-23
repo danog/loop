@@ -37,13 +37,13 @@ class MyLoop extends Loop
      *
      * @return \Generator
      */
-    public function loop(): \Generator
+    public function loop()
     {
         $callable = $this->callable;
 
         $number = 0;
         while (true) {
-            $number = yield from $callable($number);
+            $number = $callable($number);
             echo "$this: $number".PHP_EOL;
         }
     }
@@ -82,16 +82,15 @@ class MyLoop extends Loop
     }
 }
 
-AmpLoop::run(function () {
-    $function = function (int $number): \Generator {
-        yield delay(1000);
+    $function = function (int $number) {
+        delay(1000);
         return $number + 1;
     };
     $loops = [];
     for ($x = 0; $x < 10; $x++) {
         $loop = new MyLoop($function, "Loop number $x");
         $loop->start();
-        yield delay(100);
+        delay(100);
         $loops []= $loop;
     }
-});
+

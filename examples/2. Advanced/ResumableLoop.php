@@ -29,11 +29,11 @@ class MyLoop extends ResumableLoop
      *
      * @return \Generator
      */
-    public function loop(): \Generator
+    public function loop()
     {
         $number = 0;
         while (true) {
-            yield $this->pause(1000);
+            $this->pause(1000);
             echo "$this: $number".PHP_EOL;
             $number++;
         }
@@ -73,17 +73,15 @@ class MyLoop extends ResumableLoop
     }
 }
 
-AmpLoop::run(function () {
     $loops = [];
     for ($x = 0; $x < 10; $x++) {
         $loop = new MyLoop("Loop number $x");
         $loop->start();
-        yield delay(100);
+        delay(100);
         $loops []= $loop;
     }
-    yield delay(5000);
+    delay(5000);
     echo "Resuming prematurely all loops!".PHP_EOL;
     foreach ($loops as $loop) {
         $loop->resume();
     }
-});

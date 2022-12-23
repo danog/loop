@@ -28,7 +28,7 @@ class ResumableTest extends Fixtures
      *
      * @dataProvider provideResumable
      */
-    public function testResumable(ResumableInterface $loop): \Generator
+    public function testResumable(ResumableInterface $loop)
     {
         $paused = $loop->resume(); // Returned promise will resolve on next pause
 
@@ -36,9 +36,9 @@ class ResumableTest extends Fixtures
         $this->assertTrue($loop->start());
         $this->assertAfterStart($loop);
 
-        yield delay(10);
+        delay(10);
         $this->assertTrue(self::isResolved($paused));
-        yield delay(100);
+        delay(100);
 
         $this->assertFinal($loop);
     }
@@ -59,7 +59,7 @@ class ResumableTest extends Fixtures
         $this->assertPreStart($loop);
         $this->assertTrue($loop->start());
 
-        yield delay(1);
+        delay(1);
         $this->assertFalse(self::isResolved($paused)); // Did not pause
 
         // Invert the order as the afterTest assertions will begin the test anew
@@ -77,11 +77,11 @@ class ResumableTest extends Fixtures
      *
      * @dataProvider provideResumableInterval
      */
-    public function testResumableForeverPremature(ResumableInterface $loop, ?int $interval, bool $deferred): \Generator
+    public function testResumableForeverPremature(ResumableInterface $loop, ?int $interval, bool $deferred)
     {
         $paused = $deferred ? $loop->resumeDefer() : $loop->resume(); // Will resolve on next pause
         if ($deferred) {
-            yield delay(1); // Avoid resuming after starting
+            delay(1); // Avoid resuming after starting
         }
         $loop->setInterval($interval);
 
@@ -90,17 +90,17 @@ class ResumableTest extends Fixtures
         $this->assertAfterStart($loop);
 
 
-        yield delay(1);
+        delay(1);
         $this->assertTrue(self::isResolved($paused)); // Did pause
 
         $paused = $deferred ? $loop->resumeDefer() : $loop->resume();
         if ($deferred) {
             $this->assertAfterStart($loop);
-            yield delay(1);
+            delay(1);
         }
         $this->assertFinal($loop);
 
-        yield delay(1);
+        delay(1);
         $this->assertFalse(self::isResolved($paused)); // Did not pause again
     }
 
@@ -113,11 +113,11 @@ class ResumableTest extends Fixtures
      *
      * @dataProvider provideResumable
      */
-    public function testResumableDeferOnce(ResumableInterface $loop): \Generator
+    public function testResumableDeferOnce(ResumableInterface $loop)
     {
         $paused1 = $loop->resumeDeferOnce(); // Will resolve on next pause
         $paused2 = $loop->resumeDeferOnce(); // Will resolve on next pause
-        yield delay(1); // Avoid resuming after starting
+        delay(1); // Avoid resuming after starting
         $loop->setInterval(10000);
 
         $this->assertPreStart($loop);
@@ -125,17 +125,17 @@ class ResumableTest extends Fixtures
         $this->assertAfterStart($loop);
 
 
-        yield delay(1);
+        delay(1);
         $this->assertTrue(self::isResolved($paused1)); // Did pause
         $this->assertTrue(self::isResolved($paused2)); // Did pause
 
         $paused1 = $loop->resumeDeferOnce();
         $paused2 = $loop->resumeDeferOnce();
         $this->assertAfterStart($loop);
-        yield delay(1);
+        delay(1);
         $this->assertFinal($loop);
 
-        yield delay(1);
+        delay(1);
         $this->assertFalse(self::isResolved($paused1)); // Did not pause again
         $this->assertFalse(self::isResolved($paused2)); // Did not pause again
     }
@@ -163,14 +163,14 @@ class ResumableTest extends Fixtures
      *
      * @return \Generator
      */
-    public function provideResumableInterval(): \Generator
+    public function provideResumableInterval()
     {
         foreach ([true, false] as $deferred) {
             foreach ([10000, null] as $interval) {
                 foreach ($this->provideResumable() as $params) {
                     $params[] = $interval;
                     $params[] = $deferred;
-                    yield $params;
+                    $params;
                 }
             }
         }
