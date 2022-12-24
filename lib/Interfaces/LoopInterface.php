@@ -10,12 +10,14 @@
 
 namespace danog\Loop\Interfaces;
 
+use Stringable;
+
 /**
  * Loop interface.
  *
  * @author Daniil Gentili <daniil@daniil.it>
  */
-interface LoopInterface
+interface LoopInterface extends Stringable
 {
     /**
      * Start the loop.
@@ -27,10 +29,6 @@ interface LoopInterface
      * The actual loop function.
      */
     public function loop(): void;
-    /**
-     * Get name of the loop.
-     */
-    public function __toString(): string;
     /**
      * Check whether loop is running.
      */

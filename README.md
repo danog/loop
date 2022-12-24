@@ -52,7 +52,7 @@ abstract class Loop
 
 #### loop()
 
-The `loop` [async coroutine](https://amphp.org/amp/coroutines/) will be run only once, every time the `start` method is called.  
+The `loop` [async fiber](https://amphp.org/) will be run only once, every time the `start` method is called.  
 
 #### __toString()
 
@@ -106,7 +106,7 @@ Pauses the loop for the specified number of milliseconds, or forever if `null` i
 #### resume()
 
 Forcefully resume the loop from the outside.  
-Returns a promise that is resolved when the loop is paused again.  
+Returns a future that is resolved when the loop is paused again.  
 
 
 ### SignalLoop
@@ -135,7 +135,7 @@ Signaling can be used as a message exchange mechanism a-la IPC, and can also be 
 
 #### waitSignal()
 
-Resolve the provided promise or return|throw passed signal.  
+Resolve the provided future or return|throw passed signal.  
 
 ### ResumableSignalLoop
 
