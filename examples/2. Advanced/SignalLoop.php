@@ -5,6 +5,7 @@ require 'vendor/autoload.php';
 use Amp\Loop;
 use danog\Loop\SignalLoop;
 
+use function Amp\async;
 use function Amp\delay;
 
 class SigLoop extends SignalLoop
@@ -31,7 +32,7 @@ class SigLoop extends SignalLoop
     {
         $number = 0;
         while (true) {
-            if ($this->waitSignal(delay(1000))) {
+            if ($this->waitSignal(async(delay(...), 1))) {
                 echo "Got exit signal in $this!".PHP_EOL;
                 return;
             }
@@ -53,10 +54,10 @@ $loops = [];
 for ($x = 0; $x < 10; $x++) {
     $loop = new SigLoop("Loop number $x");
     $loop->start();
-    delay(100);
+    delay(0.1);
     $loops []= $loop;
 }
-delay(5000);
+delay(5);
 echo "Closing all loops!".PHP_EOL;
 foreach ($loops as $loop) {
     $loop->signal(true);

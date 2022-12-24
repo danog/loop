@@ -49,7 +49,7 @@ trait Signal
      */
     private function testGenerator(int $interval): void
     {
-        delay($interval);
+        delay($interval/1000);
     }
     /**
      * Loop implementation.

@@ -77,13 +77,13 @@ class MyLoop extends Loop
 }
 
 $function = function (int $number) {
-    delay(1000);
+    delay(1);
     return $number + 1;
 };
 $loops = [];
 for ($x = 0; $x < 10; $x++) {
     $loop = new MyLoop($function, "Loop number $x");
     $loop->start();
-    delay(100);
+    delay(0.1);
     $loops []= $loop;
 }

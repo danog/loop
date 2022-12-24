@@ -36,9 +36,9 @@ class ResumableTest extends Fixtures
         $this->assertTrue($loop->start());
         $this->assertAfterStart($loop);
 
-        delay(10);
+        delay(0.010);
         $this->assertTrue(self::isResolved($paused));
-        delay(100);
+        delay(0.1);
 
         $this->assertFinal($loop);
     }
@@ -59,7 +59,7 @@ class ResumableTest extends Fixtures
         $this->assertPreStart($loop);
         $this->assertTrue($loop->start());
 
-        delay(1);
+        delay(0.001);
         $this->assertFalse(self::isResolved($paused)); // Did not pause
 
         // Invert the order as the afterTest assertions will begin the test anew
@@ -81,7 +81,7 @@ class ResumableTest extends Fixtures
     {
         $paused = $deferred ? $loop->resumeDefer() : $loop->resume(); // Will resolve on next pause
         if ($deferred) {
-            delay(1); // Avoid resuming after starting
+            delay(0.001); // Avoid resuming after starting
         }
         $loop->setInterval($interval);
 
@@ -89,17 +89,17 @@ class ResumableTest extends Fixtures
         $this->assertTrue($loop->start());
         $this->assertAfterStart($loop);
 
-        delay(1);
+        delay(0.001);
         $this->assertTrue(self::isResolved($paused)); // Did pause
 
         $paused = $deferred ? $loop->resumeDefer() : $loop->resume();
         if ($deferred) {
             $this->assertAfterStart($loop);
-            delay(1);
+            delay(0.001);
         }
         $this->assertFinal($loop);
 
-        delay(1);
+        delay(0.001);
         $this->assertFalse(self::isResolved($paused)); // Did not pause again
     }
 
@@ -116,24 +116,24 @@ class ResumableTest extends Fixtures
     {
         $paused1 = $loop->resumeDeferOnce(); // Will resolve on next pause
         $paused2 = $loop->resumeDeferOnce(); // Will resolve on next pause
-        delay(1); // Avoid resuming after starting
+        delay(0.001); // Avoid resuming after starting
         $loop->setInterval(10000);
 
         $this->assertPreStart($loop);
         $this->assertTrue($loop->start());
         $this->assertAfterStart($loop);
 
-        delay(1);
+        delay(0.001);
         $this->assertTrue(self::isResolved($paused1)); // Did pause
         $this->assertTrue(self::isResolved($paused2)); // Did pause
 
         $paused1 = $loop->resumeDeferOnce();
         $paused2 = $loop->resumeDeferOnce();
         $this->assertAfterStart($loop);
-        delay(1);
+        delay(0.001);
         $this->assertFinal($loop);
 
-        delay(1);
+        delay(0.001);
         $this->assertFalse(self::isResolved($paused1)); // Did not pause again
         $this->assertFalse(self::isResolved($paused2)); // Did not pause again
     }

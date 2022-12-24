@@ -35,29 +35,16 @@ class PeriodicLoop extends ResumableSignalLoop
      */
     private $callback;
     /**
-     * Loop name.
-     *
-     * @var string
-     */
-    private $name;
-    /**
-     * Loop interval.
-     *
-     * @var ?int
-     */
-    private $interval;
-    /**
      * Constructor.
      *
      * If possible, the callable will be bound to the current instance of the loop.
      *
-     * @param callable $callback Callback to call
+     * @param callable():(bool|Future<bool>) $callback Callable to run
      * @param string   $name     Loop name
      * @param ?int     $interval Loop interval
      *
-     * @psalm-param callable():(bool|Future<bool>) $callback Callable to run
      */
-    public function __construct(callable $callback, string $name, ?int $interval)
+    public function __construct(callable $callback, private string $name, private ?int $interval)
     {
         if ($callback instanceof \Closure) {
             try {
@@ -72,7 +59,6 @@ class PeriodicLoop extends ResumableSignalLoop
     }
     /**
      * Loop implementation.
-     *
      */
     public function loop(): void
     {
@@ -86,7 +72,7 @@ class PeriodicLoop extends ResumableSignalLoop
                 break;
             }
             /** @var ?bool */
-            $result = $this->waitSignal(async(fn () => $this->pause($this->interval)));
+            $result = $this->waitSignal(async($this->pause(...), $this->interval));
             if ($result === true) {
                 break;
             }

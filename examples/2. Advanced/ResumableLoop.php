@@ -71,10 +71,10 @@ $loops = [];
 for ($x = 0; $x < 10; $x++) {
     $loop = new MyLoop("Loop number $x");
     $loop->start();
-    delay(100);
+    delay(0.1);
     $loops []= $loop;
 }
-delay(5000);
+delay(5);
 echo "Resuming prematurely all loops!".PHP_EOL;
 foreach ($loops as $loop) {
     $loop->resume();

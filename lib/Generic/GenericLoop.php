@@ -51,9 +51,7 @@ class GenericLoop extends ResumableSignalLoop
     /**
      * Callable.
      *
-     * @var callable
-     *
-     * @psalm-var callable():TCallableReturn
+     * @var callable():TCallableReturn
      */
     protected $callable;
     /**
@@ -91,7 +89,7 @@ class GenericLoop extends ResumableSignalLoop
             } elseif ($timeout > 0) {
                 $this->reportPause($timeout);
             }
-            if ($timeout === self::STOP || $this->waitSignal(async(fn () => $this->pause($timeout)))) {
+            if ($timeout === self::STOP || $this->waitSignal(async($this->pause(...), $timeout))) {
                 break;
             }
         }

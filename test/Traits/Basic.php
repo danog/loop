@@ -48,7 +48,7 @@ trait Basic
     public function loop(): void
     {
         $this->inited = true;
-        delay(100);
+        delay(0.1);
         $this->ran = true;
     }
     /**

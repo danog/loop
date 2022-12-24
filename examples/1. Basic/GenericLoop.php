@@ -17,15 +17,15 @@ for ($x = 0; $x < 10; $x++) {
     };
     $loop = new GenericLoop($callable, "Loop number $x");
     $loop->start();
-    delay(100);
+    delay(0.1);
     $loops []= $loop;
 }
-delay(5000);
+delay(5);
 echo "Resuming prematurely all loops!".PHP_EOL;
 foreach ($loops as $loop) {
     $loop->resume();
 }
 echo "OK done, waiting 5 more seconds!".PHP_EOL;
-delay(5000);
+delay(5);
 echo "Closing all loops!".PHP_EOL;
-delay(10);
+delay(0.01);
