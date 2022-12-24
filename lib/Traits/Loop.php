@@ -65,8 +65,6 @@ trait Loop
     }
     /**
      * Check whether loop is running.
-     *
-     * @return boolean
      */
     public function isRunning(): bool
     {

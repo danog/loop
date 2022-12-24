@@ -9,8 +9,11 @@
 
 namespace danog\Loop\Test;
 
+use Amp\Future;
 use Amp\PHPUnit\AsyncTestCase;
 use danog\Loop\Test\Interfaces\BasicInterface;
+
+use function Amp\async;
 
 /**
  * Fixtures.
@@ -20,18 +23,12 @@ abstract class Fixtures extends AsyncTestCase
     const LOOP_NAME = 'PONY';
     /**
      * Check if promise has been resolved afterwards.
-     *
-     * @param Promise $promise Promise
-     *
-     * @return boolean
      */
-    protected static function isResolved(Promise $promise): bool
+    protected static function isResolved(Future $promise): bool
     {
         $resolved = false;
-        $promise->onResolve(static function ($e, $res) use (&$resolved): void {
-            if ($e) {
-                throw $e;
-            }
+        async(function () use ($promise, &$resolved): void {
+            $promise->await();
             $resolved = true;
         });
         return $resolved;

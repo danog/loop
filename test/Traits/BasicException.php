@@ -9,8 +9,6 @@
 
 namespace danog\Loop\Test\Traits;
 
-use Generator;
-
 trait BasicException
 {
     use Basic;
@@ -18,7 +16,7 @@ trait BasicException
      * Loop implementation.
      *
      */
-    public function loop(): Generator
+    public function loop(): void
     {
         $this->inited = true;
         throw new \RuntimeException('Threw exception!');

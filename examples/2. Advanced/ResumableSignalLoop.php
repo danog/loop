@@ -26,10 +26,8 @@ class ResSigLoop extends ResumableSignalLoop
     }
     /**
      * Main loop.
-     *
-     * @return \Generator
      */
-    public function loop()
+    public function loop(): void
     {
         $number = 0;
         while (true) {

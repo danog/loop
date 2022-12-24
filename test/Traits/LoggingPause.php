@@ -28,8 +28,6 @@ trait LoggingPause
     private $lastPause = 0;
     /**
      * Get number of times loop was paused.
-     *
-     * @return integer
      */
     public function getPauseCount(): int
     {
@@ -38,8 +36,6 @@ trait LoggingPause
 
     /**
      * Get last pause.
-     *
-     * @return integer
      */
     public function getLastPause(): int
     {

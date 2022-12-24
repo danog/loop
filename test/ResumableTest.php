@@ -24,11 +24,11 @@ class ResumableTest extends Fixtures
      *
      * @param ResumableInterface $loop Loop
      *
-     * @return \Generator
+     *
      *
      * @dataProvider provideResumable
      */
-    public function testResumable(ResumableInterface $loop)
+    public function testResumable(ResumableInterface $loop): void
     {
         $paused = $loop->resume(); // Returned promise will resolve on next pause
 
@@ -47,11 +47,11 @@ class ResumableTest extends Fixtures
      *
      * @param ResumableInterface $loop Loop
      *
-     * @return \Generator
+     *
      *
      * @dataProvider provideResumable
      */
-    public function testResumableNegative(ResumableInterface $loop)
+    public function testResumableNegative(ResumableInterface $loop): void
     {
         $paused = $loop->resume(); // Will resolve on next pause
         $loop->setInterval(-1); // Will not pause, and finish right away!
@@ -73,11 +73,11 @@ class ResumableTest extends Fixtures
      * @param ?int               $interval Interval
      * @param bool               $deferred Deferred
      *
-     * @return \Generator
+     *
      *
      * @dataProvider provideResumableInterval
      */
-    public function testResumableForeverPremature(ResumableInterface $loop, ?int $interval, bool $deferred)
+    public function testResumableForeverPremature(ResumableInterface $loop, ?int $interval, bool $deferred): void
     {
         $paused = $deferred ? $loop->resumeDefer() : $loop->resume(); // Will resolve on next pause
         if ($deferred) {
@@ -108,11 +108,11 @@ class ResumableTest extends Fixtures
      *
      * @param ResumableInterface $loop     Loop
      *
-     * @return \Generator
+     *
      *
      * @dataProvider provideResumable
      */
-    public function testResumableDeferOnce(ResumableInterface $loop)
+    public function testResumableDeferOnce(ResumableInterface $loop): void
     {
         $paused1 = $loop->resumeDeferOnce(); // Will resolve on next pause
         $paused2 = $loop->resumeDeferOnce(); // Will resolve on next pause
@@ -158,9 +158,9 @@ class ResumableTest extends Fixtures
     /**
      * Provide resumable loop implementations and interval.
      *
-     * @return \Generator
+     *
      */
-    public function provideResumableInterval()
+    public function provideResumableInterval(): void
     {
         foreach ([true, false] as $deferred) {
             foreach ([10000, null] as $interval) {

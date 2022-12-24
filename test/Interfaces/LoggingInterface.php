@@ -21,14 +21,10 @@ interface LoggingInterface extends LoopInterface
 {
     /**
      * Get start counter.
-     *
-     * @return integer
      */
     public function startCounter(): int;
     /**
      * Get end counter.
-     *
-     * @return integer
      */
     public function endCounter(): int;
 }

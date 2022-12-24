@@ -21,24 +21,18 @@ interface LoopInterface
      * Start the loop.
      *
      * Returns false if the loop is already running.
-     *
      */
     public function start(): bool;
     /**
      * The actual loop function.
-     *
-     * @return \Generator
      */
-    public function loop();
+    public function loop(): void;
     /**
      * Get name of the loop.
-     *
      */
     public function __toString(): string;
     /**
      * Check whether loop is running.
-     *
-     * @return boolean
      */
     public function isRunning(): bool;
 }

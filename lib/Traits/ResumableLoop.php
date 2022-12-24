@@ -10,7 +10,6 @@
 
 namespace danog\Loop\Traits;
 
-use Amp\Deferred;
 use Amp\DeferredFuture;
 use Amp\Future;
 use Revolt\EventLoop;

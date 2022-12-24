@@ -194,8 +194,6 @@ class GenericLoop extends ResumableSignalLoop
     protected function reportPause(int $timeout): void;
     /**
      * Get loop name, provided to constructor.
-     *
-     * @return string
      */
     public function __toString(): string;
 }

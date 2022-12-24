@@ -26,8 +26,6 @@ interface SignalInterface extends BasicInterface, IntervalInterface, SignalLoopI
     public function getPayload();
     /**
      * Get signaled exception.
-     *
-     * @return ?\Throwable
      */
     public function getException(): ?\Throwable;
 }

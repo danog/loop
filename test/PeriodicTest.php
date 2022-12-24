@@ -9,9 +9,9 @@
 
 namespace danog\Loop\Test;
 
+use Amp\DeferredFuture;
 use Amp\Future;
 use Amp\PHPUnit\AsyncTestCase;
-use Amp\Success;
 use danog\Loop\Generic\PeriodicLoop;
 use danog\Loop\Loop;
 use danog\Loop\Test\Interfaces\LoggingInterface;
@@ -27,11 +27,11 @@ class PeriodicTest extends AsyncTestCase
      *
      * @param bool $stopSig Whether to stop with signal
      *
-     * @return \Generator
+     *
      *
      * @dataProvider provideTrueFalse
      */
-    public function testGeneric(bool $stopSig)
+    public function testGeneric(bool $stopSig): void
     {
         $runCount = 0;
         $retValue = false;
@@ -67,11 +67,11 @@ class PeriodicTest extends AsyncTestCase
      *
      * @param bool $stopSig Whether to stop with signal
      *
-     * @return \Generator
+     *
      *
      * @dataProvider provideTrueFalse
      */
-    public function testGenerator(bool $stopSig)
+    public function testGenerator(bool $stopSig): void
     {
         $runCount = 0;
         $retValue = false;
@@ -110,18 +110,20 @@ class PeriodicTest extends AsyncTestCase
      *
      * @param bool $stopSig Whether to stop with signal
      *
-     * @return \Generator
+     *
      *
      * @dataProvider provideTrueFalse
      */
-    public function testPromise(bool $stopSig)
+    public function testPromise(bool $stopSig): void
     {
         $runCount = 0;
         $retValue = false;
         $callable = function () use (&$runCount, &$retValue, &$zis): Future {
             $zis = $this;
             $runCount++;
-            return new Success($retValue);
+            $f = new DeferredFuture;
+            $f->complete($retValue);
+            return $f->getFuture();
         };
         $this->fixtureAssertions($callable, $runCount, $retValue, $stopSig, $zis, true);
         $obj = new class() {
@@ -130,7 +132,9 @@ class PeriodicTest extends AsyncTestCase
             public function run(): Future
             {
                 $this->runCount++;
-                return new Success($this->retValue);
+                $f = new DeferredFuture;
+                $f->complete($this->retValue);
+                return $f->getFuture();
             }
         };
         $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
@@ -140,7 +144,9 @@ class PeriodicTest extends AsyncTestCase
             public function run(): Future
             {
                 $this->runCount++;
-                return new Success($this->retValue);
+                $f = new DeferredFuture;
+                $f->complete($this->retValue);
+                return $f->getFuture();
             }
         };
         $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
@@ -167,9 +173,9 @@ class PeriodicTest extends AsyncTestCase
      * @param bool     $zis      Reference to closure's this
      * @param bool     $checkZis Whether to check zis
      *
-     * @return \Generator
+     *
      */
-    private function fixtureAssertions(callable $closure, int &$runCount, bool &$retValue, bool $stopSig, &$zis, bool $checkZis)
+    private function fixtureAssertions(callable $closure, int &$runCount, bool &$retValue, bool $stopSig, &$zis, bool $checkZis): void
     {
         $loop = new class($closure, Fixtures::LOOP_NAME, 100) extends PeriodicLoop implements LoggingInterface {
             use Logging;

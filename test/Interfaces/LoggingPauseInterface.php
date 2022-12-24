@@ -21,14 +21,10 @@ interface LoggingPauseInterface extends LoopInterface, LoggingInterface
 {
     /**
      * Get number of times loop was paused.
-     *
-     * @return integer
      */
     public function getPauseCount(): int;
     /**
      * Get last pause.
-     *
-     * @return integer
      */
     public function getLastPause(): int;
 }

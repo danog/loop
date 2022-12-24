@@ -32,7 +32,7 @@ interface ResumableLoopInterface extends LoopInterface
     /**
      * Defer resuming the loop to next tick.
      *
-     * @return Promise Resolved when the loop is paused again
+     * @return Future<null> Resolved when the loop is paused again
      */
     public function resumeDefer(): Future;
     /**
@@ -40,7 +40,7 @@ interface ResumableLoopInterface extends LoopInterface
      *
      * Multiple consecutive calls will only one resume.
      *
-     * @return Promise Resolved when the loop is paused again
+     * @return Future<null> Resolved when the loop is paused again
      */
     public function resumeDeferOnce(): Future;
 }

@@ -26,11 +26,11 @@ class LoopTest extends Fixtures
      *
      * @param BasicInterface $loop Loop
      *
-     * @return \Generator
+     *
      *
      * @dataProvider provideBasic
      */
-    public function testLoop(BasicInterface $loop)
+    public function testLoop(BasicInterface $loop): void
     {
         $this->assertPreStart($loop);
         $this->assertTrue($loop->start());

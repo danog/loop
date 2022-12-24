@@ -9,6 +9,7 @@
 
 namespace danog\Loop\Generic;
 
+use Amp\Future;
 use danog\Loop\ResumableSignalLoop;
 
 use function Amp\async;
@@ -21,12 +22,6 @@ use function Amp\async;
  * The loop can be stopped from the outside or
  * from the inside by signaling or returning `true`.
  *
- * @template T as bool
- * @template TGenerator as \Generator<mixed,Promise|array<array-key,Promise>,mixed,Promise<T>|T>
- * @template TPromise as Promise<T>
- *
- * @template TCallable as T|TPromise|TGenerator
- *
  * @author Daniil Gentili <daniil@daniil.it>
  */
 class PeriodicLoop extends ResumableSignalLoop
@@ -36,7 +31,7 @@ class PeriodicLoop extends ResumableSignalLoop
      *
      * @var callable
      *
-     * @psalm-var callable():TCallable
+     * @psalm-var callable():(bool|Future<bool>)
      */
     private $callback;
     /**
@@ -60,7 +55,7 @@ class PeriodicLoop extends ResumableSignalLoop
      * @param string   $name     Loop name
      * @param ?int     $interval Loop interval
      *
-     * @psalm-param callable():TCallable $callback Callable to run
+     * @psalm-param callable():(bool|Future<bool>) $callback Callable to run
      */
     public function __construct(callable $callback, string $name, ?int $interval)
     {
@@ -84,12 +79,8 @@ class PeriodicLoop extends ResumableSignalLoop
         $callback = $this->callback;
         while (true) {
             $result = $callback();
-            if ($result instanceof \Generator) {
-                /** @psalm-var TGenerator */
-                $result = $result;
-            } elseif ($result instanceof Promise) {
-                /** @psalm-var TPromise */
-                $result = $result;
+            if ($result instanceof Future) {
+                $result = $result->await();
             }
             if ($result === true) {
                 break;
@@ -103,7 +94,6 @@ class PeriodicLoop extends ResumableSignalLoop
     }
     /**
      * Get name of the loop, passed to the constructor.
-     *
      */
     public function __toString(): string
     {

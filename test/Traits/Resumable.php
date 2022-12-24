@@ -9,17 +9,13 @@
 
 namespace danog\Loop\Test\Traits;
 
-use Generator;
-
 trait Resumable
 {
     use Basic;
     /**
      * Set interval.
-     *
-     * @var ?int
      */
-    protected $interval = 100;
+    protected ?int $interval = 100;
     /**
      * Set sleep interval.
      *
@@ -32,9 +28,8 @@ trait Resumable
     }
     /**
      * Loop implementation.
-     *
      */
-    public function loop(): Generator
+    public function loop(): void
     {
         $this->inited = true;
         $this->pause($this->interval);

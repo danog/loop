@@ -10,7 +10,6 @@
 namespace danog\Loop\Test\Traits;
 
 use danog\Loop\Interfaces\ResumableLoopInterface;
-use Generator;
 
 use function Amp\delay;
 
@@ -38,8 +37,6 @@ trait Signal
     }
     /**
      * Get signaled exception.
-     *
-     * @return \Throwable
      */
     public function getException(): ?\Throwable
     {
@@ -49,10 +46,8 @@ trait Signal
      * Test waiting signal on interval.
      *
      * @param integer $interval Interval
-     *
-     * @return \Generator
      */
-    private function testGenerator(int $interval)
+    private function testGenerator(int $interval): void
     {
         delay($interval);
     }
@@ -60,7 +55,7 @@ trait Signal
      * Loop implementation.
      *
      */
-    public function loop(): Generator
+    public function loop(): void
     {
         $this->inited = true;
         try {

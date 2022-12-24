@@ -10,6 +10,7 @@
 
 namespace danog\Loop\Generic;
 
+use Amp\Future;
 use danog\Loop\ResumableSignalLoop;
 
 use function Amp\async;
@@ -29,11 +30,7 @@ use function Amp\async;
  *
  * The loop can be stopped from the outside by signaling `true`.
  *
- * @template T as int|null
- * @template TGenerator as \Generator<mixed,Promise|array<array-key,Promise>,mixed,Promise<T>|T>
- * @template TPromise as Promise<T>
- *
- * @template TCallable as T|TPromise|TGenerator
+ * @psalm-type TCallableReturn=int|null|Future<int|null>
  *
  * @author Daniil Gentili <daniil@daniil.it>
  */
@@ -56,36 +53,27 @@ class GenericLoop extends ResumableSignalLoop
      *
      * @var callable
      *
-     * @psalm-var callable():TCallable
+     * @psalm-var callable():TCallableReturn
      */
     protected $callable;
-    /**
-     * Loop name.
-     *
-     * @var string
-     */
-    protected $name;
     /**
      * Constructor.
      *
      * If possible, the callable will be bound to the current instance of the loop.
      *
-     * @param callable $callable Callable to run
+     * @param callable():TCallableReturn $callable Callable to run
      * @param string   $name     Loop name
-     *
-     * @psalm-param callable():TCallable $callable Callable to run
      */
-    public function __construct(callable $callable, string $name)
+    public function __construct(callable $callable, protected string $name)
     {
         if ($callable instanceof \Closure) {
             try {
                 $callable = $callable->bindTo($this);
-            } catch (\Throwable $e) {
+            } catch (\Throwable) {
                 // Might cause an error for wrapped object methods
             }
         }
         $this->callable = $callable;
-        $this->name = $name;
     }
     /**
      * Loop implementation.
@@ -94,21 +82,15 @@ class GenericLoop extends ResumableSignalLoop
     {
         $callable = $this->callable;
         while (true) {
-            /** @psalm-var ?int|TGenerator|TPromise */
             $timeout = $callable();
-            if ($timeout instanceof \Generator) {
-                /** @psalm-var ?int */
-                $timeout = $timeout;
-            } elseif ($timeout instanceof Promise) {
-                /** @psalm-var ?int */
-                $timeout = $timeout;
+            if ($timeout instanceof Future) {
+                $timeout = $timeout->await();
             }
             if ($timeout === self::PAUSE) {
                 $this->reportPause(0);
             } elseif ($timeout > 0) {
                 $this->reportPause($timeout);
             }
-            /** @psalm-suppress MixedArgument */
             if ($timeout === self::STOP || $this->waitSignal(async(fn () => $this->pause($timeout)))) {
                 break;
             }

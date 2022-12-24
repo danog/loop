@@ -33,10 +33,8 @@ class MyLoop extends Loop
     }
     /**
      * Main loop.
-     *
-     * @return \Generator
      */
-    public function loop()
+    public function loop(): void
     {
         $callable = $this->callable;
 

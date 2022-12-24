@@ -10,7 +10,6 @@
 namespace danog\Loop\Test\Traits;
 
 use danog\Loop\Test\LoopTest;
-use Generator;
 
 use function Amp\delay;
 
@@ -31,8 +30,6 @@ trait Basic
     private $ran = false;
     /**
      * Check whether the loop inited.
-     *
-     * @return boolean
      */
     public function inited(): bool
     {
@@ -40,8 +37,6 @@ trait Basic
     }
     /**
      * Check whether the loop ran.
-     *
-     * @return boolean
      */
     public function ran(): bool
     {
@@ -49,9 +44,8 @@ trait Basic
     }
     /**
      * Loop implementation.
-     *
      */
-    public function loop(): Generator
+    public function loop(): void
     {
         $this->inited = true;
         delay(100);

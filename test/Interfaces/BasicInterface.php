@@ -21,14 +21,10 @@ interface BasicInterface extends LoopInterface, LoggingInterface
 {
     /**
      * Check whether the loop inited.
-     *
-     * @return boolean
      */
     public function inited(): bool;
     /**
      * Check whether the loop ran.
-     *
-     * @return boolean
      */
     public function ran(): bool;
 }

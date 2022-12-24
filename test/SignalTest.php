@@ -24,11 +24,11 @@ class SignalTest extends Fixtures
      *
      * @param SignalInterface $loop Loop
      *
-     * @return \Generator
+     *
      *
      * @dataProvider provideSignal
      */
-    public function testSignal(SignalInterface $loop)
+    public function testSignal(SignalInterface $loop): void
     {
         $loop->setInterval(500); // Wait 0.5 seconds before returning null
 

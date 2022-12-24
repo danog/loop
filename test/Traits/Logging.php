@@ -45,8 +45,6 @@ trait Logging
 
     /**
      * Get start counter.
-     *
-     * @return integer
      */
     public function startCounter(): int
     {
@@ -54,8 +52,6 @@ trait Logging
     }
     /**
      * Get end counter.
-     *
-     * @return integer
      */
     public function endCounter(): int
     {
