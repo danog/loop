@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Resumable loop test.
  *
@@ -89,7 +89,6 @@ class ResumableTest extends Fixtures
         $this->assertTrue($loop->start());
         $this->assertAfterStart($loop);
 
-
         delay(1);
         $this->assertTrue(self::isResolved($paused)); // Did pause
 
@@ -124,7 +123,6 @@ class ResumableTest extends Fixtures
         $this->assertTrue($loop->start());
         $this->assertAfterStart($loop);
 
-
         delay(1);
         $this->assertTrue(self::isResolved($paused1)); // Did pause
         $this->assertTrue(self::isResolved($paused2)); // Did pause
@@ -143,7 +141,6 @@ class ResumableTest extends Fixtures
     /**
      * Provide resumable loop implementations.
      *
-     * @return array
      *
      * @psalm-return array<int, array<int, ResumableInterface>>
      */

@@ -9,7 +9,6 @@
 
 namespace danog\Loop\Generic;
 
-use Amp\Promise;
 use danog\Loop\ResumableSignalLoop;
 
 use function Amp\async;

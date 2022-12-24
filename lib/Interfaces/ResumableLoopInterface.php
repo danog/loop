@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Resumable loop interface.
@@ -10,7 +10,7 @@
 
 namespace danog\Loop\Interfaces;
 
-use Amp\Promise;
+use Amp\Future;
 
 /**
  * Resumable loop interface.
@@ -23,22 +23,18 @@ interface ResumableLoopInterface extends LoopInterface
      * Pause the loop.
      *
      * @param ?int $time Milliseconds for how long to pause the loop, if null will pause forever (until resume is called from outside of the loop)
-     *
-     * @return Promise Resolved when the loop is resumed
      */
-    public function pause(?int $time = null): Promise;
+    public function pause(?int $time = null): void;
     /**
      * Resume the loop.
-     *
-     * @return Promise Resolved when the loop is paused again
      */
-    public function resume(): Promise;
+    public function resume(): Future;
     /**
      * Defer resuming the loop to next tick.
      *
      * @return Promise Resolved when the loop is paused again
      */
-    public function resumeDefer(): Promise;
+    public function resumeDefer(): Future;
     /**
      * Defer resuming the loop to next tick.
      *
@@ -46,5 +42,5 @@ interface ResumableLoopInterface extends LoopInterface
      *
      * @return Promise Resolved when the loop is paused again
      */
-    public function resumeDeferOnce(): Promise;
+    public function resumeDeferOnce(): Future;
 }

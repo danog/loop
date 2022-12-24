@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Loop test.
  *
@@ -45,7 +45,6 @@ class LoopTest extends Fixtures
      *
      * @param BasicInterface $loop Loop
      *
-     * @return void
      *
      * @dataProvider provideBasicExceptions
      */
@@ -66,7 +65,6 @@ class LoopTest extends Fixtures
     /**
      * Provide loop implementations.
      *
-     * @return array
      */
     public function provideBasic(): array
     {
@@ -88,7 +86,6 @@ class LoopTest extends Fixtures
     /**
      * Provide loop implementations.
      *
-     * @return array
      */
     public function provideBasicExceptions(): array
     {

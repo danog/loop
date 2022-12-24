@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Loop test trait.
  *
@@ -50,7 +50,6 @@ trait Basic
     /**
      * Loop implementation.
      *
-     * @return Generator
      */
     public function loop(): Generator
     {
@@ -61,7 +60,6 @@ trait Basic
     /**
      * Get loop name.
      *
-     * @return string
      */
     public function __toString(): string
     {

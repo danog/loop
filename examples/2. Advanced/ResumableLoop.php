@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Amp\Loop as AmpLoop;
 use danog\Loop\ResumableLoop;
 
 use function Amp\delay;
@@ -43,7 +42,6 @@ class MyLoop extends ResumableLoop
     /**
      * Started loop.
      *
-     * @return void
      */
     protected function startedLoop(): void
     {
@@ -53,7 +51,6 @@ class MyLoop extends ResumableLoop
     /**
      * Exited loop.
      *
-     * @return void
      */
     protected function exitedLoop(): void
     {
@@ -65,7 +62,6 @@ class MyLoop extends ResumableLoop
     /**
      * Get loop name.
      *
-     * @return string
      */
     public function __toString(): string
     {
@@ -73,15 +69,15 @@ class MyLoop extends ResumableLoop
     }
 }
 
-    $loops = [];
-    for ($x = 0; $x < 10; $x++) {
-        $loop = new MyLoop("Loop number $x");
-        $loop->start();
-        delay(100);
-        $loops []= $loop;
-    }
-    delay(5000);
-    echo "Resuming prematurely all loops!".PHP_EOL;
-    foreach ($loops as $loop) {
-        $loop->resume();
-    }
+$loops = [];
+for ($x = 0; $x < 10; $x++) {
+    $loop = new MyLoop("Loop number $x");
+    $loop->start();
+    delay(100);
+    $loops []= $loop;
+}
+delay(5000);
+echo "Resuming prematurely all loops!".PHP_EOL;
+foreach ($loops as $loop) {
+    $loop->resume();
+}

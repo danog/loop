@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Loop interface.
@@ -22,7 +22,6 @@ interface LoopInterface
      *
      * Returns false if the loop is already running.
      *
-     * @return bool
      */
     public function start(): bool;
     /**
@@ -34,7 +33,6 @@ interface LoopInterface
     /**
      * Get name of the loop.
      *
-     * @return string
      */
     public function __toString(): string;
     /**

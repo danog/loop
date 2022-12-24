@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Signal loop test interface.
@@ -22,7 +22,6 @@ interface SignalInterface extends BasicInterface, IntervalInterface, SignalLoopI
     /**
      * Get signaled payload.
      *
-     * @return mixed
      */
     public function getPayload();
     /**

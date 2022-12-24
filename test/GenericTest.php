@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Loop test.
  *
@@ -9,8 +9,8 @@
 
 namespace danog\Loop\Test;
 
+use Amp\Future;
 use Amp\PHPUnit\AsyncTestCase;
-use Amp\Promise;
 use Amp\Success;
 use danog\Loop\Generic\GenericLoop;
 use danog\Loop\Loop;
@@ -118,7 +118,7 @@ class GenericTest extends AsyncTestCase
     {
         $runCount = 0;
         $pauseTime = GenericLoop::PAUSE;
-        $callable = function () use (&$runCount, &$pauseTime, &$zis): Promise {
+        $callable = function () use (&$runCount, &$pauseTime, &$zis): Future {
             $zis = $this;
             $runCount++;
             return new Success($pauseTime);
@@ -127,7 +127,7 @@ class GenericTest extends AsyncTestCase
         $obj = new class() {
             public $pauseTime = GenericLoop::PAUSE;
             public $runCount = 0;
-            public function run(): Promise
+            public function run(): Future
             {
                 $this->runCount++;
                 return new Success($this->pauseTime);
@@ -137,7 +137,7 @@ class GenericTest extends AsyncTestCase
         $obj = new class() {
             public $pauseTime = GenericLoop::PAUSE;
             public $runCount = 0;
-            public function run(): Promise
+            public function run(): Future
             {
                 $this->runCount++;
                 return new Success($this->pauseTime);
@@ -150,7 +150,6 @@ class GenericTest extends AsyncTestCase
      *
      * @param LoggingPauseInterface $loop Loop
      *
-     * @return void
      */
     private function fixtureStarted(LoggingPauseInterface $loop): void
     {
@@ -247,7 +246,6 @@ class GenericTest extends AsyncTestCase
     /**
      * Provide true false.
      *
-     * @return array
      */
     public function provideTrueFalse(): array
     {

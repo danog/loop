@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Signal loop interface.
@@ -10,7 +10,7 @@
 
 namespace danog\Loop\Interfaces;
 
-use Amp\Promise;
+use Amp\Future;
 
 /**
  * Signal loop interface.
@@ -24,22 +24,14 @@ interface SignalLoopInterface extends LoopInterface
      *
      * @param \Throwable|mixed $data Signal to send
      *
-     * @return void
      */
     public function signal($data): void;
     /**
-     * Resolve the promise or return|throw the signal.
-     *
-     * @param Promise|\Generator $promise The original promise or generator
-     *
-     * @return Promise
-     *
      * @template T
      *
-     * @psalm-param Promise<T>|\Generator<mixed,Promise|array<array-key,
-     *     Promise>,mixed,Promise<T>|T> $promise The original promise or generator
+     * @param Future<T> $future
      *
-     * @psalm-return Promise<T|mixed>
+     * @return T|mixed
      */
-    public function waitSignal($promise): Promise;
+    public function waitSignal(?Future $future = null): mixed;
 }

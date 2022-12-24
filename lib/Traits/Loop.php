@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Loop helper trait.
  *
@@ -9,10 +9,7 @@
 
 namespace danog\Loop\Traits;
 
-use Amp\Promise;
-
 use function Amp\async;
-use function Amp\asyncCall;
 
 /**
  * Loop helper trait.
@@ -34,7 +31,6 @@ trait Loop
      *
      * Returns false if the loop is already running.
      *
-     * @return bool
      */
     public function start(): bool
     {
@@ -54,7 +50,6 @@ trait Loop
     /**
      * Signal that loop has exIited.
      *
-     * @return void
      */
     protected function exitedLoop(): void
     {
@@ -63,7 +58,6 @@ trait Loop
     /**
      * Signal that loop has started.
      *
-     * @return void
      */
     protected function startedLoop(): void
     {

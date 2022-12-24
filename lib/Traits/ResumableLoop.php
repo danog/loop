@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Loop helper trait.
@@ -13,8 +13,6 @@ namespace danog\Loop\Traits;
 use Amp\Deferred;
 use Amp\DeferredFuture;
 use Amp\Future;
-use Amp\Success;
-use Closure;
 use Revolt\EventLoop;
 
 /**
@@ -63,7 +61,7 @@ trait ResumableLoop
                 $this->resumeTimer = null;
             }
             /** @psalm-suppress MixedArgumentTypeCoercion */
-            $this->resumeTimer = EventLoop::delay($time, $this->resumeInternal(...));
+            $this->resumeTimer = EventLoop::delay($time/1000, $this->resumeInternal(...));
         }
 
         $pause = $this->pause;
@@ -77,7 +75,7 @@ trait ResumableLoop
         }
 
         $this->resume = new DeferredFuture();
-        return $this->resume->getFuture();
+        $this->resume->getFuture()->await();
     }
     /**
      * Resume the loop.
@@ -116,7 +114,7 @@ trait ResumableLoop
     public function resumeDeferOnce(): Future
     {
         if (!$this->resumeDeferred) {
-            $this->resumeDeferred = EventLoop::defer(function () {
+            $this->resumeDeferred = EventLoop::defer(function (): void {
                 $this->resumeDeferred = null;
                 $this->resumeInternal();
             });
@@ -128,8 +126,6 @@ trait ResumableLoop
     }
     /**
      * Internal resume function.
-     *
-     * @return void
      */
     private function resumeInternal(): void
     {
@@ -141,14 +137,13 @@ trait ResumableLoop
         if ($this->resume) {
             $resume = $this->resume;
             $this->resume = null;
-            $resume->resolve();
+            $resume->complete();
         }
     }
 
     /**
      * Signal that loop has exIited.
      *
-     * @return void
      */
     protected function exitedLoop(): void
     {

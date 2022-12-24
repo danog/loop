@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Loop test.
  *
@@ -9,8 +9,8 @@
 
 namespace danog\Loop\Test;
 
+use Amp\Future;
 use Amp\PHPUnit\AsyncTestCase;
-use Amp\Promise;
 use Amp\Success;
 use danog\Loop\Generic\PeriodicLoop;
 use danog\Loop\Loop;
@@ -118,7 +118,7 @@ class PeriodicTest extends AsyncTestCase
     {
         $runCount = 0;
         $retValue = false;
-        $callable = function () use (&$runCount, &$retValue, &$zis): Promise {
+        $callable = function () use (&$runCount, &$retValue, &$zis): Future {
             $zis = $this;
             $runCount++;
             return new Success($retValue);
@@ -127,7 +127,7 @@ class PeriodicTest extends AsyncTestCase
         $obj = new class() {
             public $retValue = false;
             public $runCount = 0;
-            public function run(): Promise
+            public function run(): Future
             {
                 $this->runCount++;
                 return new Success($this->retValue);
@@ -137,7 +137,7 @@ class PeriodicTest extends AsyncTestCase
         $obj = new class() {
             public $retValue = false;
             public $runCount = 0;
-            public function run(): Promise
+            public function run(): Future
             {
                 $this->runCount++;
                 return new Success($this->retValue);
@@ -150,7 +150,6 @@ class PeriodicTest extends AsyncTestCase
      *
      * @param LoggingInterface $loop Loop
      *
-     * @return void
      */
     private function fixtureStarted(LoggingInterface $loop): void
     {
@@ -227,7 +226,6 @@ class PeriodicTest extends AsyncTestCase
     /**
      * Provide true false.
      *
-     * @return array
      */
     public function provideTrueFalse(): array
     {

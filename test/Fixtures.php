@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Loop test.
  *
@@ -10,7 +10,6 @@
 namespace danog\Loop\Test;
 
 use Amp\PHPUnit\AsyncTestCase;
-use Amp\Promise;
 use danog\Loop\Test\Interfaces\BasicInterface;
 
 /**
@@ -29,7 +28,7 @@ abstract class Fixtures extends AsyncTestCase
     protected static function isResolved(Promise $promise): bool
     {
         $resolved = false;
-        $promise->onResolve(static function ($e, $res) use (&$resolved) {
+        $promise->onResolve(static function ($e, $res) use (&$resolved): void {
             if ($e) {
                 throw $e;
             }
@@ -42,9 +41,8 @@ abstract class Fixtures extends AsyncTestCase
      *
      * @param BasicInterface $loop Loop
      *
-     * @return void
      */
-    protected function assertPreStart(BasicInterface $loop)
+    protected function assertPreStart(BasicInterface $loop): void
     {
         $this->assertEquals(self::LOOP_NAME, "$loop");
 
@@ -62,9 +60,8 @@ abstract class Fixtures extends AsyncTestCase
      * @param BasicInterface $loop    Loop
      * @param bool           $running Whether we should expect the loop to be running
      *
-     * @return void
      */
-    protected function assertAfterStart(BasicInterface $loop, bool $running = true)
+    protected function assertAfterStart(BasicInterface $loop, bool $running = true): void
     {
         $this->assertTrue($loop->inited());
 
@@ -83,9 +80,8 @@ abstract class Fixtures extends AsyncTestCase
      *
      * @param BasicInterface $loop Loop
      *
-     * @return void
      */
-    protected function assertFinal(BasicInterface $loop)
+    protected function assertFinal(BasicInterface $loop): void
     {
         $this->assertTrue($loop->ran());
         $this->assertFalse($loop->isRunning());

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Resumable test trait.
  *
@@ -20,7 +20,6 @@ trait Signal
     /**
      * Signaled payload.
      *
-     * @var mixed
      */
     private $payload;
     /**
@@ -32,7 +31,6 @@ trait Signal
     /**
      * Get signaled payload.
      *
-     * @return mixed
      */
     public function getPayload()
     {
@@ -61,7 +59,6 @@ trait Signal
     /**
      * Loop implementation.
      *
-     * @return Generator
      */
     public function loop(): Generator
     {

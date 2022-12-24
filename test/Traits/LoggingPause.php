@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Loop test trait.
  *
@@ -50,7 +50,6 @@ trait LoggingPause
      *
      * @param integer $timeout Pause duration, 0 = forever
      *
-     * @return void
      */
     protected function reportPause(int $timeout): void
     {

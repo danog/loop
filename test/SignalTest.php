@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Signal loop test.
  *
@@ -71,7 +71,6 @@ class SignalTest extends Fixtures
     /**
      * Provide resumable loop implementations.
      *
-     * @return array
      */
     public function provideSignal(): array
     {

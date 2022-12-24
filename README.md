@@ -92,8 +92,8 @@ namespace danog\Loop;
 
 abstract class ResumableLoop extends Loop
 {
-    public function pause(?int $time = null): Promise;
-    public function resume(): Promise;
+    public function pause(?int $time = null): Future;
+    public function resume(): Future;
 }
 ```
 
@@ -121,7 +121,7 @@ namespace danog\Loop;
 abstract class SignalLoop extends Loop
 {
     public function signal($what): void;
-    public function waitSignal($promise): Promise;
+    public function waitSignal($promise): Future;
 }
 
 ```

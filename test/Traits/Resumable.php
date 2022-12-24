@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Resumable test trait.
  *
@@ -25,7 +25,6 @@ trait Resumable
      *
      * @param ?int $interval Interval
      *
-     * @return void
      */
     public function setInterval(?int $interval): void
     {
@@ -34,7 +33,6 @@ trait Resumable
     /**
      * Loop implementation.
      *
-     * @return Generator
      */
     public function loop(): Generator
     {

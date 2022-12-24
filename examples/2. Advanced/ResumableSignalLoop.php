@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
@@ -44,7 +44,6 @@ class ResSigLoop extends ResumableSignalLoop
     /**
      * Get loop name.
      *
-     * @return string
      */
     public function __toString(): string
     {
@@ -52,22 +51,22 @@ class ResSigLoop extends ResumableSignalLoop
     }
 }
 
-    /** @var ResSigLoop[] */
-    $loops = [];
-    for ($x = 0; $x < 10; $x++) {
-        $loop = new ResSigLoop("Loop number $x");
-        $loop->start();
-        delay(100);
-        $loops []= $loop;
-    }
-    delay(5000);
-    echo "Resuming prematurely all loops!".PHP_EOL;
-    foreach ($loops as $loop) {
-        $loop->resume();
-    }
-    echo "OK done, waiting 5 more seconds!".PHP_EOL;
-    delay(5000);
-    echo "Closing all loops!".PHP_EOL;
-    foreach ($loops as $loop) {
-        $loop->signal(true);
-    }
+/** @var ResSigLoop[] */
+$loops = [];
+for ($x = 0; $x < 10; $x++) {
+    $loop = new ResSigLoop("Loop number $x");
+    $loop->start();
+    delay(100);
+    $loops []= $loop;
+}
+delay(5000);
+echo "Resuming prematurely all loops!".PHP_EOL;
+foreach ($loops as $loop) {
+    $loop->resume();
+}
+echo "OK done, waiting 5 more seconds!".PHP_EOL;
+delay(5000);
+echo "Closing all loops!".PHP_EOL;
+foreach ($loops as $loop) {
+    $loop->signal(true);
+}

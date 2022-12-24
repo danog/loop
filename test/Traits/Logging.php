@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Loop test trait.
  *
@@ -27,7 +27,6 @@ trait Logging
     /**
      * Signal that loop started.
      *
-     * @return void
      */
     protected function startedLoop(): void
     {
@@ -37,7 +36,6 @@ trait Logging
     /**
      * Signal that loop ended.
      *
-     * @return void
      */
     protected function exitedLoop(): void
     {

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Resumable loop test interface.
@@ -22,7 +22,6 @@ interface IntervalInterface
      *
      * @param ?int $interval Interval
      *
-     * @return void
      */
     public function setInterval(?int $interval): void;
 }

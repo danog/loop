@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Exception test trait.
  *
@@ -17,7 +17,6 @@ trait BasicException
     /**
      * Loop implementation.
      *
-     * @return Generator
      */
     public function loop(): Generator
     {

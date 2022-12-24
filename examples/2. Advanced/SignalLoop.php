@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
@@ -44,7 +44,6 @@ class SigLoop extends SignalLoop
     /**
      * Get loop name.
      *
-     * @return string
      */
     public function __toString(): string
     {
@@ -52,17 +51,16 @@ class SigLoop extends SignalLoop
     }
 }
 
-    /** @var SigLoop[] */
-    $loops = [];
-    for ($x = 0; $x < 10; $x++) {
-        $loop = new SigLoop("Loop number $x");
-        $loop->start();
-        delay(100);
-        $loops []= $loop;
-    }
-    delay(5000);
-    echo "Closing all loops!".PHP_EOL;
-    foreach ($loops as $loop) {
-        $loop->signal(true);
-    }
-
+/** @var SigLoop[] */
+$loops = [];
+for ($x = 0; $x < 10; $x++) {
+    $loop = new SigLoop("Loop number $x");
+    $loop->start();
+    delay(100);
+    $loops []= $loop;
+}
+delay(5000);
+echo "Closing all loops!".PHP_EOL;
+foreach ($loops as $loop) {
+    $loop->signal(true);
+}
