@@ -14,6 +14,7 @@ use danog\Loop\ResumableLoop;
 use danog\Loop\ResumableSignalLoop;
 use danog\Loop\Test\Interfaces\ResumableInterface;
 use danog\Loop\Test\Traits\Resumable;
+use Generator;
 
 use function Amp\delay;
 
@@ -37,7 +38,7 @@ class ResumableTest extends Fixtures
         $this->assertAfterStart($loop);
 
         delay(0.010);
-        $this->assertTrue(self::isResolved($paused));
+        $this->assertTrue($paused->isComplete());
         delay(0.1);
 
         $this->assertFinal($loop);
@@ -60,7 +61,7 @@ class ResumableTest extends Fixtures
         $this->assertTrue($loop->start());
 
         delay(0.001);
-        $this->assertFalse(self::isResolved($paused)); // Did not pause
+        $this->assertFalse($paused->isComplete()); // Did not pause
 
         // Invert the order as the afterTest assertions will begin the test anew
         $this->assertFinal($loop);
@@ -90,7 +91,7 @@ class ResumableTest extends Fixtures
         $this->assertAfterStart($loop);
 
         delay(0.001);
-        $this->assertTrue(self::isResolved($paused)); // Did pause
+        $this->assertTrue($paused->isComplete()); // Did pause
 
         $paused = $deferred ? $loop->resumeDefer() : $loop->resume();
         if ($deferred) {
@@ -100,7 +101,7 @@ class ResumableTest extends Fixtures
         $this->assertFinal($loop);
 
         delay(0.001);
-        $this->assertFalse(self::isResolved($paused)); // Did not pause again
+        $this->assertFalse($paused->isComplete()); // Did not pause again
     }
 
     /**
@@ -124,18 +125,22 @@ class ResumableTest extends Fixtures
         $this->assertAfterStart($loop);
 
         delay(0.001);
-        $this->assertTrue(self::isResolved($paused1)); // Did pause
-        $this->assertTrue(self::isResolved($paused2)); // Did pause
+        $this->assertTrue($paused1->isComplete()); // Did pause
+        $this->assertTrue($paused2->isComplete()); // Did pause
 
         $paused1 = $loop->resumeDeferOnce();
         $paused2 = $loop->resumeDeferOnce();
-        $this->assertAfterStart($loop);
+
+        $this->assertFalse($paused1->isComplete()); // Did not pause again
+        $this->assertFalse($paused2->isComplete()); // Did not pause again
+
+        $this->assertAfterStart($loop, true, false);
         delay(0.001);
         $this->assertFinal($loop);
 
         delay(0.001);
-        $this->assertFalse(self::isResolved($paused1)); // Did not pause again
-        $this->assertFalse(self::isResolved($paused2)); // Did not pause again
+        $this->assertFalse($paused1->isComplete()); // Did not pause again
+        $this->assertFalse($paused2->isComplete()); // Did not pause again
     }
 
     /**
@@ -160,14 +165,14 @@ class ResumableTest extends Fixtures
      *
      *
      */
-    public function provideResumableInterval(): void
+    public function provideResumableInterval(): Generator
     {
         foreach ([true, false] as $deferred) {
             foreach ([10000, null] as $interval) {
                 foreach ($this->provideResumable() as $params) {
                     $params[] = $interval;
                     $params[] = $deferred;
-                    $params;
+                    yield $params;
                 }
             }
         }

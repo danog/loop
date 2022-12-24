@@ -43,13 +43,14 @@ class LoopTest extends Fixtures
     /**
      * Test basic exception in loop.
      *
-     * @param BasicInterface $loop Loop
      *
      *
      * @dataProvider provideBasicExceptions
      */
-    /*public function testException(BasicInterface $loop): void
+    public function testException(BasicInterface $loop): void
     {
+        $this->markTestSkipped();
+
         $this->expectException(\RuntimeException::class);
 
         $this->assertPreStart($loop);
@@ -61,7 +62,7 @@ class LoopTest extends Fixtures
 
         $this->assertEquals(1, $loop->startCounter());
         $this->assertEquals(1, $loop->endCounter());
-    }*/
+    }
 
     /**
      * Provide loop implementations.

@@ -9,11 +9,9 @@
 
 namespace danog\Loop\Test;
 
-use Amp\Future;
 use Amp\PHPUnit\AsyncTestCase;
 use danog\Loop\Test\Interfaces\BasicInterface;
 
-use function Amp\async;
 use function Amp\delay;
 
 /**
@@ -22,13 +20,6 @@ use function Amp\delay;
 abstract class Fixtures extends AsyncTestCase
 {
     const LOOP_NAME = 'TTTT';
-    /**
-     * Check if promise has been resolved afterwards.
-     */
-    protected static function isResolved(Future $promise): bool
-    {
-        return $promise->isComplete();
-    }
     /**
      * Execute pre-start assertions.
      *
@@ -52,11 +43,14 @@ abstract class Fixtures extends AsyncTestCase
      *
      * @param BasicInterface $loop    Loop
      * @param bool           $running Whether we should expect the loop to be running
+     * @param bool           $running Whether we should actually start the loop by returning control to the event loop
      *
      */
-    protected function assertAfterStart(BasicInterface $loop, bool $running = true): void
+    protected function assertAfterStart(BasicInterface $loop, bool $running = true, bool $start = true): void
     {
-        delay(0.001);
+        if ($start) {
+            delay(0.001);
+        }
         $this->assertTrue($loop->inited());
 
         if ($running) {
