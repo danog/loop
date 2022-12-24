@@ -11,13 +11,14 @@ namespace danog\Loop;
 
 use danog\Loop\Interfaces\LoopInterface;
 use danog\Loop\Traits\Loop as TraitsLoop;
+use Stringable;
 
 /**
  * Loop abstract class.
  *
  * @author Daniil Gentili <daniil@daniil.it>
  */
-abstract class Loop implements LoopInterface
+abstract class Loop implements LoopInterface, Stringable
 {
     use TraitsLoop;
 }
