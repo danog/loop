@@ -36,7 +36,7 @@ class LoopTest extends Fixtures
         $this->assertTrue($loop->start());
         $this->assertAfterStart($loop);
 
-        delay(110);
+        delay(0.110);
 
         $this->assertFinal($loop);
     }

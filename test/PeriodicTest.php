@@ -77,7 +77,7 @@ class PeriodicTest extends AsyncTestCase
         $retValue = false;
         $callable = function () use (&$runCount, &$retValue, &$zis) {
             $zis = $this;
-            delay(1);
+            delay(0.001);
             $runCount++;
             return $retValue;
         };
@@ -87,7 +87,7 @@ class PeriodicTest extends AsyncTestCase
             public $runCount = 0;
             public function run()
             {
-                delay(1);
+                delay(0.001);
                 $this->runCount++;
                 return $this->retValue;
             }
@@ -98,7 +98,7 @@ class PeriodicTest extends AsyncTestCase
             public $runCount = 0;
             public function run()
             {
-                delay(1);
+                delay(0.001);
                 $this->runCount++;
                 return $this->retValue;
             }
@@ -189,7 +189,7 @@ class PeriodicTest extends AsyncTestCase
         $this->assertEquals(0, $runCount);
 
         $loop->start();
-        delay(2);
+        delay(0.002);
         if ($checkZis) {
             $this->assertEquals($loop, $zis);
         } else {
@@ -199,18 +199,18 @@ class PeriodicTest extends AsyncTestCase
 
         $this->assertEquals(1, $runCount);
 
-        delay(48);
+        delay(0.048);
         $this->fixtureStarted($loop);
 
         $this->assertEquals(1, $runCount);
 
-        delay(60);
+        delay(0.060);
         $this->fixtureStarted($loop);
 
         $this->assertEquals(2, $runCount);
 
         $loop->resume();
-        delay(1);
+        delay(0.001);
 
         $this->assertEquals(3, $runCount);
 
@@ -220,7 +220,7 @@ class PeriodicTest extends AsyncTestCase
             $retValue = true;
             $loop->resume();
         }
-        delay(1);
+        delay(0.001);
         $this->assertEquals($stopSig ? 3 : 4, $runCount);
 
         $this->assertFalse($loop->isRunning());
