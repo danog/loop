@@ -64,6 +64,7 @@ trait ResumableLoop
         }
 
         $pause = $this->pause;
+        /** @var DeferredFuture<null> */
         $this->pause = new DeferredFuture();
         if ($pause) {
             $pause = $pause->getFuture();
@@ -73,6 +74,7 @@ trait ResumableLoop
             EventLoop::defer($pause->complete(...));
         }
 
+        /** @var DeferredFuture<null> */
         $this->resume = new DeferredFuture();
         $this->resume->getFuture()->await();
     }
@@ -84,6 +86,7 @@ trait ResumableLoop
     public function resume(): Future
     {
         if (!$this->pause) {
+            /** @var DeferredFuture<null> */
             $this->pause = new DeferredFuture;
         }
         $promise = $this->pause->getFuture();
@@ -99,6 +102,7 @@ trait ResumableLoop
     {
         EventLoop::defer($this->resumeInternal(...));
         if (!$this->pause) {
+            /** @var DeferredFuture<null> */
             $this->pause = new DeferredFuture;
         }
         return $this->pause->getFuture();
@@ -119,6 +123,7 @@ trait ResumableLoop
             });
         }
         if (!$this->pause) {
+            /** @var DeferredFuture<null> */
             $this->pause = new DeferredFuture;
         }
         return $this->pause->getFuture();

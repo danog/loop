@@ -27,7 +27,7 @@ trait SignalLoop
      *
      * @var ?DeferredFuture
      */
-    private ?DeferredFuture $signalDeferred;
+    private ?DeferredFuture $signalDeferred = null;
     /**
      * Send signal to loop.
      *
