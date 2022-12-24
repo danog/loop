@@ -95,9 +95,9 @@ class ResumableTest extends Fixtures
 
         $paused = $deferred ? $loop->resumeDefer() : $loop->resume();
         if ($deferred) {
-            $this->assertAfterStart($loop);
-            delay(0.001);
+            $this->assertAfterStart($loop, true, false);
         }
+        delay(0.001);
         $this->assertFinal($loop);
 
         delay(0.001);
