@@ -66,7 +66,6 @@ trait ResumableLoop
         /** @var DeferredFuture<null> */
         $this->pause = new DeferredFuture();
         if ($pause) {
-            $pause = $pause->getFuture();
             EventLoop::defer(function () use ($pause): void { $pause->complete(); });
         }
 

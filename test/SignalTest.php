@@ -37,23 +37,28 @@ class SignalTest extends Fixtures
         $this->assertAfterStart($loop);
 
         $loop->signal(true);
+        delay(0.001);
         $this->assertTrue($loop->getPayload());
         $this->assertAfterStart($loop);
 
         $loop->signal(false);
+        delay(0.001);
         $this->assertFalse($loop->getPayload());
         $this->assertAfterStart($loop);
 
         $loop->signal(null);
+        delay(0.001);
         $this->assertNull($loop->getPayload());
         $this->assertAfterStart($loop);
 
         $loop->signal("test");
+        delay(0.001);
         $this->assertEquals("test", $loop->getPayload());
         $this->assertAfterStart($loop);
 
         $loop->signal($obj = new class {
         });
+        delay(0.001);
         $this->assertEquals($obj, $loop->getPayload());
         $this->assertAfterStart($loop);
 
@@ -63,6 +68,7 @@ class SignalTest extends Fixtures
         $this->assertNull($loop->getPayload()); // Result of sleep
 
         $loop->signal($e = new \RuntimeException('Test'));
+        delay(0.001);
         $this->assertEquals($e, $loop->getException());
         $this->assertFinal($loop);
         $loop = null;

@@ -21,18 +21,13 @@ use function Amp\delay;
  */
 abstract class Fixtures extends AsyncTestCase
 {
-    const LOOP_NAME = 'PONY';
+    const LOOP_NAME = 'TTTT';
     /**
      * Check if promise has been resolved afterwards.
      */
     protected static function isResolved(Future $promise): bool
     {
-        $resolved = false;
-        async(function () use ($promise, &$resolved): void {
-            $promise->await();
-            $resolved = true;
-        });
-        return $resolved;
+        return $promise->isComplete();
     }
     /**
      * Execute pre-start assertions.
