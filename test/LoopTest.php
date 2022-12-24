@@ -54,6 +54,7 @@ class LoopTest extends Fixtures
 
         $this->assertPreStart($loop);
         $this->assertTrue($loop->start());
+        delay(0.001);
         $this->assertFalse($loop->isRunning());
 
         $this->assertTrue($loop->inited());

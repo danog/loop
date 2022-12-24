@@ -57,7 +57,7 @@ class SignalTest extends Fixtures
         $this->assertEquals($obj, $loop->getPayload());
         $this->assertAfterStart($loop);
 
-        $loop->setInterval(0.1); // Wait 0.1 seconds before returning null
+        $loop->setInterval(100); // Wait 0.1 seconds before returning null
         $loop->signal(true); // Move along loop to apply new interval
         delay(0.110);
         $this->assertNull($loop->getPayload()); // Result of sleep

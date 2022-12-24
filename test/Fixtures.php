@@ -14,6 +14,7 @@ use Amp\PHPUnit\AsyncTestCase;
 use danog\Loop\Test\Interfaces\BasicInterface;
 
 use function Amp\async;
+use function Amp\delay;
 
 /**
  * Fixtures.
@@ -60,12 +61,13 @@ abstract class Fixtures extends AsyncTestCase
      */
     protected function assertAfterStart(BasicInterface $loop, bool $running = true): void
     {
+        delay(0.001);
         $this->assertTrue($loop->inited());
 
         if ($running) {
             $this->assertFalse($loop->ran());
         }
-        $this->assertEquals($running, $loop->isRunning(), $running);
+        $this->assertEquals($running, $loop->isRunning());
 
         $this->assertEquals(1, $loop->startCounter());
         $this->assertEquals($running ? 0 : 1, $loop->endCounter());

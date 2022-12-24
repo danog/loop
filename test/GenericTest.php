@@ -226,7 +226,7 @@ class GenericTest extends AsyncTestCase
         $this->assertEquals(100, $loop->getLastPause());
 
         $loop->resume();
-        delay(0.001);
+        delay(0.002);
 
         $this->assertEquals(4, $runCount);
         $this->assertEquals(4, $loop->getPauseCount());
@@ -238,7 +238,7 @@ class GenericTest extends AsyncTestCase
             $pauseTime = GenericLoop::STOP;
             $loop->resume();
         }
-        delay(0.001);
+        delay(0.002);
         $this->assertEquals($stopSig ? 4 : 5, $runCount);
         $this->assertEquals(4, $loop->getPauseCount());
         $this->assertEquals(100, $loop->getLastPause());
