@@ -9,7 +9,7 @@ use function Amp\delay;
 /** @var PeriodicLoop[] */
 $loops = [];
 for ($x = 0; $x < 10; $x++) {
-    $callable = function () {
+    $callable = function (): bool {
         static $number = 0;
         echo "$this: $number".PHP_EOL;
         $number++;

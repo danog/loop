@@ -59,7 +59,6 @@ class MyLoop extends ResumableLoop
 
     /**
      * Get loop name.
-     *
      */
     public function __toString(): string
     {
@@ -79,3 +78,4 @@ echo "Resuming prematurely all loops!".PHP_EOL;
 foreach ($loops as $loop) {
     $loop->resume();
 }
+delay(2);

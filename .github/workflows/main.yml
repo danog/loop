@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        php-versions: ["7.1", "7.2", "7.3", "7.4"]
+        php-versions: ["8.1", "8.2"]
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -46,7 +46,7 @@ jobs:
         run: |
           vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml
           vendor/bin/php-cs-fixer --diff --dry-run -v fix
-          vendor/bin/psalm --shepherd
+          vendor/bin/psalm.phar --shepherd
 
       - name: Upload coverage to Codecov
         env: 

@@ -59,7 +59,6 @@ trait ResumableLoop
                 EventLoop::cancel($this->resumeTimer);
                 $this->resumeTimer = null;
             }
-            /** @psalm-suppress MixedArgumentTypeCoercion */
             $this->resumeTimer = EventLoop::delay($time/1000, $this->resumeInternal(...));
         }
 
@@ -68,10 +67,7 @@ trait ResumableLoop
         $this->pause = new DeferredFuture();
         if ($pause) {
             $pause = $pause->getFuture();
-            /**
-             * @psalm-suppress InvalidArgument
-             */
-            EventLoop::defer($pause->complete(...));
+            EventLoop::defer(function () use ($pause): void { $pause->complete(); });
         }
 
         /** @var DeferredFuture<null> */
@@ -146,8 +142,7 @@ trait ResumableLoop
     }
 
     /**
-     * Signal that loop has exIited.
-     *
+     * Signal that loop has exited.
      */
     protected function exitedLoop(): void
     {

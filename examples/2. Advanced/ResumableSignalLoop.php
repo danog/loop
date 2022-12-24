@@ -5,6 +5,7 @@ require 'vendor/autoload.php';
 use Amp\Loop;
 use danog\Loop\ResumableSignalLoop;
 
+use function Amp\async;
 use function Amp\delay;
 
 class ResSigLoop extends ResumableSignalLoop
@@ -31,7 +32,7 @@ class ResSigLoop extends ResumableSignalLoop
     {
         $number = 0;
         while (true) {
-            if ($this->waitSignal($this->pause(1000))) {
+            if ($this->waitSignal(async($this->pause(...), 1000))) {
                 echo "Got exit signal in $this!".PHP_EOL;
                 return;
             }

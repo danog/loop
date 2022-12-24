@@ -11,6 +11,7 @@ namespace danog\Loop\Test\Traits;
 
 use danog\Loop\Interfaces\ResumableLoopInterface;
 
+use function Amp\async;
 use function Amp\delay;
 
 trait Signal
@@ -60,7 +61,7 @@ trait Signal
         $this->inited = true;
         try {
             while (true) {
-                $this->payload = $this->waitSignal($this instanceof ResumableLoopInterface ? $this->pause($this->interval) : $this->testGenerator($this->interval));
+                $this->payload = $this->waitSignal(async(fn () => $this instanceof ResumableLoopInterface ? $this->pause($this->interval) : $this->testGenerator($this->interval)));
             }
         } catch (\Throwable $e) {
             $this->exception = $e;

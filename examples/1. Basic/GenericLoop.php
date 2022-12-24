@@ -9,7 +9,7 @@ use function Amp\delay;
 /** @var GenericLoop[] */
 $loops = [];
 for ($x = 0; $x < 10; $x++) {
-    $callable = function () {
+    $callable = function (): int {
         static $number = 0;
         echo "$this: $number".PHP_EOL;
         $number++;
