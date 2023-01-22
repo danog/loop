@@ -9,6 +9,7 @@
 
 namespace danog\Loop\Test\Traits;
 
+use danog\Loop\Loop;
 use danog\Loop\Test\LoopTest;
 
 use function Amp\delay;
@@ -50,7 +51,7 @@ trait Basic
         $this->inited = true;
         delay(0.1);
         $this->ran = true;
-        return null;
+        return Loop::STOP;
     }
     /**
      * Get loop name.

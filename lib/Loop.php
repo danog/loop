@@ -43,7 +43,7 @@ abstract class Loop implements Stringable
     /**
      * Resume deferred ID.
      */
-    private ?string $resumeDeferred = null;
+    private ?string $resumeImmediate = null;
 
     /**
      * Report pause, can be overriden for logging.
@@ -80,8 +80,8 @@ abstract class Loop implements Stringable
         if (!$this->running) {
             return false;
         }
-        $this->running = false;
         $this->resume();
+        $this->running = false;
         return true;
     }
     abstract protected function loop(): ?float;
@@ -109,7 +109,7 @@ abstract class Loop implements Stringable
         if ($timeout === self::PAUSE) {
             $this->reportPause(0.0);
         } else {
-            if (!$this->resumeDeferred) {
+            if (!$this->resumeImmediate) {
                 \assert($this->resumeTimer === null);
                 $this->resumeTimer = EventLoop::delay($timeout, function (): void {
                     $this->resumeTimer = null;
@@ -128,8 +128,8 @@ abstract class Loop implements Stringable
             EventLoop::cancel($storedWatcherId);
             $this->resumeTimer = null;
         }
-        if ($this->resumeDeferred) {
-            $storedWatcherId = $this->resumeDeferred;
+        if ($this->resumeImmediate) {
+            $storedWatcherId = $this->resumeImmediate;
             EventLoop::cancel($storedWatcherId);
             $this->resumeTimer = null;
         }
@@ -159,19 +159,23 @@ abstract class Loop implements Stringable
 
     /**
      * Resume the loop.
+     *
+     * @return bool Returns false if the loop is not paused.
      */
-    public function resume(): void
+    public function resume(): bool
     {
-        if (!$this->resumeDeferred && $this->running && $this->paused) {
+        if (!$this->resumeImmediate && $this->running && $this->paused) {
             if ($this->resumeTimer) {
                 $timer = $this->resumeTimer;
                 $this->resumeTimer = null;
                 EventLoop::cancel($timer);
             }
-            $this->resumeDeferred = EventLoop::defer(function (): void {
-                $this->resumeDeferred = null;
+            $this->resumeImmediate = EventLoop::defer(function (): void {
+                $this->resumeImmediate = null;
                 $this->loopInternal();
             });
+            return true;
         }
+        return false;
     }
 }

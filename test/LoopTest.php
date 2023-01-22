@@ -9,6 +9,7 @@
 
 namespace danog\Loop\Test;
 
+use Amp\PHPUnit\UnhandledException;
 use danog\Loop\Loop;
 use danog\Loop\Test\Interfaces\BasicInterface;
 use danog\Loop\Test\Traits\Basic;
@@ -40,9 +41,7 @@ class LoopTest extends Fixtures
      */
     public function testException(Loop&BasicInterface $loop): void
     {
-        $this->markTestSkipped();
-
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(UnhandledException::class);
 
         $this->assertPreStart($loop);
         $this->assertTrue($loop->start());

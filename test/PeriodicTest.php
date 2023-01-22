@@ -147,16 +147,16 @@ class PeriodicTest extends AsyncTestCase
 
         $this->assertEquals(2, $runCount);
 
-        $loop->resume();
+        $this->assertTrue($loop->resume());
         delay(0.002);
 
         $this->assertEquals(3, $runCount);
 
         if ($stopSig) {
-            $loop->stop();
+            $this->assertTrue($loop->stop());
         } else {
             $retValue = true;
-            $loop->resume();
+            $this->assertTrue($loop->resume());
         }
         delay(0.002);
         $this->assertEquals($stopSig ? 3 : 4, $runCount);
