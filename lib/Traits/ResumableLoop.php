@@ -22,7 +22,7 @@ use Revolt\EventLoop;
 trait ResumableLoop
 {
     use Loop {
-        exitedLoop as private parentExitedLoop;
+        exitedLoopInternal as private parentExitedLoop;
     }
     /**
      * Resume deferred.
@@ -66,7 +66,7 @@ trait ResumableLoop
         /** @var DeferredFuture<null> */
         $this->pause = new DeferredFuture();
         if ($pause) {
-            EventLoop::defer(function () use ($pause): void { $pause->complete(); });
+            EventLoop::queue($pause->complete(...));
         }
 
         /** @var DeferredFuture<null> */
@@ -95,7 +95,7 @@ trait ResumableLoop
      */
     public function resumeDefer(): Future
     {
-        EventLoop::defer($this->resumeInternal(...));
+        EventLoop::queue($this->resumeInternal(...));
         if (!$this->pause) {
             /** @var DeferredFuture<null> */
             $this->pause = new DeferredFuture;
@@ -143,12 +143,9 @@ trait ResumableLoop
     /**
      * Signal that loop has exited.
      */
-    protected function exitedLoop(): void
+    private function exitedLoopInternal(): void
     {
+        $this->resumeInternal();
         $this->parentExitedLoop();
-        if ($this->resumeTimer) {
-            EventLoop::cancel($this->resumeTimer);
-            $this->resumeTimer = null;
-        }
     }
 }

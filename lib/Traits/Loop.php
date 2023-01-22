@@ -9,7 +9,8 @@
 
 namespace danog\Loop\Traits;
 
-use function Amp\async;
+use danog\Loop\Interfaces\LoopInterface;
+use Revolt\EventLoop;
 
 /**
  * Loop helper trait.
@@ -17,43 +18,51 @@ use function Amp\async;
  * Wraps the asynchronous generator methods with asynchronous promise-based methods
  *
  * @author Daniil Gentili <daniil@daniil.it>
+ *
+ * @psalm-require-implements LoopInterface
  */
 trait Loop
 {
     /**
      * Whether the loop was started.
-     *
-     * @var bool
      */
-    private $started = false;
+    private bool $started = false;
     /**
      * Start the loop.
      *
      * Returns false if the loop is already running.
-     *
      */
     public function start(): bool
     {
         if ($this->started) {
             return false;
         }
-        async(function (): void {
-            $this->startedLoop();
+        EventLoop::queue(function (): void {
+            $this->startedLoopInternal();
             try {
                 $this->loop();
             } finally {
-                $this->exitedLoop();
+                $this->exitedLoopInternal();
             }
         });
         return true;
     }
+    private function exitedLoopInternal(): void
+    {
+        $this->started = false;
+        $this->exitedLoop();
+    }
+    private function startedLoopInternal(): void
+    {
+        $this->started = true;
+        $this->startedLoop();
+    }
     /**
-     * Signal that loop has exIited.
+     * Signal that loop has exited.
      *
      */
     protected function exitedLoop(): void
     {
-        $this->started = false;
     }
     /**
      * Signal that loop has started.
@@ -61,7 +70,6 @@ trait Loop
      */
     protected function startedLoop(): void
     {
-        $this->started = true;
     }
     /**
      * Check whether loop is running.

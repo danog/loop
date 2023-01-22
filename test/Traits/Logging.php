@@ -13,34 +13,28 @@ trait Logging
 {
     /**
      * Check whether the loop started.
-     *
-     * @var int
      */
-    private $startCounter = 0;
+    private int $startCounter = 0;
     /**
      * Check whether the loop ended.
-     *
-     * @var int
      */
-    private $endCounter = 0;
+    private int $endCounter = 0;
 
     /**
      * Signal that loop started.
      *
      */
-    protected function startedLoop(): void
+    final protected function startedLoop(): void
     {
         $this->startCounter++;
-        parent::startedLoop();
     }
     /**
      * Signal that loop ended.
      *
      */
-    protected function exitedLoop(): void
+    final protected function exitedLoop(): void
     {
         $this->endCounter++;
-        parent::exitedLoop();
     }
 
     /**

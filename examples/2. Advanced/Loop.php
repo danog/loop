@@ -52,7 +52,6 @@ class MyLoop extends Loop
      */
     protected function startedLoop(): void
     {
-        parent::startedLoop();
         echo "Started loop $this!".PHP_EOL;
     }
     /**
@@ -61,7 +60,6 @@ class MyLoop extends Loop
      */
     protected function exitedLoop(): void
     {
-        parent::exitedLoop();
         echo "Exited loop $this!".PHP_EOL;
     }
     // End of logging methods

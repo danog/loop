@@ -18,18 +18,6 @@ use function Amp\async;
 /**
  * Generic loop, runs single callable.
  *
- * The return value of the callable can be:
- * * A number - the loop will be paused for the specified number of seconds
- * * GenericLoop::STOP - The loop will stop
- * * GenericLoop::PAUSE - The loop will pause forever (or until loop is `resumed()`
- *                        from outside the loop)
- * * GenericLoop::CONTINUE - Return this if you want to rerun the loop immediately
- *
- * If the callable does not return anything,
- * the loop will behave is if GenericLoop::PAUSE was returned.
- *
- * The loop can be stopped from the outside by signaling `true`.
- *
  * @psalm-type TCallableReturn=int|null|Future<int|null>
  *
  * @author Daniil Gentili <daniil@daniil.it>
@@ -56,6 +44,18 @@ class GenericLoop extends ResumableSignalLoop
     protected $callable;
     /**
      * Constructor.
+     *
+     * The return value of the callable can be:
+     * * A number - the loop will be paused for the specified number of seconds
+     * * GenericLoop::STOP - The loop will stop
+     * * GenericLoop::PAUSE - The loop will pause forever (or until loop is `resumed()`
+     *                        from outside the loop)
+     * * GenericLoop::CONTINUE - Return this if you want to rerun the loop immediately
+     *
+     * If the callable does not return anything,
+     * the loop will behave is if GenericLoop::PAUSE was returned.
+     *
+     * The loop can be stopped from the outside by signaling `true`.
      *
      * If possible, the callable will be bound to the current instance of the loop.
      *
