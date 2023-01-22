@@ -11,7 +11,6 @@ namespace danog\Loop\Test;
 
 use danog\Loop\Interfaces\ResumableLoopInterface;
 use danog\Loop\ResumableLoop;
-use danog\Loop\ResumableSignalLoop;
 use danog\Loop\Test\Interfaces\ResumableInterface;
 use danog\Loop\Test\Traits\Resumable;
 use Generator;
@@ -153,9 +152,6 @@ class ResumableTest extends Fixtures
     {
         return [
             [new class() extends ResumableLoop implements ResumableInterface, ResumableLoopInterface {
-                use Resumable;
-            }],
-            [new class() extends ResumableSignalLoop implements ResumableInterface, ResumableLoopInterface {
                 use Resumable;
             }],
         ];

@@ -10,21 +10,14 @@
 namespace danog\Loop\Generic;
 
 use Amp\Future;
-use danog\Loop\ResumableSignalLoop;
-
-use function Amp\async;
+use danog\Loop\ResumableLoop;
 
 /**
  * Periodic loop.
  *
- * Runs a callback at a periodic interval.
- *
- * The loop can be stopped from the outside or
- * from the inside by signaling or returning `true`.
- *
  * @author Daniil Gentili <daniil@daniil.it>
  */
-class PeriodicLoop extends ResumableSignalLoop
+final class PeriodicLoop extends ResumableLoop
 {
     /**
      * Callback.
@@ -34,10 +27,15 @@ class PeriodicLoop extends ResumableSignalLoop
      * @psalm-var callable():(bool|Future<bool>)
      */
     private $callback;
+    private bool $stop = false;
     /**
      * Constructor.
      *
-     * If possible, the callable will be bound to the current instance of the loop.
+     *
+     * Runs a callback at a periodic interval.
+     *
+     * The loop can be stopped from the outside by calling stop()
+     * and from the inside by returning `true`.
      *
      * @param callable():(bool|Future<bool>) $callback Callable to run
      * @param string   $name     Loop name
@@ -46,13 +44,6 @@ class PeriodicLoop extends ResumableSignalLoop
      */
     public function __construct(callable $callback, private string $name, private ?int $interval)
     {
-        if ($callback instanceof \Closure) {
-            try {
-                $callback = $callback->bindTo($this);
-            } catch (\Throwable $e) {
-                // Might cause an error for wrapped object methods
-            }
-        }
         $this->callback = $callback;
         $this->name = $name;
         $this->interval = $interval;
@@ -62,21 +53,32 @@ class PeriodicLoop extends ResumableSignalLoop
      */
     public function loop(): void
     {
-        $callback = $this->callback;
         while (true) {
-            $result = $callback();
+            $result = ($this->callback)();
             if ($result instanceof Future) {
                 $result = $result->await();
             }
-            if ($result === true) {
+            if ($result === true || $this->stop) {
                 break;
             }
-            /** @var ?bool */
-            $result = $this->waitSignal(async($this->pause(...), $this->interval));
-            if ($result === true) {
+            $this->pause($this->interval);
+            if ($this->stop) {
                 break;
             }
         }
+    }
+    /**
+     * Stops loop.
+     */
+    public function stop(): void
+    {
+        $this->stop = true;
+        $this->resume();
+    }
+    protected function startedLoop(): void
+    {
+        parent::startedLoop();
+        $this->stop = false;
     }
     /**
      * Get name of the loop, passed to the constructor.

@@ -11,8 +11,6 @@ namespace danog\Loop\Test;
 
 use danog\Loop\Loop;
 use danog\Loop\ResumableLoop;
-use danog\Loop\ResumableSignalLoop;
-use danog\Loop\SignalLoop;
 use danog\Loop\Test\Interfaces\BasicInterface;
 use danog\Loop\Test\Traits\Basic;
 use danog\Loop\Test\Traits\BasicException;
@@ -74,15 +72,9 @@ class LoopTest extends Fixtures
             [new class() extends Loop implements BasicInterface {
                 use Basic;
             }],
-            [new class() extends SignalLoop implements BasicInterface {
-                use Basic;
-            }],
             [new class() extends ResumableLoop implements BasicInterface {
                 use Basic;
             }],
-            [new class() extends ResumableSignalLoop implements BasicInterface {
-                use Basic;
-            }]
         ];
     }
     /**
@@ -95,15 +87,9 @@ class LoopTest extends Fixtures
             [new class() extends Loop implements BasicInterface {
                 use BasicException;
             }],
-            [new class() extends SignalLoop implements BasicInterface {
-                use BasicException;
-            }],
             [new class() extends ResumableLoop implements BasicInterface {
                 use BasicException;
             }],
-            [new class() extends ResumableSignalLoop implements BasicInterface {
-                use BasicException;
-            }]
         ];
     }
 }

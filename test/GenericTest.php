@@ -190,7 +190,7 @@ class GenericTest extends AsyncTestCase
         $this->assertEquals(0, $loop->getPauseCount());
 
         $loop->start();
-        delay(0.002);
+        delay(0.003);
         if ($checkZis) {
             $this->assertEquals($loop, $zis);
         } else {
@@ -233,7 +233,7 @@ class GenericTest extends AsyncTestCase
         $this->assertEquals(100, $loop->getLastPause());
 
         if ($stopSig) {
-            $loop->signal(true);
+            $loop->stop();
         } else {
             $pauseTime = GenericLoop::STOP;
             $loop->resume();

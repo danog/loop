@@ -11,9 +11,7 @@
 namespace danog\Loop\Generic;
 
 use Amp\Future;
-use danog\Loop\ResumableSignalLoop;
-
-use function Amp\async;
+use danog\Loop\ResumableLoop;
 
 /**
  * Generic loop, runs single callable.
@@ -22,7 +20,7 @@ use function Amp\async;
  *
  * @author Daniil Gentili <daniil@daniil.it>
  */
-class GenericLoop extends ResumableSignalLoop
+final class GenericLoop extends ResumableLoop
 {
     /**
      * Stop the loop.
@@ -42,6 +40,7 @@ class GenericLoop extends ResumableSignalLoop
      * @var callable():TCallableReturn
      */
     protected $callable;
+    private bool $stop = false;
     /**
      * Constructor.
      *
@@ -55,22 +54,13 @@ class GenericLoop extends ResumableSignalLoop
      * If the callable does not return anything,
      * the loop will behave is if GenericLoop::PAUSE was returned.
      *
-     * The loop can be stopped from the outside by signaling `true`.
-     *
-     * If possible, the callable will be bound to the current instance of the loop.
+     * The loop can be stopped from the outside by using stop().
      *
      * @param callable():TCallableReturn $callable Callable to run
      * @param string   $name     Loop name
      */
     public function __construct(callable $callable, protected string $name)
     {
-        if ($callable instanceof \Closure) {
-            try {
-                $callable = $callable->bindTo($this);
-            } catch (\Throwable) {
-                // Might cause an error for wrapped object methods
-            }
-        }
         $this->callable = $callable;
     }
     /**
@@ -78,9 +68,11 @@ class GenericLoop extends ResumableSignalLoop
      */
     public function loop(): void
     {
-        $callable = $this->callable;
         while (true) {
-            $timeout = $callable();
+            $timeout = ($this->callable)();
+            if ($this->stop) {
+                break;
+            }
             if ($timeout instanceof Future) {
                 $timeout = $timeout->await();
             }
@@ -89,10 +81,26 @@ class GenericLoop extends ResumableSignalLoop
             } elseif ($timeout > 0) {
                 $this->reportPause($timeout);
             }
-            if ($timeout === self::STOP || $this->waitSignal(async($this->pause(...), $timeout))) {
+            if ($timeout === self::STOP || $this->pause($timeout)) {
+                break;
+            }
+            if ($this->stop) {
                 break;
             }
         }
+    }
+    /**
+     * Stops loop.
+     */
+    public function stop(): void
+    {
+        $this->stop = true;
+        $this->resume();
+    }
+    protected function startedLoop(): void
+    {
+        parent::startedLoop();
+        $this->stop = false;
     }
     /**
      * Report pause, can be overriden for logging.

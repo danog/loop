@@ -215,7 +215,7 @@ class PeriodicTest extends AsyncTestCase
         $this->assertEquals(3, $runCount);
 
         if ($stopSig) {
-            $loop->signal(true);
+            $loop->stop();
         } else {
             $retValue = true;
             $loop->resume();
