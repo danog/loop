@@ -10,6 +10,7 @@
 namespace danog\Loop\Test;
 
 use Amp\PHPUnit\AsyncTestCase;
+use danog\Loop\Loop;
 use danog\Loop\Test\Interfaces\BasicInterface;
 
 use function Amp\delay;
@@ -22,11 +23,8 @@ abstract class Fixtures extends AsyncTestCase
     const LOOP_NAME = 'TTTT';
     /**
      * Execute pre-start assertions.
-     *
-     * @param BasicInterface $loop Loop
-     *
      */
-    protected function assertPreStart(BasicInterface $loop): void
+    protected function assertPreStart(BasicInterface&Loop $loop): void
     {
         $this->assertEquals(self::LOOP_NAME, "$loop");
 
@@ -41,12 +39,11 @@ abstract class Fixtures extends AsyncTestCase
     /**
      * Execute after-start assertions.
      *
-     * @param BasicInterface $loop    Loop
      * @param bool           $running Whether we should expect the loop to be running
      * @param bool           $running Whether we should actually start the loop by returning control to the event loop
      *
      */
-    protected function assertAfterStart(BasicInterface $loop, bool $running = true, bool $start = true): void
+    protected function assertAfterStart(BasicInterface&Loop $loop, bool $running = true, bool $start = true): void
     {
         if ($start) {
             delay(0.001);
@@ -65,11 +62,8 @@ abstract class Fixtures extends AsyncTestCase
     }
     /**
      * Execute final assertions.
-     *
-     * @param BasicInterface $loop Loop
-     *
      */
-    protected function assertFinal(BasicInterface $loop): void
+    protected function assertFinal(BasicInterface&Loop $loop): void
     {
         $this->assertTrue($loop->ran());
         $this->assertFalse($loop->isRunning());

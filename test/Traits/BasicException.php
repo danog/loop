@@ -16,7 +16,7 @@ trait BasicException
      * Loop implementation.
      *
      */
-    public function loop(): void
+    public function loop(): ?float
     {
         $this->inited = true;
         throw new \RuntimeException('Threw exception!');

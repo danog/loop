@@ -9,8 +9,6 @@
 
 namespace danog\Loop\Test;
 
-use Amp\DeferredFuture;
-use Amp\Future;
 use Amp\PHPUnit\AsyncTestCase;
 use danog\Loop\Generic\PeriodicLoop;
 use danog\Loop\Loop;
@@ -35,12 +33,11 @@ class PeriodicTest extends AsyncTestCase
     {
         $runCount = 0;
         $retValue = false;
-        $callable = function () use (&$runCount, &$retValue, &$zis) {
-            $zis = $this;
+        $callable = function () use (&$runCount, &$retValue) {
             $runCount++;
             return $retValue;
         };
-        $this->fixtureAssertions($callable, $runCount, $retValue, $stopSig, $zis, true);
+        $this->fixtureAssertions($callable, $runCount, $retValue, $stopSig);
         $obj = new class() {
             public $retValue = false;
             public $runCount = 0;
@@ -50,7 +47,7 @@ class PeriodicTest extends AsyncTestCase
                 return $this->retValue;
             }
         };
-        $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
+        $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->retValue, $stopSig);
         $obj = new class() {
             public $retValue = false;
             public $runCount = 0;
@@ -60,7 +57,7 @@ class PeriodicTest extends AsyncTestCase
                 return $this->retValue;
             }
         };
-        $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
+        $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->retValue, $stopSig);
     }
     /**
      * Test generator loop.
@@ -75,13 +72,12 @@ class PeriodicTest extends AsyncTestCase
     {
         $runCount = 0;
         $retValue = false;
-        $callable = function () use (&$runCount, &$retValue, &$zis) {
-            $zis = $this;
+        $callable = function () use (&$runCount, &$retValue) {
             delay(0.001);
             $runCount++;
             return $retValue;
         };
-        $this->fixtureAssertions($callable, $runCount, $retValue, $stopSig, $zis, true);
+        $this->fixtureAssertions($callable, $runCount, $retValue, $stopSig);
         $obj = new class() {
             public $retValue = false;
             public $runCount = 0;
@@ -92,7 +88,7 @@ class PeriodicTest extends AsyncTestCase
                 return $this->retValue;
             }
         };
-        $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
+        $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->retValue, $stopSig);
         $obj = new class() {
             public $retValue = false;
             public $runCount = 0;
@@ -103,61 +99,12 @@ class PeriodicTest extends AsyncTestCase
                 return $this->retValue;
             }
         };
-        $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
-    }
-    /**
-     * Test promise loop.
-     *
-     * @param bool $stopSig Whether to stop with signal
-     *
-     *
-     *
-     * @dataProvider provideTrueFalse
-     */
-    public function testPromise(bool $stopSig): void
-    {
-        $runCount = 0;
-        $retValue = false;
-        $callable = function () use (&$runCount, &$retValue, &$zis): Future {
-            $zis = $this;
-            $runCount++;
-            $f = new DeferredFuture;
-            $f->complete($retValue);
-            return $f->getFuture();
-        };
-        $this->fixtureAssertions($callable, $runCount, $retValue, $stopSig, $zis, true);
-        $obj = new class() {
-            public $retValue = false;
-            public $runCount = 0;
-            public function run(): Future
-            {
-                $this->runCount++;
-                $f = new DeferredFuture;
-                $f->complete($this->retValue);
-                return $f->getFuture();
-            }
-        };
-        $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
-        $obj = new class() {
-            public $retValue = false;
-            public $runCount = 0;
-            public function run(): Future
-            {
-                $this->runCount++;
-                $f = new DeferredFuture;
-                $f->complete($this->retValue);
-                return $f->getFuture();
-            }
-        };
-        $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->retValue, $stopSig, $zisNew, false);
+        $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->retValue, $stopSig);
     }
     /**
      * Fixture assertions for started loop.
-     *
-     * @param LoggingInterface $loop Loop
-     *
      */
-    private function fixtureStarted(LoggingInterface $loop): void
+    private function fixtureStarted(PeriodicLoop&LoggingInterface $loop): void
     {
         $this->assertTrue($loop->isRunning());
         $this->assertEquals(1, $loop->startCounter());
@@ -170,14 +117,10 @@ class PeriodicTest extends AsyncTestCase
      * @param integer  $runCount Run count
      * @param bool     $retValue Pause time
      * @param bool     $stopSig  Whether to stop with signal
-     * @param bool     $zis      Reference to closure's this
-     * @param bool     $checkZis Whether to check zis
-     *
-     *
      */
-    private function fixtureAssertions(callable $closure, int &$runCount, bool &$retValue, bool $stopSig, &$zis, bool $checkZis): void
+    private function fixtureAssertions(callable $closure, int &$runCount, bool &$retValue, bool $stopSig): void
     {
-        $loop = new class($closure, Fixtures::LOOP_NAME, 100) extends PeriodicLoop implements LoggingInterface {
+        $loop = new class($closure, Fixtures::LOOP_NAME, 0.1) extends PeriodicLoop implements LoggingInterface {
             use Logging;
         };
         $this->assertEquals(Fixtures::LOOP_NAME, "$loop");
@@ -190,11 +133,6 @@ class PeriodicTest extends AsyncTestCase
 
         $loop->start();
         delay(0.002);
-        if ($checkZis) {
-            $this->assertEquals($loop, $zis);
-        } else {
-            $this->assertNull($zis);
-        }
         $this->fixtureStarted($loop);
 
         $this->assertEquals(1, $runCount);

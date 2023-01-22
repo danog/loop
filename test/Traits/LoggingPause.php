@@ -16,16 +16,12 @@ trait LoggingPause
     use Logging;
     /**
      * Number of times loop was paused.
-     *
-     * @var integer
      */
-    private $pauseCount = 0;
+    private int $pauseCount = 0;
     /**
      * Last pause delay.
-     *
-     * @var int
      */
-    private $lastPause = 0;
+    private float $lastPause = 0;
     /**
      * Get number of times loop was paused.
      */
@@ -37,7 +33,7 @@ trait LoggingPause
     /**
      * Get last pause.
      */
-    public function getLastPause(): int
+    public function getLastPause(): float
     {
         return $this->lastPause;
     }
@@ -47,7 +43,7 @@ trait LoggingPause
      * @param integer $timeout Pause duration, 0 = forever
      *
      */
-    protected function reportPause(int $timeout): void
+    protected function reportPause(float $timeout): void
     {
         parent::reportPause($timeout);
         $this->pauseCount++;

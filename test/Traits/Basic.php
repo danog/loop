@@ -45,11 +45,12 @@ trait Basic
     /**
      * Loop implementation.
      */
-    public function loop(): void
+    public function loop(): ?float
     {
         $this->inited = true;
         delay(0.1);
         $this->ran = true;
+        return null;
     }
     /**
      * Get loop name.

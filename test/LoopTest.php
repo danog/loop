@@ -10,7 +10,6 @@
 namespace danog\Loop\Test;
 
 use danog\Loop\Loop;
-use danog\Loop\ResumableLoop;
 use danog\Loop\Test\Interfaces\BasicInterface;
 use danog\Loop\Test\Traits\Basic;
 use danog\Loop\Test\Traits\BasicException;
@@ -22,13 +21,9 @@ class LoopTest extends Fixtures
     /**
      * Test basic loop.
      *
-     * @param BasicInterface $loop Loop
-     *
-     *
-     *
      * @dataProvider provideBasic
      */
-    public function testLoop(BasicInterface $loop): void
+    public function testLoop(Loop&BasicInterface $loop): void
     {
         $this->assertPreStart($loop);
         $this->assertTrue($loop->start());
@@ -41,11 +36,9 @@ class LoopTest extends Fixtures
     /**
      * Test basic exception in loop.
      *
-     *
-     *
      * @dataProvider provideBasicExceptions
      */
-    public function testException(BasicInterface $loop): void
+    public function testException(Loop&BasicInterface $loop): void
     {
         $this->markTestSkipped();
 
@@ -72,9 +65,6 @@ class LoopTest extends Fixtures
             [new class() extends Loop implements BasicInterface {
                 use Basic;
             }],
-            [new class() extends ResumableLoop implements BasicInterface {
-                use Basic;
-            }],
         ];
     }
     /**
@@ -85,9 +75,6 @@ class LoopTest extends Fixtures
     {
         return [
             [new class() extends Loop implements BasicInterface {
-                use BasicException;
-            }],
-            [new class() extends ResumableLoop implements BasicInterface {
                 use BasicException;
             }],
         ];

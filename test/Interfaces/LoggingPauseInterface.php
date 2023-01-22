@@ -10,14 +10,12 @@
 
 namespace danog\Loop\Test\Interfaces;
 
-use danog\Loop\Interfaces\LoopInterface;
-
 /**
  * Basic loop test interface.
  *
  * @author Daniil Gentili <daniil@daniil.it>
  */
-interface LoggingPauseInterface extends LoopInterface, LoggingInterface
+interface LoggingPauseInterface extends LoggingInterface
 {
     /**
      * Get number of times loop was paused.
@@ -26,5 +24,5 @@ interface LoggingPauseInterface extends LoopInterface, LoggingInterface
     /**
      * Get last pause.
      */
-    public function getLastPause(): int;
+    public function getLastPause(): float;
 }

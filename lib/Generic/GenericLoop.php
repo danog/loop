@@ -10,37 +10,21 @@
 
 namespace danog\Loop\Generic;
 
-use Amp\Future;
-use danog\Loop\ResumableLoop;
+use danog\Loop\Loop;
 
 /**
  * Generic loop, runs single callable.
  *
- * @psalm-type TCallableReturn=int|null|Future<int|null>
- *
  * @author Daniil Gentili <daniil@daniil.it>
  */
-final class GenericLoop extends ResumableLoop
+class GenericLoop extends Loop
 {
-    /**
-     * Stop the loop.
-     */
-    const STOP = -1;
-    /**
-     * Pause the loop.
-     */
-    const PAUSE = null;
-    /**
-     * Rerun the loop.
-     */
-    const CONTINUE = 0;
     /**
      * Callable.
      *
-     * @var callable():TCallableReturn
+     * @var callable():?float
      */
-    protected $callable;
-    private bool $stop = false;
+    private $callable;
     /**
      * Constructor.
      *
@@ -56,66 +40,19 @@ final class GenericLoop extends ResumableLoop
      *
      * The loop can be stopped from the outside by using stop().
      *
-     * @param callable():TCallableReturn $callable Callable to run
+     * @param callable():?float $callable Callable to run
      * @param string   $name     Loop name
      */
-    public function __construct(callable $callable, protected string $name)
+    public function __construct(callable $callable, private string $name)
     {
         $this->callable = $callable;
     }
-    /**
-     * Loop implementation.
-     */
-    public function loop(): void
+
+    protected function loop(): ?float
     {
-        while (true) {
-            $timeout = ($this->callable)();
-            if ($this->stop) {
-                break;
-            }
-            if ($timeout instanceof Future) {
-                $timeout = $timeout->await();
-            }
-            if ($timeout === self::PAUSE) {
-                $this->reportPause(0);
-            } elseif ($timeout > 0) {
-                $this->reportPause($timeout);
-            }
-            if ($timeout === self::STOP || $this->pause($timeout)) {
-                break;
-            }
-            if ($this->stop) {
-                break;
-            }
-        }
+        return ($this->callable)();
     }
-    /**
-     * Stops loop.
-     */
-    public function stop(): void
-    {
-        $this->stop = true;
-        $this->resume();
-    }
-    protected function startedLoop(): void
-    {
-        parent::startedLoop();
-        $this->stop = false;
-    }
-    /**
-     * Report pause, can be overriden for logging.
-     *
-     * @param integer $timeout Pause duration, 0 = forever
-     *
-     */
-    protected function reportPause(int $timeout): void
-    {
-    }
-    /**
-     * Get loop name, provided to constructor.
-     *
-     */
-    public function __toString(): string
+    public function __toString()
     {
         return $this->name;
     }

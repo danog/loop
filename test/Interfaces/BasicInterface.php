@@ -10,14 +10,12 @@
 
 namespace danog\Loop\Test\Interfaces;
 
-use danog\Loop\Interfaces\LoopInterface;
-
 /**
  * Basic loop test interface.
  *
  * @author Daniil Gentili <daniil@daniil.it>
  */
-interface BasicInterface extends LoopInterface, LoggingInterface
+interface BasicInterface extends LoggingInterface
 {
     /**
      * Check whether the loop inited.
