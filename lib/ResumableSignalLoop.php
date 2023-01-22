@@ -11,6 +11,7 @@ namespace danog\Loop;
 
 use danog\Loop\Interfaces\ResumableLoopInterface;
 use danog\Loop\Interfaces\SignalLoopInterface;
+use danog\Loop\Traits\Loop;
 use danog\Loop\Traits\ResumableLoop;
 use danog\Loop\Traits\SignalLoop;
 
@@ -21,6 +22,14 @@ use danog\Loop\Traits\SignalLoop;
  */
 abstract class ResumableSignalLoop implements ResumableLoopInterface, SignalLoopInterface
 {
+    use Loop;
     use ResumableLoop;
     use SignalLoop;
+
+    private function exitedLoopInternal(): void
+    {
+        $this->exitedLoopInternalLoop();
+        $this->exitedLoopInternalResumable();
+        $this->exitedLoopInternalSignal();
+    }
 }

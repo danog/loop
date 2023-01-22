@@ -10,6 +10,7 @@
 namespace danog\Loop;
 
 use danog\Loop\Interfaces\ResumableLoopInterface;
+use danog\Loop\Traits\Loop;
 use danog\Loop\Traits\ResumableLoop as TraitsResumableLoop;
 
 /**
@@ -19,5 +20,12 @@ use danog\Loop\Traits\ResumableLoop as TraitsResumableLoop;
  */
 abstract class ResumableLoop implements ResumableLoopInterface
 {
+    use Loop;
     use TraitsResumableLoop;
+
+    private function exitedLoopInternal(): void
+    {
+        $this->exitedLoopInternalLoop();
+        $this->exitedLoopInternalResumable();
+    }
 }

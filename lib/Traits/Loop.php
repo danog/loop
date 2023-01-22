@@ -10,6 +10,8 @@
 namespace danog\Loop\Traits;
 
 use danog\Loop\Interfaces\LoopInterface;
+use danog\Loop\Interfaces\ResumableLoopInterface;
+use danog\Loop\Interfaces\SignalLoopInterface;
 use Revolt\EventLoop;
 
 /**
@@ -47,7 +49,8 @@ trait Loop
         });
         return true;
     }
-    private function exitedLoopInternal(): void
+    abstract private function exitedLoopInternal(): void;
+    private function exitedLoopInternalLoop(): void
     {
         $this->started = false;
         $this->exitedLoop();

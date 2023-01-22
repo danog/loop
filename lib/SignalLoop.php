@@ -22,4 +22,10 @@ abstract class SignalLoop implements SignalLoopInterface
 {
     use Loop;
     use TraitsSignalLoop;
+
+    private function exitedLoopInternal(): void
+    {
+        $this->exitedLoopInternalLoop();
+        $this->exitedLoopInternalSignal();
+    }
 }

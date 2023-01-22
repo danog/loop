@@ -60,4 +60,7 @@ trait SignalLoop
         }
         return $this->signalDeferred->getFuture()->await();
     }
+    private function exitedLoopInternalSignal(): void {
+        $this->signal(null);
+    }
 }

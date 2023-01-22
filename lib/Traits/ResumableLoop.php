@@ -21,9 +21,6 @@ use Revolt\EventLoop;
  */
 trait ResumableLoop
 {
-    use Loop {
-        exitedLoopInternal as private parentExitedLoop;
-    }
     /**
      * Resume deferred.
      *
@@ -143,9 +140,8 @@ trait ResumableLoop
     /**
      * Signal that loop has exited.
      */
-    private function exitedLoopInternal(): void
+    private function exitedLoopInternalResumable(): void
     {
         $this->resumeInternal();
-        $this->parentExitedLoop();
     }
 }

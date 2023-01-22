@@ -21,4 +21,8 @@ use Stringable;
 abstract class Loop implements LoopInterface, Stringable
 {
     use TraitsLoop;
+
+    private function exitedLoopInternal(): void {
+        $this->exitedLoopInternalLoop();
+    }
 }
