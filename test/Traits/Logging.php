@@ -26,6 +26,7 @@ trait Logging
      */
     final protected function startedLoop(): void
     {
+        parent::startedLoop();
         $this->startCounter++;
     }
     /**
@@ -34,6 +35,7 @@ trait Logging
      */
     final protected function exitedLoop(): void
     {
+        parent::exitedLoop();
         $this->endCounter++;
     }
 

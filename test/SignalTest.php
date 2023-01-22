@@ -13,7 +13,9 @@ use Amp\Loop;
 use danog\Loop\ResumableSignalLoop;
 use danog\Loop\SignalLoop;
 use danog\Loop\Test\Interfaces\SignalInterface;
+use danog\Loop\Test\Interfaces\SimpleSignalInterface;
 use danog\Loop\Test\Traits\Signal;
+use danog\Loop\Test\Traits\SignalSimple;
 
 use function Amp\delay;
 
@@ -22,15 +24,13 @@ class SignalTest extends Fixtures
     /**
      * Test signaling loop.
      *
-     * @param SignalInterface $loop Loop
-     *
-     *
-     *
      * @dataProvider provideSignal
      */
-    public function testSignal(SignalInterface $loop): void
+    public function testSignal(SignalInterface|SimpleSignalInterface $loop): void
     {
-        $loop->setInterval(500); // Wait 0.5 seconds before returning null
+        if ($loop instanceof SignalInterface) {
+            $loop->setInterval(500); // Wait 0.5 seconds before returning null
+        }
 
         $this->assertPreStart($loop);
         $this->assertTrue($loop->start());
@@ -62,10 +62,12 @@ class SignalTest extends Fixtures
         $this->assertEquals($obj, $loop->getPayload());
         $this->assertAfterStart($loop);
 
-        $loop->setInterval(100); // Wait 0.1 seconds before returning null
-        $loop->signal(true); // Move along loop to apply new interval
-        delay(0.110);
-        $this->assertNull($loop->getPayload()); // Result of sleep
+        if ($loop instanceof SignalInterface) {
+            $loop->setInterval(100); // Wait 0.1 seconds before returning null
+            $loop->signal(true); // Move along loop to apply new interval
+            delay(0.110);
+            $this->assertNull($loop->getPayload()); // Result of sleep
+        }
 
         $loop->signal($e = new \RuntimeException('Test'));
         delay(0.001);
@@ -81,6 +83,9 @@ class SignalTest extends Fixtures
     public function provideSignal(): array
     {
         return [
+            [new class() extends SignalLoop implements SimpleSignalInterface {
+                use SignalSimple;
+            }],
             [new class() extends SignalLoop implements SignalInterface {
                 use Signal;
             }],
