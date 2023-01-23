@@ -80,8 +80,20 @@ abstract class Loop implements Stringable
         if (!$this->running) {
             return false;
         }
-        $this->resume();
         $this->running = false;
+        if ($this->resumeTimer) {
+            $storedWatcherId = $this->resumeTimer;
+            EventLoop::cancel($storedWatcherId);
+            $this->resumeTimer = null;
+        }
+        if ($this->resumeImmediate) {
+            $storedWatcherId = $this->resumeImmediate;
+            EventLoop::cancel($storedWatcherId);
+            $this->resumeTimer = null;
+        }
+        if ($this->paused) {
+            $this->exitedLoop();
+        }
         return true;
     }
     abstract protected function loop(): ?float;
@@ -123,11 +135,7 @@ abstract class Loop implements Stringable
     private function exitedLoopInternal(): void
     {
         $this->running = false;
-        if ($this->resumeTimer) {
-            $storedWatcherId = $this->resumeTimer;
-            EventLoop::cancel($storedWatcherId);
-            $this->resumeTimer = null;
-        }
+        \assert($this->resumeTimer === null);
         if ($this->resumeImmediate) {
             $storedWatcherId = $this->resumeImmediate;
             EventLoop::cancel($storedWatcherId);

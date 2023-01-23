@@ -164,7 +164,7 @@ class GenericTest extends AsyncTestCase
         $this->assertEquals(0.1, $loop->getLastPause());
 
         $this->assertTrue($loop->resume());
-        delay(0.002);
+        delay(0.003);
 
         $this->assertEquals(4, $runCount);
         $this->assertEquals(4, $loop->getPauseCount());
@@ -181,10 +181,12 @@ class GenericTest extends AsyncTestCase
         $this->assertEquals(4, $loop->getPauseCount());
         $this->assertEquals(0.1, $loop->getLastPause());
 
-        $this->assertFalse($loop->isRunning());
-
         $this->assertEquals(1, $loop->startCounter());
         $this->assertEquals(1, $loop->endCounter());
+
+        $this->assertFalse($loop->isRunning());
+        $this->assertFalse($loop->stop());
+        $this->assertFalse($loop->resume());
     }
 
     /**
