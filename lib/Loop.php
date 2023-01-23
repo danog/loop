@@ -66,8 +66,9 @@ abstract class Loop implements Stringable
             return false;
         }
         $this->running = true;
+        $this->paused = true;
+        \assert($this->resume());
         $this->startedLoop();
-        $this->resume();
         return true;
     }
     /**
@@ -89,7 +90,7 @@ abstract class Loop implements Stringable
         if ($this->resumeImmediate) {
             $storedWatcherId = $this->resumeImmediate;
             EventLoop::cancel($storedWatcherId);
-            $this->resumeTimer = null;
+            $this->resumeImmediate = null;
         }
         if ($this->paused) {
             $this->exitedLoop();
@@ -102,17 +103,18 @@ abstract class Loop implements Stringable
     private function loopInternal(): void
     {
         $this->paused = false;
-        if (!$this->running) {
-            $this->exitedLoopInternal();
-            return;
-        }
+        \assert($this->running);
         try {
             $timeout = $this->loop();
         } catch (\Throwable $e) {
             $this->exitedLoopInternal();
             throw $e;
         }
-        if (!$this->running || $timeout === self::STOP) {
+        if (!$this->running) {
+            $this->exitedLoopInternal();
+            return;
+        }
+        if ($timeout === self::STOP) {
             $this->exitedLoopInternal();
             return;
         }
@@ -139,7 +141,7 @@ abstract class Loop implements Stringable
         if ($this->resumeImmediate) {
             $storedWatcherId = $this->resumeImmediate;
             EventLoop::cancel($storedWatcherId);
-            $this->resumeTimer = null;
+            $this->resumeImmediate = null;
         }
         $this->exitedLoop();
     }

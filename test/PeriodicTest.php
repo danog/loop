@@ -131,7 +131,7 @@ class PeriodicTest extends AsyncTestCase
 
         $this->assertEquals(0, $runCount);
 
-        $loop->start();
+        $this->assertTrue($loop->start());
         delay(0.002);
         $this->fixtureStarted($loop);
 

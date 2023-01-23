@@ -104,11 +104,11 @@ class GenericTest extends AsyncTestCase
     /**
      * Fixture assertions for started loop.
      */
-    private function fixtureStarted(Loop&LoggingPauseInterface $loop): void
+    private function fixtureStarted(Loop&LoggingPauseInterface $loop, int $offset = 1): void
     {
         $this->assertTrue($loop->isRunning());
-        $this->assertEquals(1, $loop->startCounter());
-        $this->assertEquals(0, $loop->endCounter());
+        $this->assertEquals($offset, $loop->startCounter());
+        $this->assertEquals($offset-1, $loop->endCounter());
     }
     /**
      * Run fixture assertions.
@@ -123,20 +123,23 @@ class GenericTest extends AsyncTestCase
         $loop = new class($closure, Fixtures::LOOP_NAME) extends GenericLoop implements LoggingPauseInterface {
             use LoggingPause;
         };
+        $expectedRunCount = 0;
+
         $this->assertEquals(Fixtures::LOOP_NAME, "$loop");
 
         $this->assertFalse($loop->isRunning());
         $this->assertEquals(0, $loop->startCounter());
         $this->assertEquals(0, $loop->endCounter());
 
-        $this->assertEquals(0, $runCount);
+        $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(0, $loop->getPauseCount());
 
-        $loop->start();
+        $this->assertTrue($loop->start());
         delay(0.003);
         $this->fixtureStarted($loop);
+        $expectedRunCount++;
 
-        $this->assertEquals(1, $runCount);
+        $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(1, $loop->getPauseCount());
         $this->assertEquals(0, $loop->getLastPause());
 
@@ -144,29 +147,32 @@ class GenericTest extends AsyncTestCase
         $this->assertTrue($loop->resume());
         delay(0.002);
         $this->fixtureStarted($loop);
+        $expectedRunCount++;
 
-        $this->assertEquals(2, $runCount);
+        $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(2, $loop->getPauseCount());
         $this->assertEquals(0.1, $loop->getLastPause());
 
         delay(0.048);
         $this->fixtureStarted($loop);
 
-        $this->assertEquals(2, $runCount);
+        $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(2, $loop->getPauseCount());
         $this->assertEquals(0.1, $loop->getLastPause());
 
         delay(0.060);
         $this->fixtureStarted($loop);
+        $expectedRunCount++;
 
-        $this->assertEquals(3, $runCount);
+        $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(3, $loop->getPauseCount());
         $this->assertEquals(0.1, $loop->getLastPause());
 
         $this->assertTrue($loop->resume());
         delay(0.003);
+        $expectedRunCount++;
 
-        $this->assertEquals(4, $runCount);
+        $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(4, $loop->getPauseCount());
         $this->assertEquals(0.1, $loop->getLastPause());
 
@@ -175,14 +181,79 @@ class GenericTest extends AsyncTestCase
         } else {
             $pauseTime = GenericLoop::STOP;
             $this->assertTrue($loop->resume());
+            $expectedRunCount++;
         }
         delay(0.002);
-        $this->assertEquals($stopSig ? 4 : 5, $runCount);
+        $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(4, $loop->getPauseCount());
         $this->assertEquals(0.1, $loop->getLastPause());
 
         $this->assertEquals(1, $loop->startCounter());
         $this->assertEquals(1, $loop->endCounter());
+
+        $this->assertFalse($loop->isRunning());
+        $this->assertFalse($loop->stop());
+        $this->assertFalse($loop->resume());
+
+        // Restart loop
+        $pauseTime = GenericLoop::PAUSE;
+        $this->assertTrue($loop->start());
+        delay(0.003);
+        $this->fixtureStarted($loop, 2);
+        $expectedRunCount++;
+
+        $this->assertEquals($expectedRunCount, $runCount);
+        $this->assertEquals(5, $loop->getPauseCount());
+        $this->assertEquals(0.0, $loop->getLastPause());
+
+        if ($stopSig) {
+            $this->assertTrue($loop->stop());
+        } else {
+            $pauseTime = GenericLoop::STOP;
+            $this->assertTrue($loop->resume());
+            $expectedRunCount++;
+        }
+        delay(0.002);
+        $this->assertEquals($expectedRunCount, $runCount);
+        $this->assertEquals(5, $loop->getPauseCount());
+        $this->assertEquals(0.0, $loop->getLastPause());
+
+        $this->assertEquals(2, $loop->startCounter());
+        $this->assertEquals(2, $loop->endCounter());
+
+        $this->assertFalse($loop->isRunning());
+        $this->assertFalse($loop->stop());
+        $this->assertFalse($loop->resume());
+
+        // Restart loop and stop it immediately
+        $pauseTime = GenericLoop::PAUSE;
+        $this->assertTrue($loop->start());
+        $this->assertTrue($loop->stop());
+        delay(0.003);
+
+        $this->assertEquals($expectedRunCount, $runCount);
+        $this->assertEquals(5, $loop->getPauseCount());
+        $this->assertEquals(0.0, $loop->getLastPause());
+
+        $this->assertEquals(3, $loop->startCounter());
+        $this->assertEquals(3, $loop->endCounter());
+
+        $this->assertFalse($loop->isRunning());
+        $this->assertFalse($loop->stop());
+        $this->assertFalse($loop->resume());
+
+        // Restart loop with delay and stop it immediately
+        $pauseTime = 1.0;
+        $this->assertTrue($loop->start());
+        $this->assertTrue($loop->stop());
+        delay(0.003);
+
+        $this->assertEquals($expectedRunCount, $runCount);
+        $this->assertEquals(5, $loop->getPauseCount());
+        $this->assertEquals(0.0, $loop->getLastPause());
+
+        $this->assertEquals(4, $loop->startCounter());
+        $this->assertEquals(4, $loop->endCounter());
 
         $this->assertFalse($loop->isRunning());
         $this->assertFalse($loop->stop());
