@@ -138,11 +138,7 @@ abstract class Loop implements Stringable
     {
         $this->running = false;
         \assert($this->resumeTimer === null);
-        if ($this->resumeImmediate) {
-            $storedWatcherId = $this->resumeImmediate;
-            EventLoop::cancel($storedWatcherId);
-            $this->resumeImmediate = null;
-        }
+        \assert($this->resumeImmediate === null);
         $this->exitedLoop();
     }
     /**

@@ -21,11 +21,39 @@ class LoopTest extends Fixtures
 {
     /**
      * Test basic loop.
-     *
-     * @dataProvider provideBasic
      */
-    public function testLoop(Loop&BasicInterface $loop): void
+    public function testLoop(): void
     {
+        $loop = new class() extends Loop implements BasicInterface {
+            use Basic;
+        };
+        $this->assertPreStart($loop);
+        $this->assertTrue($loop->start());
+        $this->assertAfterStart($loop);
+
+        delay(0.110);
+
+        $this->assertFinal($loop);
+    }
+    /**
+     * Test basic loop.
+     */
+    public function testLoopStopFromInside(): void
+    {
+        $loop = new class() extends Loop implements BasicInterface {
+            use Basic;
+            /**
+             * Loop implementation.
+             */
+            public function loop(): ?float
+            {
+                $this->inited = true;
+                delay(0.1);
+                $this->stop();
+                $this->ran = true;
+                return 10.0;
+            }
+        };
         $this->assertPreStart($loop);
         $this->assertTrue($loop->start());
         $this->assertAfterStart($loop);
@@ -36,11 +64,12 @@ class LoopTest extends Fixtures
     }
     /**
      * Test basic exception in loop.
-     *
-     * @dataProvider provideBasicExceptions
      */
-    public function testException(Loop&BasicInterface $loop): void
+    public function testException(): void
     {
+        $loop = new class() extends Loop implements BasicInterface {
+            use BasicException;
+        };
         $this->expectException(UnhandledException::class);
 
         $this->assertPreStart($loop);
@@ -52,30 +81,5 @@ class LoopTest extends Fixtures
 
         $this->assertEquals(1, $loop->startCounter());
         $this->assertEquals(1, $loop->endCounter());
-    }
-
-    /**
-     * Provide loop implementations.
-     *
-     */
-    public function provideBasic(): array
-    {
-        return [
-            [new class() extends Loop implements BasicInterface {
-                use Basic;
-            }],
-        ];
-    }
-    /**
-     * Provide loop implementations.
-     *
-     */
-    public function provideBasicExceptions(): array
-    {
-        return [
-            [new class() extends Loop implements BasicInterface {
-                use BasicException;
-            }],
-        ];
     }
 }
