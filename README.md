@@ -184,5 +184,3 @@ class PeriodicLoop extends GenericLoop
 }
 ```
 
-`PeriodicLoop` runs a callback at a periodic interval.  
-The loop can be stopped from the outside by using `stop()` and from the inside by returning `true`.
