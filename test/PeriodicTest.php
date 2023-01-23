@@ -10,8 +10,8 @@
 namespace danog\Loop\Test;
 
 use Amp\PHPUnit\AsyncTestCase;
-use danog\Loop\Generic\PeriodicLoop;
 use danog\Loop\Loop;
+use danog\Loop\PeriodicLoop;
 use danog\Loop\Test\Interfaces\LoggingInterface;
 use danog\Loop\Test\Traits\Basic;
 use danog\Loop\Test\Traits\Logging;
@@ -33,31 +33,36 @@ class PeriodicTest extends AsyncTestCase
     {
         $runCount = 0;
         $retValue = false;
-        $callable = function () use (&$runCount, &$retValue) {
+        $callable = function (?PeriodicLoop $loop) use (&$runCount, &$retValue, &$l) {
+            $l = $loop;
             $runCount++;
             return $retValue;
         };
-        $this->fixtureAssertions($callable, $runCount, $retValue, $stopSig);
+        $this->fixtureAssertions($callable, $runCount, $retValue, $stopSig, $l);
         $obj = new class() {
             public $retValue = false;
             public $runCount = 0;
-            public function run()
+            public ?PeriodicLoop $loop = null;
+            public function run(PeriodicLoop $periodicLoop)
             {
+                $this->loop = $periodicLoop;
                 $this->runCount++;
                 return $this->retValue;
             }
         };
-        $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->retValue, $stopSig);
+        $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->retValue, $stopSig, $obj->loop);
         $obj = new class() {
             public $retValue = false;
             public $runCount = 0;
-            public function run()
+            public ?PeriodicLoop $loop = null;
+            public function run(PeriodicLoop $periodicLoop)
             {
+                $this->loop = $periodicLoop;
                 $this->runCount++;
                 return $this->retValue;
             }
         };
-        $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->retValue, $stopSig);
+        $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->retValue, $stopSig, $obj->loop);
     }
     /**
      * Test generator loop.
@@ -72,34 +77,39 @@ class PeriodicTest extends AsyncTestCase
     {
         $runCount = 0;
         $retValue = false;
-        $callable = function () use (&$runCount, &$retValue) {
+        $callable = function (?PeriodicLoop $loop) use (&$runCount, &$retValue, &$l) {
+            $l = $loop;
             delay(0.001);
             $runCount++;
             return $retValue;
         };
-        $this->fixtureAssertions($callable, $runCount, $retValue, $stopSig);
+        $this->fixtureAssertions($callable, $runCount, $retValue, $stopSig, $l);
         $obj = new class() {
             public $retValue = false;
             public $runCount = 0;
-            public function run()
+            public ?PeriodicLoop $loop = null;
+            public function run(?PeriodicLoop $loop)
             {
+                $this->loop = $loop;
                 delay(0.001);
                 $this->runCount++;
                 return $this->retValue;
             }
         };
-        $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->retValue, $stopSig);
+        $this->fixtureAssertions([$obj, 'run'], $obj->runCount, $obj->retValue, $stopSig, $obj->loop);
         $obj = new class() {
             public $retValue = false;
             public $runCount = 0;
-            public function run()
+            public ?PeriodicLoop $loop = null;
+            public function run(?PeriodicLoop $loop)
             {
+                $this->loop = $loop;
                 delay(0.001);
                 $this->runCount++;
                 return $this->retValue;
             }
         };
-        $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->retValue, $stopSig);
+        $this->fixtureAssertions(\Closure::fromCallable([$obj, 'run']), $obj->runCount, $obj->retValue, $stopSig, $obj->loop);
     }
     /**
      * Fixture assertions for started loop.
@@ -118,7 +128,7 @@ class PeriodicTest extends AsyncTestCase
      * @param bool     $retValue Pause time
      * @param bool     $stopSig  Whether to stop with signal
      */
-    private function fixtureAssertions(callable $closure, int &$runCount, bool &$retValue, bool $stopSig): void
+    private function fixtureAssertions(callable $closure, int &$runCount, bool &$retValue, bool $stopSig, ?PeriodicLoop &$l): void
     {
         $loop = new class($closure, Fixtures::LOOP_NAME, 0.1) extends PeriodicLoop implements LoggingInterface {
             use Logging;
@@ -134,6 +144,8 @@ class PeriodicTest extends AsyncTestCase
         $this->assertTrue($loop->start());
         delay(0.002);
         $this->fixtureStarted($loop);
+
+        $this->assertEquals($loop, $l);
 
         $this->assertEquals(1, $runCount);
 

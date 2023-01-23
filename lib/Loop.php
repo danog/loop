@@ -23,15 +23,15 @@ abstract class Loop implements Stringable
     /**
      * Stop the loop.
      */
-    const STOP = -1.0;
+    public const STOP = -1.0;
     /**
      * Pause the loop.
      */
-    const PAUSE = null;
+    public const PAUSE = null;
     /**
      * Rerun the loop.
      */
-    const CONTINUE = 0.0;
+    public const CONTINUE = 0.0;
     /**
      * Whether the loop is running.
      */
@@ -49,7 +49,6 @@ abstract class Loop implements Stringable
      * Report pause, can be overriden for logging.
      *
      * @param float $timeout Pause duration, 0 = forever
-     *
      */
     protected function reportPause(float $timeout): void
     {
@@ -110,6 +109,7 @@ abstract class Loop implements Stringable
             $this->exitedLoopInternal();
             throw $e;
         }
+        /** @var bool $this->running */
         if (!$this->running) {
             $this->exitedLoopInternal();
             return;
@@ -142,15 +142,13 @@ abstract class Loop implements Stringable
         $this->exitedLoop();
     }
     /**
-     * Signal that loop has running.
-     *
+     * Signal that loop was started.
      */
     protected function startedLoop(): void
     {
     }
     /**
      * Signal that loop has exited.
-     *
      */
     protected function exitedLoop(): void
     {
@@ -161,6 +159,13 @@ abstract class Loop implements Stringable
     public function isRunning(): bool
     {
         return $this->running;
+    }
+    /**
+     * Check whether loop is paused (different from isRunning, a loop may be running but paused).
+     */
+    public function isPaused(): bool
+    {
+        return $this->paused;
     }
 
     /**
