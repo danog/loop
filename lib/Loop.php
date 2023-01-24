@@ -67,11 +67,11 @@ abstract class Loop implements Stringable
      */
     public function start(): bool
     {
-        if ($this->running) {
-            return false;
-        }
         if ($this->shutdownDeferred) {
             $this->shutdownDeferred->getFuture()->await();
+        }
+        if ($this->running) {
+            return false;
         }
         $this->running = true;
         if (!$this->resume()) {
