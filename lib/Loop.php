@@ -101,8 +101,9 @@ abstract class Loop implements Stringable
     private bool $paused = true;
     private function loopInternal(): void
     {
-        $this->paused = false;
         \assert($this->running);
+        \assert($this->paused);
+        $this->paused = false;
         try {
             $timeout = $this->loop();
         } catch (\Throwable $e) {
