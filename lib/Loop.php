@@ -160,7 +160,7 @@ abstract class Loop implements Stringable
             throw new AssertionError("Already have a resume timer!");
             // @codeCoverageIgnoreEnd
         }
-        if ($this->resumeTimer !== null) {
+        if ($this->resumeImmediate !== null) {
             // @codeCoverageIgnoreStart
             throw new AssertionError("Already have a resume immediate timer!");
             // @codeCoverageIgnoreEnd
