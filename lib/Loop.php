@@ -67,7 +67,9 @@ abstract class Loop implements Stringable
         }
         $this->running = true;
         if (!$this->resume()) {
+            // @codeCoverageIgnoreStart
             throw new AssertionError("Could not resume!");
+            // @codeCoverageIgnoreEnd
         }
         $this->startedLoop();
         return true;
@@ -104,10 +106,14 @@ abstract class Loop implements Stringable
     private function loopInternal(): void
     {
         if (!$this->running) {
+            // @codeCoverageIgnoreStart
             throw new AssertionError("Already running!");
+            // @codeCoverageIgnoreEnd
         }
         if (!$this->paused) {
+            // @codeCoverageIgnoreStart
             throw new AssertionError("Already paused!");
+            // @codeCoverageIgnoreEnd
         }
         $this->paused = false;
         try {
@@ -132,7 +138,9 @@ abstract class Loop implements Stringable
         } else {
             if (!$this->resumeImmediate) {
                 if ($this->resumeTimer !== null) {
+                    // @codeCoverageIgnoreStart
                     throw new AssertionError("Already have a resume timer!");
+                    // @codeCoverageIgnoreEnd
                 }
                 $this->resumeTimer = EventLoop::delay($timeout, function (): void {
                     $this->resumeTimer = null;
@@ -148,10 +156,14 @@ abstract class Loop implements Stringable
         $this->running = false;
         $this->paused = true;
         if ($this->resumeTimer !== null) {
+            // @codeCoverageIgnoreStart
             throw new AssertionError("Already have a resume timer!");
+            // @codeCoverageIgnoreEnd
         }
         if ($this->resumeTimer !== null) {
+            // @codeCoverageIgnoreStart
             throw new AssertionError("Already have a resume immediate timer!");
+            // @codeCoverageIgnoreEnd
         }
         $this->exitedLoop();
     }
