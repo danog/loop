@@ -5,7 +5,7 @@
 [![Psalm coverage](https://shepherd.dev/github/danog/loop/coverage.svg)](https://shepherd.dev/github/vimeo/shepherd)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-`danog/loop` provides a set of powerful async loop APIs for executing operations periodically or on demand, in background loops a-la threads.  
+`danog/loop` provides a set of powerful async loop APIs based on [amphp](https://amphp.org) for executing operations periodically or on demand, in background loops a-la threads.  
 
 ## Installation
 
