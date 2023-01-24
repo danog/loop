@@ -149,6 +149,7 @@ class GenericTest extends Fixtures
         $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(1, $loop->getPauseCount());
         $this->assertEquals(0, $loop->getLastPause());
+        $this->assertTrue($loop->isPaused());
 
         $pauseTime = 0.1;
         $this->assertTrue($loop->resume());
@@ -159,6 +160,7 @@ class GenericTest extends Fixtures
         $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(2, $loop->getPauseCount());
         $this->assertEquals(0.1, $loop->getLastPause());
+        $this->assertTrue($loop->isPaused());
 
         delay(0.048);
         $this->fixtureStarted($loop);
@@ -166,6 +168,7 @@ class GenericTest extends Fixtures
         $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(2, $loop->getPauseCount());
         $this->assertEquals(0.1, $loop->getLastPause());
+        $this->assertTrue($loop->isPaused());
 
         delay(0.060);
         $this->fixtureStarted($loop);
@@ -174,6 +177,7 @@ class GenericTest extends Fixtures
         $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(3, $loop->getPauseCount());
         $this->assertEquals(0.1, $loop->getLastPause());
+        $this->assertTrue($loop->isPaused());
 
         $this->assertTrue($loop->resume());
         self::waitTick();
@@ -182,6 +186,7 @@ class GenericTest extends Fixtures
         $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(4, $loop->getPauseCount());
         $this->assertEquals(0.1, $loop->getLastPause());
+        $this->assertTrue($loop->isPaused());
 
         if ($stopSig) {
             $this->assertTrue($loop->stop());
@@ -194,6 +199,7 @@ class GenericTest extends Fixtures
         $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(4, $loop->getPauseCount());
         $this->assertEquals(0.1, $loop->getLastPause());
+        $this->assertTrue($loop->isPaused());
 
         $this->assertEquals(1, $loop->startCounter());
         $this->assertEquals(1, $loop->endCounter());
@@ -212,6 +218,7 @@ class GenericTest extends Fixtures
         $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(5, $loop->getPauseCount());
         $this->assertEquals(0.0, $loop->getLastPause());
+        $this->assertTrue($loop->isPaused());
 
         if ($stopSig) {
             $this->assertTrue($loop->stop());
@@ -224,6 +231,7 @@ class GenericTest extends Fixtures
         $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(5, $loop->getPauseCount());
         $this->assertEquals(0.0, $loop->getLastPause());
+        $this->assertTrue($loop->isPaused());
 
         $this->assertEquals(2, $loop->startCounter());
         $this->assertEquals(2, $loop->endCounter());
@@ -241,6 +249,7 @@ class GenericTest extends Fixtures
         $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(5, $loop->getPauseCount());
         $this->assertEquals(0.0, $loop->getLastPause());
+        $this->assertTrue($loop->isPaused());
 
         $this->assertEquals(3, $loop->startCounter());
         $this->assertEquals(3, $loop->endCounter());
@@ -258,6 +267,7 @@ class GenericTest extends Fixtures
         $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(5, $loop->getPauseCount());
         $this->assertEquals(0.0, $loop->getLastPause());
+        $this->assertTrue($loop->isPaused());
 
         $this->assertEquals(4, $loop->startCounter());
         $this->assertEquals(4, $loop->endCounter());

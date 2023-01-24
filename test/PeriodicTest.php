@@ -141,6 +141,7 @@ class PeriodicTest extends Fixtures
         $this->fixtureStarted($loop);
         self::waitTick();
 
+        $this->assertTrue($loop->isPaused());
         $this->assertEquals(1, $runCount);
 
         $this->assertEquals($loop, $l);
@@ -148,16 +149,19 @@ class PeriodicTest extends Fixtures
         delay(0.048);
         $this->fixtureStarted($loop);
 
+        $this->assertTrue($loop->isPaused());
         $this->assertEquals(1, $runCount);
 
         delay(0.060);
         $this->fixtureStarted($loop);
 
+        $this->assertTrue($loop->isPaused());
         $this->assertEquals(2, $runCount);
 
         $this->assertTrue($loop->resume());
         self::waitTick();
 
+        $this->assertTrue($loop->isPaused());
         $this->assertEquals(3, $runCount);
 
         if ($stopSig) {
@@ -169,6 +173,7 @@ class PeriodicTest extends Fixtures
         self::waitTick();
         $this->assertEquals($stopSig ? 3 : 4, $runCount);
 
+        $this->assertTrue($loop->isPaused());
         $this->assertFalse($loop->isRunning());
 
         $this->assertEquals(1, $loop->startCounter());

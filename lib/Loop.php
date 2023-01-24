@@ -10,6 +10,7 @@
 
 namespace danog\Loop;
 
+use AssertionError;
 use Revolt\EventLoop;
 use Stringable;
 
@@ -65,8 +66,9 @@ abstract class Loop implements Stringable
             return false;
         }
         $this->running = true;
-        $this->paused = true;
-        \assert($this->resume());
+        if (!$this->resume()) {
+            throw new AssertionError("Could not resume!");
+        }
         $this->startedLoop();
         return true;
     }
@@ -101,8 +103,12 @@ abstract class Loop implements Stringable
     private bool $paused = true;
     private function loopInternal(): void
     {
-        \assert($this->running);
-        \assert($this->paused);
+        if (!$this->running) {
+            throw new AssertionError("Already running!");
+        }
+        if (!$this->paused) {
+            throw new AssertionError("Already paused!");
+        }
         $this->paused = false;
         try {
             $timeout = $this->loop();
@@ -125,7 +131,9 @@ abstract class Loop implements Stringable
             $this->reportPause(0.0);
         } else {
             if (!$this->resumeImmediate) {
-                \assert($this->resumeTimer === null);
+                if ($this->resumeTimer !== null) {
+                    throw new AssertionError("Already have a resume timer!");
+                }
                 $this->resumeTimer = EventLoop::delay($timeout, function (): void {
                     $this->resumeTimer = null;
                     $this->loopInternal();
@@ -138,8 +146,13 @@ abstract class Loop implements Stringable
     private function exitedLoopInternal(): void
     {
         $this->running = false;
-        \assert($this->resumeTimer === null);
-        \assert($this->resumeImmediate === null);
+        $this->paused = true;
+        if ($this->resumeTimer !== null) {
+            throw new AssertionError("Already have a resume timer!");
+        }
+        if ($this->resumeTimer !== null) {
+            throw new AssertionError("Already have a resume immediate timer!");
+        }
         $this->exitedLoop();
     }
     /**

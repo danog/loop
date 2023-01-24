@@ -58,6 +58,7 @@ class LoopTest extends Fixtures
         $this->assertEquals($running ? 0 : 1, $loop->endCounter());
 
         $this->assertEquals($running, !$loop->start());
+        $this->assertEquals($running, !$loop->isPaused());
     }
     /**
      * Execute final assertions.
@@ -140,5 +141,7 @@ class LoopTest extends Fixtures
         $this->assertEquals(1, $loop->endCounter());
 
         $this->assertInstanceOf(RuntimeException::class, $e_thrown);
+
+        EventLoop::setErrorHandler(null);
     }
 }
