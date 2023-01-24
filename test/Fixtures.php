@@ -9,16 +9,13 @@
 
 namespace danog\Loop\Test;
 
-use Amp\PHPUnit\AsyncTestCase;
 use danog\Loop\Loop;
 use danog\Loop\Test\Interfaces\BasicInterface;
-
-use function Amp\delay;
 
 /**
  * Fixtures.
  */
-abstract class Fixtures extends AsyncTestCase
+abstract class Fixtures extends \PHPUnit\Framework\TestCase
 {
     const LOOP_NAME = 'TTTT';
     /**
@@ -46,7 +43,7 @@ abstract class Fixtures extends AsyncTestCase
     protected function assertAfterStart(BasicInterface&Loop $loop, bool $running = true, bool $start = true): void
     {
         if ($start) {
-            delay(0.001);
+            LoopTest::waitTick();
         }
         $this->assertTrue($loop->inited());
 

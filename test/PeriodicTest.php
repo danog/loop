@@ -9,7 +9,6 @@
 
 namespace danog\Loop\Test;
 
-use Amp\PHPUnit\AsyncTestCase;
 use danog\Loop\Loop;
 use danog\Loop\PeriodicLoop;
 use danog\Loop\Test\Interfaces\LoggingInterface;
@@ -18,7 +17,7 @@ use danog\Loop\Test\Traits\Logging;
 
 use function Amp\delay;
 
-class PeriodicTest extends AsyncTestCase
+class PeriodicTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test basic loop.
@@ -79,7 +78,6 @@ class PeriodicTest extends AsyncTestCase
         $retValue = false;
         $callable = function (?PeriodicLoop $loop) use (&$runCount, &$retValue, &$l) {
             $l = $loop;
-            delay(0.001);
             $runCount++;
             return $retValue;
         };
@@ -91,7 +89,6 @@ class PeriodicTest extends AsyncTestCase
             public function run(?PeriodicLoop $loop)
             {
                 $this->loop = $loop;
-                delay(0.001);
                 $this->runCount++;
                 return $this->retValue;
             }
@@ -104,7 +101,6 @@ class PeriodicTest extends AsyncTestCase
             public function run(?PeriodicLoop $loop)
             {
                 $this->loop = $loop;
-                delay(0.001);
                 $this->runCount++;
                 return $this->retValue;
             }
@@ -142,12 +138,12 @@ class PeriodicTest extends AsyncTestCase
         $this->assertEquals(0, $runCount);
 
         $this->assertTrue($loop->start());
-        delay(0.002);
         $this->fixtureStarted($loop);
-
-        $this->assertEquals($loop, $l);
+        LoopTest::waitTick();
 
         $this->assertEquals(1, $runCount);
+
+        $this->assertEquals($loop, $l);
 
         delay(0.048);
         $this->fixtureStarted($loop);
@@ -160,7 +156,7 @@ class PeriodicTest extends AsyncTestCase
         $this->assertEquals(2, $runCount);
 
         $this->assertTrue($loop->resume());
-        delay(0.002);
+        LoopTest::waitTick();
 
         $this->assertEquals(3, $runCount);
 
@@ -170,7 +166,7 @@ class PeriodicTest extends AsyncTestCase
             $retValue = true;
             $this->assertTrue($loop->resume());
         }
-        delay(0.002);
+        LoopTest::waitTick();
         $this->assertEquals($stopSig ? 3 : 4, $runCount);
 
         $this->assertFalse($loop->isRunning());

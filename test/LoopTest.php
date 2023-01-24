@@ -9,7 +9,6 @@
 
 namespace danog\Loop\Test;
 
-use Amp\PHPUnit\UnhandledException;
 use danog\Loop\Loop;
 use danog\Loop\Test\Interfaces\BasicInterface;
 use danog\Loop\Test\Traits\Basic;
@@ -19,6 +18,12 @@ use function Amp\delay;
 
 class LoopTest extends Fixtures
 {
+    public static function waitTick(): void
+    {
+        $f = new \Amp\DeferredFuture;
+        \Revolt\EventLoop::defer(fn () => $f->complete());
+        $f->getFuture()->await();
+    }
     /**
      * Test basic loop.
      */
@@ -51,7 +56,7 @@ class LoopTest extends Fixtures
                 delay(0.1);
                 $this->stop();
                 $this->ran = true;
-                return 10.0;
+                return 1000.0;
             }
         };
         $this->assertPreStart($loop);
@@ -70,11 +75,11 @@ class LoopTest extends Fixtures
         $loop = new class() extends Loop implements BasicInterface {
             use BasicException;
         };
-        $this->expectException(UnhandledException::class);
+        $this->expectException(\Revolt\EventLoop\UncaughtThrowable::class);
 
         $this->assertPreStart($loop);
         $this->assertTrue($loop->start());
-        delay(0.001);
+        self::waitTick();
         $this->assertFalse($loop->isRunning());
 
         $this->assertTrue($loop->inited());
