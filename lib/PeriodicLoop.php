@@ -32,13 +32,16 @@ class PeriodicLoop extends GenericLoop
      */
     public function __construct(callable $callback, string $name, ?float $interval)
     {
-        /** @psalm-suppress ArgumentTypeCoercion */
-        parent::__construct(static function (self $loop) use ($callback, $interval): ?float {
-            /** @psalm-suppress ArgumentTypeCoercion */
-            if ($callback($loop) === true) {
-                return GenericLoop::STOP;
-            }
-            return $interval;
-        }, $name);
+        /** @psalm-suppress InvalidArgument */
+        parent::__construct(
+            /** @param static $loop */
+            static function (self $loop) use ($callback, $interval): ?float {
+                if ($callback($loop) === true) {
+                    return GenericLoop::STOP;
+                }
+                return $interval;
+            },
+            $name
+        );
     }
 }
