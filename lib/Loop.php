@@ -218,6 +218,9 @@ abstract class Loop implements Stringable
     /**
      * Resume the loop.
      *
+     * If resume is called multiple times, and the event loop hasn't resumed the loop yet,
+     * the loop will be resumed only once, not N times for every call.
+     *
      * @return bool Returns false if the loop is not paused.
      */
     public function resume(): bool
