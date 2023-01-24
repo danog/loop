@@ -67,7 +67,7 @@ abstract class Loop implements Stringable
      */
     public function start(): bool
     {
-        if ($this->shutdownDeferred) {
+        while ($this->shutdownDeferred !== null) {
             $this->shutdownDeferred->getFuture()->await();
         }
         if ($this->running) {
@@ -112,7 +112,6 @@ abstract class Loop implements Stringable
                 // @codeCoverageIgnoreEnd
             }
             $this->shutdownDeferred = new DeferredFuture;
-            $this->shutdownDeferred->getFuture()->await();
         }
         return true;
     }
