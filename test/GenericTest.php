@@ -17,7 +17,7 @@ use danog\Loop\Test\Traits\LoggingPause;
 
 use function Amp\delay;
 
-class GenericTest extends \PHPUnit\Framework\TestCase
+class GenericTest extends Fixtures
 {
     /**
      * Test basic loop.
@@ -141,7 +141,7 @@ class GenericTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(0, $loop->getPauseCount());
 
         $this->assertTrue($loop->start());
-        LoopTest::waitTick();
+        self::waitTick();
         $this->fixtureStarted($loop);
         $expectedRunCount++;
         $this->assertEquals($loop, $l);
@@ -152,7 +152,7 @@ class GenericTest extends \PHPUnit\Framework\TestCase
 
         $pauseTime = 0.1;
         $this->assertTrue($loop->resume());
-        LoopTest::waitTick();
+        self::waitTick();
         $this->fixtureStarted($loop);
         $expectedRunCount++;
 
@@ -176,7 +176,7 @@ class GenericTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(0.1, $loop->getLastPause());
 
         $this->assertTrue($loop->resume());
-        LoopTest::waitTick();
+        self::waitTick();
         $expectedRunCount++;
 
         $this->assertEquals($expectedRunCount, $runCount);
@@ -190,7 +190,7 @@ class GenericTest extends \PHPUnit\Framework\TestCase
             $this->assertTrue($loop->resume());
             $expectedRunCount++;
         }
-        LoopTest::waitTick();
+        self::waitTick();
         $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(4, $loop->getPauseCount());
         $this->assertEquals(0.1, $loop->getLastPause());
@@ -205,7 +205,7 @@ class GenericTest extends \PHPUnit\Framework\TestCase
         // Restart loop
         $pauseTime = GenericLoop::PAUSE;
         $this->assertTrue($loop->start());
-        LoopTest::waitTick();
+        self::waitTick();
         $this->fixtureStarted($loop, 2);
         $expectedRunCount++;
 
@@ -220,7 +220,7 @@ class GenericTest extends \PHPUnit\Framework\TestCase
             $this->assertTrue($loop->resume());
             $expectedRunCount++;
         }
-        LoopTest::waitTick();
+        self::waitTick();
         $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(5, $loop->getPauseCount());
         $this->assertEquals(0.0, $loop->getLastPause());
@@ -236,7 +236,7 @@ class GenericTest extends \PHPUnit\Framework\TestCase
         $pauseTime = GenericLoop::PAUSE;
         $this->assertTrue($loop->start());
         $this->assertTrue($loop->stop());
-        LoopTest::waitTick();
+        self::waitTick();
 
         $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(5, $loop->getPauseCount());
@@ -253,7 +253,7 @@ class GenericTest extends \PHPUnit\Framework\TestCase
         $pauseTime = 1.0;
         $this->assertTrue($loop->start());
         $this->assertTrue($loop->stop());
-        LoopTest::waitTick();
+        self::waitTick();
 
         $this->assertEquals($expectedRunCount, $runCount);
         $this->assertEquals(5, $loop->getPauseCount());

@@ -17,7 +17,7 @@ use danog\Loop\Test\Traits\Logging;
 
 use function Amp\delay;
 
-class PeriodicTest extends \PHPUnit\Framework\TestCase
+class PeriodicTest extends Fixtures
 {
     /**
      * Test basic loop.
@@ -139,7 +139,7 @@ class PeriodicTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue($loop->start());
         $this->fixtureStarted($loop);
-        LoopTest::waitTick();
+        self::waitTick();
 
         $this->assertEquals(1, $runCount);
 
@@ -156,7 +156,7 @@ class PeriodicTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(2, $runCount);
 
         $this->assertTrue($loop->resume());
-        LoopTest::waitTick();
+        self::waitTick();
 
         $this->assertEquals(3, $runCount);
 
@@ -166,7 +166,7 @@ class PeriodicTest extends \PHPUnit\Framework\TestCase
             $retValue = true;
             $this->assertTrue($loop->resume());
         }
-        LoopTest::waitTick();
+        self::waitTick();
         $this->assertEquals($stopSig ? 3 : 4, $runCount);
 
         $this->assertFalse($loop->isRunning());
