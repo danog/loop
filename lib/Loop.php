@@ -10,6 +10,7 @@
 
 namespace danog\Loop;
 
+use Amp\DeferredFuture;
 use AssertionError;
 use Revolt\EventLoop;
 use Stringable;
@@ -45,6 +46,10 @@ abstract class Loop implements Stringable
      * Resume deferred ID.
      */
     private ?string $resumeImmediate = null;
+    /**
+     * Shutdown deferred.
+     */
+    private ?DeferredFuture $shutdownDeferred = null;
 
     /**
      * Report pause, can be overriden for logging.
@@ -64,6 +69,9 @@ abstract class Loop implements Stringable
     {
         if ($this->running) {
             return false;
+        }
+        if ($this->shutdownDeferred) {
+            $this->shutdownDeferred->getFuture()->await();
         }
         $this->running = true;
         if (!$this->resume()) {
@@ -97,6 +105,14 @@ abstract class Loop implements Stringable
         }
         if ($this->paused) {
             $this->exitedLoop();
+        } else {
+            if ($this->shutdownDeferred !== null) {
+                // @codeCoverageIgnoreStart
+                throw new AssertionError("Shutdown deferred is not null!");
+                // @codeCoverageIgnoreEnd
+            }
+            $this->shutdownDeferred = new DeferredFuture;
+            $this->shutdownDeferred->getFuture()->await();
         }
         return true;
     }
@@ -166,6 +182,11 @@ abstract class Loop implements Stringable
             // @codeCoverageIgnoreEnd
         }
         $this->exitedLoop();
+        if ($this->shutdownDeferred !== null) {
+            $d = $this->shutdownDeferred;
+            $this->shutdownDeferred = null;
+            EventLoop::queue($d->complete(...));
+        }
     }
     /**
      * Signal that loop was started.

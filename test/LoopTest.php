@@ -23,7 +23,7 @@ class LoopTest extends Fixtures
     /**
      * Execute pre-start assertions.
      */
-    protected function assertPreStart(BasicInterface&Loop $loop): void
+    private function assertPreStart(BasicInterface&Loop $loop): void
     {
         $this->assertEquals(self::LOOP_NAME, "$loop");
 
@@ -37,41 +37,38 @@ class LoopTest extends Fixtures
     }
     /**
      * Execute after-start assertions.
-     *
-     * @param bool           $running Whether we should expect the loop to be running
-     * @param bool           $running Whether we should actually start the loop by returning control to the event loop
-     *
      */
-    protected function assertAfterStart(BasicInterface&Loop $loop, bool $running = true, bool $start = true): void
+    private function assertAfterStart(BasicInterface&Loop $loop, int $prevRun = 0): void
     {
-        if ($start) {
-            self::waitTick();
-        }
+        self::waitTick();
         $this->assertTrue($loop->inited());
 
-        if ($running) {
+        if ($prevRun === 0) {
             $this->assertFalse($loop->ran());
+        } else {
+            $this->assertTrue($loop->ran());
         }
-        $this->assertEquals($running, $loop->isRunning());
 
-        $this->assertEquals(1, $loop->startCounter());
-        $this->assertEquals($running ? 0 : 1, $loop->endCounter());
+        $this->assertTrue($loop->isRunning());
 
-        $this->assertEquals($running, !$loop->start());
-        $this->assertEquals($running, !$loop->isPaused());
+        $this->assertEquals($prevRun+1, $loop->startCounter());
+        $this->assertEquals($prevRun, $loop->endCounter());
+
+        $this->assertFalse($loop->start());
+        $this->assertFalse($loop->isPaused());
     }
     /**
      * Execute final assertions.
      */
-    protected function assertFinal(BasicInterface&Loop $loop): void
+    private function assertFinal(BasicInterface&Loop $loop, int $count = 1): void
     {
         $this->assertTrue($loop->ran());
         $this->assertFalse($loop->isRunning());
 
         $this->assertTrue($loop->inited());
 
-        $this->assertEquals(1, $loop->startCounter());
-        $this->assertEquals(1, $loop->endCounter());
+        $this->assertEquals($count, $loop->startCounter());
+        $this->assertEquals($count, $loop->endCounter());
     }
     /**
      * Test basic loop.
@@ -92,7 +89,7 @@ class LoopTest extends Fixtures
     /**
      * Test basic loop.
      */
-    public function testLoopStopFromInside(): void
+    public function testLoopStopFromOutside(): void
     {
         $loop = new class() extends Loop implements BasicInterface {
             use Basic;
@@ -103,7 +100,6 @@ class LoopTest extends Fixtures
             {
                 $this->inited = true;
                 delay(0.1);
-                $this->stop();
                 $this->ran = true;
                 return 1000.0;
             }
@@ -112,9 +108,45 @@ class LoopTest extends Fixtures
         $this->assertTrue($loop->start());
         $this->assertAfterStart($loop);
 
+        $this->assertTrue($loop->stop());
         delay(0.110);
 
         $this->assertFinal($loop);
+    }
+    /**
+     * Test basic loop.
+     */
+    public function testLoopStopFromOutsideRestart(): void
+    {
+        $loop = new class() extends Loop implements BasicInterface {
+            use Basic;
+            /**
+             * Loop implementation.
+             */
+            public function loop(): ?float
+            {
+                $this->inited = true;
+                delay(0.1);
+                $this->ran = true;
+                return 1000.0;
+            }
+        };
+        $this->assertPreStart($loop);
+        $this->assertTrue($loop->start());
+        $this->assertAfterStart($loop);
+
+        EventLoop::queue(function () use ($loop): void {
+            $this->assertTrue($loop->stop());
+        });
+        self::waitTick();
+
+        $this->assertTrue($loop->start());
+        $this->assertAfterStart($loop, 1);
+
+        $this->assertTrue($loop->stop());
+        delay(0.110);
+
+        $this->assertFinal($loop, 2);
     }
     /**
      * Test basic exception in loop.
