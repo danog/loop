@@ -162,7 +162,9 @@ abstract class Loop implements Stringable
                     $this->loopInternal();
                 });
             }
-            $this->reportPause($timeout);
+            if ($timeout !== self::CONTINUE) {
+                $this->reportPause($timeout);
+            }
         }
     }
 
