@@ -43,14 +43,23 @@ jobs:
           wget https://github.com/infection/infection/releases/download/0.27.0/infection.phar -O /usr/local/bin/infection
           chmod +x /usr/local/bin/infection
 
-      - name: Run tests
-        env:
-          PHP_CS_FIXER_IGNORE_ENV: 1
+      - name: Run CS check
+        run: |
+          vendor/bin/php-cs-fixer --diff --dry-run -v fix
+      
+      - name: Run unit tests
         run: |
           vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml
-          vendor/bin/php-cs-fixer --diff --dry-run -v fix
-          vendor/bin/psalm.phar --shepherd
+
+      - name: Run mutation tests
+        env:
+          STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+        run: |
           infection --show-mutations --threads=$(nproc)
+
+      - name: Run Psalm analysis
+        run: |
+          vendor/bin/psalm.phar --shepherd
 
       - name: Upload coverage to Codecov
         env: 
