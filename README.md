@@ -80,10 +80,12 @@ abstract class Loop
      *
      * If resume is called multiple times, and the event loop hasn't resumed the loop yet,
      * the loop will be resumed only once, not N times for every call.
-     * 
+     *
+     * @param bool $postpone If true, multiple resumes will postpone the resuming to the end of the callback queue instead of leaving its position unchanged.
+     *
      * @return bool Returns false if the loop is not paused.
      */
-    public function resume(): bool;
+    public function resume(bool $postpone = false): bool;
     /**
      * Stops loop.
      *

@@ -14,6 +14,7 @@ use danog\Loop\Loop;
 use danog\Loop\Test\Interfaces\LoggingPauseInterface;
 use danog\Loop\Test\Traits\Basic;
 use danog\Loop\Test\Traits\LoggingPause;
+use Revolt\EventLoop;
 
 use function Amp\delay;
 
@@ -275,6 +276,69 @@ class GenericTest extends Fixtures
         $this->assertFalse($loop->isRunning());
         $this->assertFalse($loop->stop());
         $this->assertFalse($loop->resume());
+
+        // Restart loop, without postponing resuming
+        $pauseTime = GenericLoop::PAUSE;
+        $this->assertTrue($loop->start());
+        self::waitTick();
+        $this->fixtureStarted($loop, 5);
+        $expectedRunCount++;
+
+        $this->assertEquals($expectedRunCount, $runCount);
+        $this->assertEquals(6, $loop->getPauseCount());
+        $this->assertEquals(0.0, $loop->getLastPause());
+        $this->assertTrue($loop->isPaused());
+
+        $pauseTime = GenericLoop::STOP;
+        $this->assertTrue($loop->resume(false));
+        $this->assertTrue($loop->resume(false));
+        $expectedRunCount++;
+        self::waitTick();
+        $this->assertEquals($expectedRunCount, $runCount);
+        $this->assertEquals(6, $loop->getPauseCount());
+        $this->assertEquals(0.0, $loop->getLastPause());
+        $this->assertTrue($loop->isPaused());
+
+        $this->assertEquals(5, $loop->startCounter());
+        $this->assertEquals(5, $loop->endCounter());
+
+        $this->assertFalse($loop->isRunning());
+        $this->assertFalse($loop->stop());
+        $this->assertFalse($loop->resume());
+
+        // Restart loop, postponing resuming
+        $pauseTime = GenericLoop::PAUSE;
+        $this->assertTrue($loop->start());
+        self::waitTick();
+        $this->fixtureStarted($loop, 6);
+        $expectedRunCount++;
+
+        $this->assertEquals($expectedRunCount, $runCount);
+        $this->assertEquals(7, $loop->getPauseCount());
+        $this->assertEquals(0.0, $loop->getLastPause());
+        $this->assertTrue($loop->isPaused());
+
+        $pauseTime = GenericLoop::STOP;
+        $this->assertTrue($loop->resume(true));
+        EventLoop::queue(fn () => $this->assertTrue($loop->resume(true)));
+        self::waitTick();
+        $this->assertEquals($expectedRunCount, $runCount);
+        $this->assertEquals(7, $loop->getPauseCount());
+        $this->assertEquals(0.0, $loop->getLastPause());
+        $this->assertTrue($loop->isPaused());
+
+        $this->assertEquals(6, $loop->startCounter());
+        $this->assertEquals(5, $loop->endCounter());
+
+        self::waitTick();
+        $expectedRunCount++;
+        $this->assertEquals($expectedRunCount, $runCount);
+        $this->assertEquals(7, $loop->getPauseCount());
+        $this->assertEquals(0.0, $loop->getLastPause());
+        $this->assertTrue($loop->isPaused());
+
+        $this->assertEquals(6, $loop->startCounter());
+        $this->assertEquals(6, $loop->endCounter());
     }
 
     /**
