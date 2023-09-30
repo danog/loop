@@ -2,6 +2,7 @@
 
 ![Build status](https://github.com/danog/loop/workflows/build/badge.svg)
 [![codecov](https://codecov.io/gh/danog/loop/branch/master/graph/badge.svg)](https://codecov.io/gh/danog/loop)
+[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fdanog%2Floop%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/danog/loop/master)
 [![Psalm coverage](https://shepherd.dev/github/danog/loop/coverage.svg)](https://shepherd.dev/github/danog/loop)
 [![Psalm level 1](https://shepherd.dev/github/danog/loop/level.svg)](https://shepherd.dev/github/danog/loop)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
