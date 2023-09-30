@@ -78,6 +78,7 @@ abstract class Loop implements Stringable
             return false;
         }
         $this->running = true;
+        /** @infection-ignore-all */
         if (!$this->resume()) {
             // @codeCoverageIgnoreStart
             throw new AssertionError("Could not resume!");
@@ -110,6 +111,7 @@ abstract class Loop implements Stringable
         if ($this->paused) {
             $this->exitedLoop();
         } else {
+            /** @infection-ignore-all */
             if ($this->shutdownDeferred !== null) {
                 // @codeCoverageIgnoreStart
                 throw new AssertionError("Shutdown deferred is not null!");
@@ -124,11 +126,13 @@ abstract class Loop implements Stringable
     private bool $paused = true;
     private function loopInternal(): void
     {
+        /** @infection-ignore-all */
         if (!$this->running) {
             // @codeCoverageIgnoreStart
             throw new AssertionError("Already running!");
             // @codeCoverageIgnoreEnd
         }
+        /** @infection-ignore-all */
         if (!$this->paused) {
             // @codeCoverageIgnoreStart
             throw new AssertionError("Already paused!");
@@ -156,6 +160,7 @@ abstract class Loop implements Stringable
             $this->reportPause(0.0);
         } else {
             if (!$this->resumeImmediate) {
+                /** @infection-ignore-all */
                 if ($this->resumeTimer !== null) {
                     // @codeCoverageIgnoreStart
                     throw new AssertionError("Already have a resume timer!");
@@ -176,11 +181,13 @@ abstract class Loop implements Stringable
     {
         $this->running = false;
         $this->paused = true;
+        /** @infection-ignore-all */
         if ($this->resumeTimer !== null) {
             // @codeCoverageIgnoreStart
             throw new AssertionError("Already have a resume timer!");
             // @codeCoverageIgnoreEnd
         }
+        /** @infection-ignore-all */
         if ($this->resumeImmediate !== null) {
             // @codeCoverageIgnoreStart
             throw new AssertionError("Already have a resume immediate timer!");
