@@ -38,7 +38,10 @@ jobs:
           restore-keys: ${{ matrix.os }}-composer-${{ matrix.php-versions }}-
 
       - name: Install dependencies
-        run: composer install --prefer-dist
+        run: |
+          composer install --prefer-dist
+          wget https://github.com/infection/infection/releases/download/0.27.0/infection.phar -O /usr/local/bin/infection
+          chmod +x /usr/local/bin/infection
 
       - name: Run tests
         env:
@@ -47,6 +50,7 @@ jobs:
           vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml
           vendor/bin/php-cs-fixer --diff --dry-run -v fix
           vendor/bin/psalm.phar --shepherd
+          infection --show-mutations --threads=$(nproc)
 
       - name: Upload coverage to Codecov
         env: 

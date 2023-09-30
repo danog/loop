@@ -290,8 +290,8 @@ class GenericTest extends Fixtures
         $this->assertTrue($loop->isPaused());
 
         $pauseTime = GenericLoop::STOP;
-        $this->assertTrue($loop->resume(false));
-        $this->assertTrue($loop->resume(false));
+        $this->assertTrue($loop->resume());
+        EventLoop::queue(fn () => $this->assertTrue($loop->resume()));
         $expectedRunCount++;
         self::waitTick();
         $this->assertEquals($expectedRunCount, $runCount);
