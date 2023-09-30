@@ -43,7 +43,9 @@ jobs:
           wget https://github.com/infection/infection/releases/download/0.27.0/infection.phar -O /usr/local/bin/infection
           chmod +x /usr/local/bin/infection
 
-      - name: Run CS check
+      - name: Run codestyle check
+        env:
+          PHP_CS_FIXER_IGNORE_ENV: 1
         run: |
           vendor/bin/php-cs-fixer --diff --dry-run -v fix
       
