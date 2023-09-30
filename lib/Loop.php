@@ -18,6 +18,8 @@ use Stringable;
 /**
  * Generic loop, runs single callable.
  *
+ * @api
+ *
  * @author Daniil Gentili <daniil@daniil.it>
  */
 abstract class Loop implements Stringable
@@ -53,6 +55,8 @@ abstract class Loop implements Stringable
 
     /**
      * Report pause, can be overriden for logging.
+     *
+     * @psalm-suppress PossiblyUnusedParam
      *
      * @param float $timeout Pause duration, 0 = forever
      */

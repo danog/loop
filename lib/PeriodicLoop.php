@@ -12,6 +12,8 @@ namespace danog\Loop;
 /**
  * Periodic loop.
  *
+ * @api
+ *
  * @author Daniil Gentili <daniil@daniil.it>
  */
 class PeriodicLoop extends GenericLoop

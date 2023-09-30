@@ -13,6 +13,8 @@ namespace danog\Loop;
 /**
  * Generic loop, runs single callable.
  *
+ * @api
+ *
  * @author Daniil Gentili <daniil@daniil.it>
  */
 class GenericLoop extends Loop
