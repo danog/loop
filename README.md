@@ -2,11 +2,12 @@
 
 ![Build status](https://github.com/danog/loop/workflows/build/badge.svg)
 [![codecov](https://codecov.io/gh/danog/loop/branch/master/graph/badge.svg)](https://codecov.io/gh/danog/loop)
+[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fdanog%2Floop%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/danog/loop/master)
 [![Psalm coverage](https://shepherd.dev/github/danog/loop/coverage.svg)](https://shepherd.dev/github/danog/loop)
 [![Psalm level 1](https://shepherd.dev/github/danog/loop/level.svg)](https://shepherd.dev/github/danog/loop)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-`danog/loop` provides a set of powerful async loop APIs based on [amphp](https://amphp.org) for executing operations periodically or on demand, in background loops a-la threads.  
+`danog/loop` provides a set of powerful async loop APIs based on [amphp](https://amphp.org) for executing operations periodically or on demand, in background loops a-la threads.
 
 ## Installation
 
@@ -16,20 +17,20 @@ composer require danog/loop
 
 ## API
 
-* Basic
-  * [GenericLoop](#genericloop)
-  * [PeriodicLoop](#periodicloop)
-* Advanced
-  * [Loop](#loop)
+- Basic
+  - [GenericLoop](#genericloop)
+  - [PeriodicLoop](#periodicloop)
+- Advanced
+  - [Loop](#loop)
 
 ### Loop
 
 [Class](https://github.com/danog/loop/blob/master/lib/Loop.php) - [Example](https://github.com/danog/loop/blob/master/examples/Loop.php)
 
 A loop capable of running in background (asynchronously) the code contained in the `loop` function.  
-Implements pause and resume functionality, and can be stopped from the outside or from the inside.  
+Implements pause and resume functionality, and can be stopped from the outside or from the inside.
 
-API:  
+API:
 
 ```php
 namespace danog\Loop;
@@ -48,10 +49,10 @@ abstract class Loop
      * Rerun the loop.
      */
     public const CONTINUE;
-    
+
     /**
      * Loop body.
-     * 
+     *
      * The return value can be:
      * A number - the loop will be paused for the specified number of seconds
      * Loop::STOP - The loop will stop
@@ -68,7 +69,7 @@ abstract class Loop
      * Loop name, useful for logging.
      */
     abstract public function __toString(): string;
-    
+
     /**
      * Start the loop.
      *
@@ -108,7 +109,7 @@ abstract class Loop
      * @param float $timeout Pause duration, 0 = forever
      */
     protected function reportPause(float $timeout): void;
-    
+
     /**
      * Signal that loop was started.
      */
@@ -124,7 +125,7 @@ abstract class Loop
 
 [Class](https://github.com/danog/loop/blob/master/lib/GenericLoop.php) - [Example](https://github.com/danog/loop/blob/master/examples/GenericLoop.php)
 
-If you want a simpler way to use the `Loop`, you can use the GenericLoop.  
+If you want a simpler way to use the `Loop`, you can use the GenericLoop.
 
 ```php
 namespace danog\Loop;
@@ -161,7 +162,7 @@ class GenericLoop extends Loop
 
 [Class](https://github.com/danog/loop/blob/master/lib/PeriodicLoop.php) - [Example](https://github.com/danog/loop/blob/master/examples/PeriodicLoop.php)
 
-If you simply want to execute an action every N seconds, [PeriodicLoop](https://github.com/danog/MadelineProto/blob/master/src/danog/MadelineProto/Loop/Generic/PeriodicLoop.php) is the way to go.  
+If you simply want to execute an action every N seconds, [PeriodicLoop](https://github.com/danog/MadelineProto/blob/master/src/danog/MadelineProto/Loop/Generic/PeriodicLoop.php) is the way to go.
 
 ```php
 namespace danog\Loop;
@@ -189,4 +190,3 @@ class PeriodicLoop extends GenericLoop
     public function __toString(): string;
 }
 ```
-
