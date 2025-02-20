@@ -98,12 +98,12 @@ abstract class Loop implements Stringable
             return false;
         }
         $this->running = false;
-        if ($this->resumeTimer) {
+        if ($this->resumeTimer !== null) {
             $storedWatcherId = $this->resumeTimer;
             EventLoop::cancel($storedWatcherId);
             $this->resumeTimer = null;
         }
-        if ($this->resumeImmediate) {
+        if ($this->resumeImmediate !== null) {
             $storedWatcherId = $this->resumeImmediate;
             EventLoop::cancel($storedWatcherId);
             $this->resumeImmediate = null;
@@ -159,7 +159,7 @@ abstract class Loop implements Stringable
         if ($timeout === self::PAUSE) {
             $this->reportPause(0.0);
         } else {
-            if (!$this->resumeImmediate) {
+            if ($this->resumeImmediate === null) {
                 /** @infection-ignore-all */
                 if ($this->resumeTimer !== null) {
                     // @codeCoverageIgnoreStart
@@ -240,7 +240,7 @@ abstract class Loop implements Stringable
     public function resume(bool $postpone = false): bool
     {
         if ($this->running && $this->paused) {
-            if ($this->resumeImmediate) {
+            if ($this->resumeImmediate !== null) {
                 if (!$postpone) {
                     return true;
                 }
@@ -248,7 +248,7 @@ abstract class Loop implements Stringable
                 $this->resumeImmediate = null;
                 EventLoop::cancel($resumeImmediate);
             }
-            if ($this->resumeTimer) {
+            if ($this->resumeTimer !== null) {
                 $timer = $this->resumeTimer;
                 $this->resumeTimer = null;
                 EventLoop::cancel($timer);

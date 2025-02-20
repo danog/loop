@@ -50,6 +50,7 @@ class GenericLoop extends Loop
         $this->callable = $callable;
     }
 
+    #[\Override]
     protected function loop(): ?float
     {
         return ($this->callable)($this);
